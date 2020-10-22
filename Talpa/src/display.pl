@@ -1,4 +1,4 @@
-displinitialBoard([
+displayinitialBoard([
             [red,blue,red,blue,red,blue,red,blue],
             [blue,red,blue,red,blue,red,blue,red],
             [red,blue,red,blue,red,blue,red,blue],
@@ -9,7 +9,7 @@ displinitialBoard([
             [blue,red,blue,red,blue,red,blue,red]
 ]).
 
-symbol(empty, '.') :- S='.'.
+symbol(empty,S) :- S='.'.
 symbol(blue,S) :- S='X'.
 symbol(red,S) :- S='O'.
 
@@ -54,5 +54,5 @@ printLine([Head|Tail]) :-
     printLine(Tail).
 
 play :-
-    initialBoard(Board),
+    displayinitialBoard(Board),
     printBoard(Board).
