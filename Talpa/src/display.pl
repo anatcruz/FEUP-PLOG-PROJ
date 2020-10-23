@@ -1,4 +1,4 @@
-displayinitialBoard([
+initBoard([
             [red,blue,red,blue,red,blue,red,blue],
             [blue,red,blue,red,blue,red,blue,red],
             [red,blue,red,blue,red,blue,red,blue],
@@ -9,50 +9,46 @@ displayinitialBoard([
             [blue,red,blue,red,blue,red,blue,red]
 ]).
 
-symbol(empty,S) :- S='.'.
-symbol(blue,S) :- S='X'.
-symbol(red,S) :- S='O'.
+symbol(empty,' ').
+symbol(blue,'X').
+symbol(red,'O').
 
-letter(1, L) :- L='A'.
-letter(2, L) :- L='B'.
-letter(3, L) :- L='C'.
-letter(4, L) :- L='D'.
-letter(5, L) :- L='E'.
-letter(6, L) :- L='F'.
-letter(7, L) :- L='G'.
-letter(8, L) :- L='H'.
+letter(0, 'A').
+letter(1, 'B').
+letter(2, 'C').
+letter(3, 'D').
+letter(4, 'E').
+letter(5, 'F').
+letter(6, 'G').
+letter(7, 'H').
 
 printBoard(X) :-
     nl,
-    write('       | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |\n'),
+    write('       | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |\n'), /* Columns indicator */
     write('       +---+---+---+---+---+---+---+---+\n'),
-    write('         X   X   X   X   X   X   X   X  \n'),
+    write('         X   X   X   X   X   X   X   X  \n'), /* Print Xs on the top side */
     write('---+   +---+---+---+---+---+---+---+---+\n'),
-    printMatrix(X, 1).
+    printMatrix(X, 0).
 
-printMatrix([], 9):-
-    write('         X   X   X   X   X   X   X   X  \n').
+printMatrix([], 8):-
+    write('         X   X   X   X   X   X   X   X  \n'). /* Print Xs on the bottom side */
 
 printMatrix([Head|Tail], N):-
-    letter(N, L),
     write(' '),
+    letter(N, L), /* Row indicator */
     write(L),
-    N1 is N + 1,
-    write(' | O | '),
+    write(' | O | '),  /* Print Os on the left side */
     printLine(Head),
     write('\n---+   +---+---+---+---+---+---+---+---+\n'),
+    N1 is N + 1,
     printMatrix(Tail, N1).
 
 
 printLine([]):-
-    write('O').
+    write('O'). /* print Os on the right side */
 
 printLine([Head|Tail]) :-
     symbol(Head, S),
     write(S),
     write(' | '),
     printLine(Tail).
-
-play :-
-    displayinitialBoard(Board),
-    printBoard(Board).
