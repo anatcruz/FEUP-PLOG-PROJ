@@ -42,15 +42,26 @@ manageColumn(NewColumn) :-
     readColumn(Column),
     validateColumn(Column, NewColumn).
 
+verifyOrtMove(SelRow, SelColumn, MovRow, MovColumn) :-
+    MovRow=:=SelRow, (MovColumn=:=SelColumn+1 ; MovColumn=:=SelColumn-1); /*Same row*/
+    MovColumn=:=SelColumn, (MovRow=:=SelRow+1 ; MovRow=:=SelRow-1); /*Same column*/
+     (
+     write('ERROR! That is not a valid move!\n'),
+     manageRow(MovRow),
+     manageColumn(MovColumn),
+     verifyOrtMove(SelRow, SelColumn, MovRow, MovColumn)
+    ).
 
 selectPiece(Board, FinalBoard, Player) :-
     write('\nSelect pice:\n'),
     manageRow(SelRow),
     manageColumn(SelColumn),
-    replaceInMatrix(Board, SelRow, SelColumn, empty, FinalBoard).
+    replaceInMatrix(Board, SelRow, SelColumn, empty, FinalBoard),
+    movePiece(Board, FinalBoard, Player, SelRow, SelColumn).
 
-movePiece(Board, FinalBoard, Player) :-
+movePiece(Board, FinalBoard, Player, SelRow, SelColumn) :-
     write('\nMove to:\n'),
-    manageRow(SelRow),
-    manageColumn(SelColumn),
-    replaceInMatrix(Board, SelRow, SelColumn, Player, FinalBoard).
+    manageRow(MovRow),
+    manageColumn(MovColumn),
+    verifyOrtMove(SelRow, SelColumn, MovRow, MovColumn),
+    replaceInMatrix(Board, MovRow, MovColumn, Player, FinalBoard).

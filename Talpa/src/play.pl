@@ -12,6 +12,6 @@ gameLoop(Board) :-
 playerTurn(Board, FinalBoard, Player) :-
     (Player==blue, write('\n BLUE(X) turn\n'); Player==red, write('\n RED(O) turn\n')),
     selectPiece(Board, SelBoard, Player),
-    printBoard(SelBoard),
-    movePiece(SelBoard, FinalBoard, Player),
     printBoard(FinalBoard).
+    /*movePiece(SelBoard, FinalBoard, Player),*/
+    /*printBoard(FinalBoard).*/
