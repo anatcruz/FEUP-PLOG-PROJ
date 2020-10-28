@@ -52,7 +52,7 @@ verifyOrtMove(SelRow, SelColumn, MovRow, MovColumn) :-
      verifyOrtMove(SelRow, SelColumn, NewRow, NewColumn)
     ).
 
-selectPiece(Board, SelBoard, FinalBoard, Player) :-
+selectPiece(Board, FinalBoard, Player) :-
     write('\nSelect pice:\n'),
     manageRow(SelRow),
     manageColumn(SelColumn),
