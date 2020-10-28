@@ -42,26 +42,37 @@ manageColumn(NewColumn) :-
     readColumn(Column),
     validateColumn(Column, NewColumn).
 
-verifyOrtMove(SelRow, SelColumn, MovRow, MovColumn) :-
-    MovRow=:=SelRow, (MovColumn=:=SelColumn+1 ; MovColumn=:=SelColumn-1); /*Same row*/
-    MovColumn=:=SelColumn, (MovRow=:=SelRow+1 ; MovRow=:=SelRow-1); /*Same column */
+validateContent(Board, SelRow, SelColumn, Player, FinalRow, FinalColumn) :-
+    getValueFromMatrix(Board, SelRow, SelColumn, Value),
+    Player == Value, FinalRow is SelRow, FinalColumn is SelColumn;
+    (
+        write('That is not your piece!\n'),
+        manageRow(NewRow),
+        manageColumn(NewColumn),
+        validateContent(Board, NewRow, NewColumn, Player, FinalRow, FinalColumn)
+    ).
+
+verifyOrtMove(SelRow, SelColumn, MovRow, MovColumn, FinalRow, FinalColumn) :-
+    MovRow=:=SelRow, (MovColumn=:=SelColumn+1 ; MovColumn=:=SelColumn-1), FinalRow is MovRow, FinalColumn is MovColumn; /*Same row*/
+    MovColumn=:=SelColumn, (MovRow=:=SelRow+1 ; MovRow=:=SelRow-1), FinalRow is MovRow, FinalColumn is MovColumn; /*Same column */
      (
      write('ERROR! That is not a valid move!\n'),
      manageRow(NewRow),
      manageColumn(NewColumn),
-     verifyOrtMove(SelRow, SelColumn, NewRow, NewColumn)
+     verifyOrtMove(SelRow, SelColumn, NewRow, NewColumn, FinalRow, FinalColumn)
     ).
 
 selectPiece(Board, FinalBoard, Player) :-
     write('\nSelect pice:\n'),
     manageRow(SelRow),
     manageColumn(SelColumn),
-    replaceInMatrix(Board, SelRow, SelColumn, empty, SelBoard),
-    movePiece(SelBoard, FinalBoard, Player, SelRow, SelColumn).
+    validateContent(Board, SelRow, SelColumn, Player, FinalRow, FinalColumn),
+    replaceInMatrix(Board, FinalRow, FinalColumn, empty, SelBoard),
+    movePiece(SelBoard, FinalBoard, Player, FinalRow, FinalColumn).
 
 movePiece(SelBoard, FinalBoard, Player, SelRow, SelColumn) :-
     write('\nMove to:\n'),
     manageRow(MovRow),
     manageColumn(MovColumn),
-    verifyOrtMove(SelRow, SelColumn, MovRow, MovColumn),
-    replaceInMatrix(SelBoard, MovRow, MovColumn, Player , FinalBoard).
+    verifyOrtMove(SelRow, SelColumn, MovRow, MovColumn, FinalRow, FinalColumn),
+    replaceInMatrix(SelBoard, FinalRow, FinalColumn, Player , FinalBoard).
