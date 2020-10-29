@@ -1,11 +1,14 @@
+%reads Row input
 readRow(Row) :-
     write('  -> Row    '),
     read(Row).
 
+%reads Column input
 readColumn(Column) :-
     write('  -> Column '),
     read(Column).
 
+%checks if the Row selected is between the limits of the board
 validateRow('A', 0).
 validateRow('B', 1).
 validateRow('C', 2).
@@ -19,6 +22,7 @@ validateRow(_Row, NewRow) :-
     readRow(Input),
     validateRow(Input, NewRow).
 
+%checks if the Column selected is between the limits of the board
 validateColumn(1, 0).
 validateColumn(2, 1).
 validateColumn(3, 2).
@@ -32,16 +36,19 @@ validateColumn(_Column, NewColumn) :-
     readColumn(Input),
     validateColumn(Input, NewColumn).
 
-/* Lê a linha e verifica a validez no tabuleiro*/
+%reads the input Row and checks if it is between the limits of the board
 manageRow(NewRow) :-
     readRow(Row),
     validateRow(Row, NewRow).
 
-/* Lê a coluna e verifica a validez no tabuleiro*/
+%reads the input Column and checks if it is between the limits of the board
 manageColumn(NewColumn) :-
     readColumn(Column),
     validateColumn(Column, NewColumn).
 
+/*checks if the player is selecting his own piece
+if not, then he is asked again to input the position of the piece he wants to move
+*/
 validateContent(Board, SelRow, SelColumn, Player, FinalRow, FinalColumn) :-
     getValueFromMatrix(Board, SelRow, SelColumn, Value),
     Player == Value, FinalRow is SelRow, FinalColumn is SelColumn;
@@ -52,6 +59,12 @@ validateContent(Board, SelRow, SelColumn, Player, FinalRow, FinalColumn) :-
         validateContent(Board, NewRow, NewColumn, Player, FinalRow, FinalColumn)
     ).
 
+/*check if the player is moving his piece correctly
+the movements must be orthogonal
+when the movement is within the same row, the player can only select the position immediately to the right or left
+when the movement is within the same column, the player can only select the position immediately to the top or down
+when not given a valid position the player is asked again to write the position to move to
+*/
 verifyOrtMove(SelRow, SelColumn, MovRow, MovColumn, FinalRow, FinalColumn) :-
     MovRow=:=SelRow, (MovColumn=:=SelColumn+1 ; MovColumn=:=SelColumn-1), FinalRow is MovRow, FinalColumn is MovColumn; /*Same row*/
     MovColumn=:=SelColumn, (MovRow=:=SelRow+1 ; MovRow=:=SelRow-1), FinalRow is MovRow, FinalColumn is MovColumn; /*Same column */
@@ -62,6 +75,11 @@ verifyOrtMove(SelRow, SelColumn, MovRow, MovColumn, FinalRow, FinalColumn) :-
      verifyOrtMove(SelRow, SelColumn, NewRow, NewColumn, FinalRow, FinalColumn)
     ).
 
+/*the player selects the piece he wants to move
+the inputs are checked if they are within the boundaries of the board and if the player is selecting his own piece
+on the board the piece the player wants to move is replaced by an empty space
+then the piece is moved
+*/
 selectPiece(Board, FinalBoard, Player) :-
     write('\nSelect pice:\n'),
     manageRow(SelRow),
@@ -70,6 +88,11 @@ selectPiece(Board, FinalBoard, Player) :-
     replaceInMatrix(Board, FinalRow, FinalColumn, empty, SelBoard),
     movePiece(SelBoard, FinalBoard, Player, FinalRow, FinalColumn).
 
+/*the player selects the position for the piece he wants to move
+the inputs are checked if they are within the boundaries of the board
+it checks if the moving to position is valid
+then the piece in the moving to position is replaced by the player
+*/
 movePiece(SelBoard, FinalBoard, Player, SelRow, SelColumn) :-
     write('\nMove to:\n'),
     manageRow(MovRow),
