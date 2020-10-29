@@ -1,7 +1,7 @@
 play:-
-    initBoard(Board),
-    printBoard(Board),
-    gameLoop(Board).
+    initialGameState(GameState),
+    printBoard(GameState),
+    gameLoop(GameState).
 
 gameLoop(Board) :-
     playerTurn(Board, FinalBoardBlue, blue),

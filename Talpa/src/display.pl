@@ -1,13 +1,35 @@
-initBoard([
-            [red,blue,red,blue,red,blue,red,blue],
-            [blue,red,blue,red,blue,red,blue,red],
-            [red,blue,red,blue,red,blue,red,blue],
-            [blue,red,blue,red,blue,red,blue,red],
-            [red,blue,red,blue,red,blue,red,blue],
-            [blue,red,blue,red,blue,red,blue,red],
-            [red,blue,red,blue,red,blue,red,blue],
-            [blue,red,blue,red,blue,red,blue,red]
+initialGameState([
+    [red,blue,red,blue,red,blue,red,blue],
+    [blue,red,blue,red,blue,red,blue,red],
+    [red,blue,red,blue,red,blue,red,blue],
+    [blue,red,blue,red,blue,red,blue,red],
+    [red,blue,red,blue,red,blue,red,blue],
+    [blue,red,blue,red,blue,red,blue,red],
+    [red,blue,red,blue,red,blue,red,blue],
+    [blue,red,blue,red,blue,red,blue,red]
 ]).
+
+midGameState([
+    [red,blue,blue,empty,red,empty,red,blue],
+    [empty,blue,empty,empty,empty,red,empty,blue],
+    [blue,red,red,empty,blue,empty,red,blue],
+    [empty,empty,blue,red,empty,empty,blue,empty],
+    [empty,red,red,red,red,blue,red,empty],
+    [empty,blue,blue,empty,empty,empty,empty,red],
+    [red,blue,red,blue,red,empty,blue,empty],
+    [blue,red,blue,blue,empty,blue,blue,red]
+]).
+
+finalGameState([
+    [red,blue,blue,empty,red,empty,red,blue],
+    [empty,blue,empty,empty,empty,red,empty,blue],
+    [blue,red,red,empty,blue,empty,blue,empty],
+    [empty,empty,blue,red,empty,empty,blue,empty],
+    [empty,blue,empty,red,red,red,empty,empty],
+    [empty,red,empty,empty,empty,empty,empty,red],
+    [empty,empty,empty,empty,blue,empty,blue,empty],
+    [blue,red,red,blue,empty,empty,blue,empty]
+]). /* RED victory */
 
 symbol(empty,' ').
 symbol(blue,'X').
