@@ -3,9 +3,9 @@ initial(GameState) :- initialGameState(GameState).
             %finalGameState(GameState).
 
 gameLoop(Board) :-
-    display_game(Board, FinalBoardBlue, blue),
-    display_game(FinalBoardBlue, FinalBoardRed, red),
-    gameLoop(FinalBoardRed).
+    display_game(Board, FinalBoardRed, red),
+    display_game(FinalBoardBRed, FinalBoardBlue, blue),
+    gameLoop(FinalBoardBlue).
 
 
 display_game(Board, FinalBoard, Player) :-
