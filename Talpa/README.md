@@ -3,18 +3,18 @@
 ## Turma 6 Talpa_1
 | Name             | Number    | E-Mail               |
 | ---------------- | --------- | ---------------------|
-| Ana Teresa Cruz  | 201806460 | up201806460@fe.up.pt |
-| André Nascimento | 201806461 | up201806461@fe.up.pt |
+| Ana Teresa Feliciano da Cruz  | 201806460 | up201806460@fe.up.pt |
+| André Filipe Meireles do Nascimento | 201806461 | up201806461@fe.up.pt |
 
 ---
 
-### Game Description 
+## Game Description 
 
 Talpa is a 2-players game that belongs to Connection Games family. While in most connection games players try to make a chain built of their pieces, in Talpa players remove pieces to make a path of empty spaces.
 
 The goal is to "dig" a "tunnel" of orthogonally adjacent empty spaces connecting player's sides of the board.
 
-### Rules
+## Rules
 
 Initially the board is filled with blue and red pieces, forming a checkerboard pattern. A player moves by picking up one of his pieces and capturing an orthogonally adjacent opponent's piece. The captured piece is removed from the board and replaced by the capturing piece. The capture is mandatory if possible. When capturing becomes impossible, players remove one of their stones per turn.
 
@@ -26,13 +26,13 @@ No draws are possible in Talpa.
 
 ---
 
-### Game State Representation
+## Game State Representation
 
-- red - Red player's pieces, represented by 'O' character in console;
+- red - Red player's pieces;
 
-- blue - Blue player's pieces, represented by 'X' character in console;
+- blue - Blue player's pieces;
 
-- empty - Empty space to create a path, represented by ' ' character (white space) in console.
+- empty - Empty cell to create a path to victory!
 
 **Initial Board:**
 
@@ -49,32 +49,6 @@ initialGameState([
 ]).
 ```
 
-Console view:
-
-```
-       | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
-       +---+---+---+---+---+---+---+---+
-         X   X   X   X   X   X   X   X  
----+   +---+---+---+---+---+---+---+---+
- A | O | O | X | O | X | O | X | O | X | O
----+   +---+---+---+---+---+---+---+---+
- B | O | X | O | X | O | X | O | X | O | O
----+   +---+---+---+---+---+---+---+---+
- C | O | O | X | O | X | O | X | O | X | O
----+   +---+---+---+---+---+---+---+---+
- D | O | X | O | X | O | X | O | X | O | O
----+   +---+---+---+---+---+---+---+---+
- E | O | O | X | O | X | O | X | O | X | O
----+   +---+---+---+---+---+---+---+---+
- F | O | X | O | X | O | X | O | X | O | O
----+   +---+---+---+---+---+---+---+---+
- G | O | O | X | O | X | O | X | O | X | O
----+   +---+---+---+---+---+---+---+---+
- H | O | X | O | X | O | X | O | X | O | O
----+   +---+---+---+---+---+---+---+---+
-         X   X   X   X   X   X   X   X 
-```
-
 **Mid game Board:**
 
 ```
@@ -88,32 +62,6 @@ midGameState([
     [red,blue,red,blue,red,empty,blue,empty],
     [blue,red,blue,blue,empty,blue,blue,red]
 ]).
-```
-
-Console view:
-
-```
-       | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
-       +---+---+---+---+---+---+---+---+
-         X   X   X   X   X   X   X   X  
----+   +---+---+---+---+---+---+---+---+
- A | O | O | X | X |   | O |   | O | X | O
----+   +---+---+---+---+---+---+---+---+
- B | O |   | X |   |   |   | O |   | X | O
----+   +---+---+---+---+---+---+---+---+
- C | O | X | O | O |   | X |   | O | X | O
----+   +---+---+---+---+---+---+---+---+
- D | O |   |   | X | O |   |   | X |   | O
----+   +---+---+---+---+---+---+---+---+
- E | O |   | O | O | O | O | X | O |   | O
----+   +---+---+---+---+---+---+---+---+
- F | O |   | X | X |   |   |   |   | O | O
----+   +---+---+---+---+---+---+---+---+
- G | O | O | X | O | X | O |   | X |   | O
----+   +---+---+---+---+---+---+---+---+
- H | O | X | O | X | X |   | X | X | O | O
----+   +---+---+---+---+---+---+---+---+
-         X   X   X   X   X   X   X   X 
 ```
 
 **Game end Board:**
@@ -133,28 +81,32 @@ finalGameState([
 ]).
 ```
 
-Console view:
+## Game State Visualization
 
-```
-       | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
-       +---+---+---+---+---+---+---+---+
-         X   X   X   X   X   X   X   X  
----+   +---+---+---+---+---+---+---+---+
- A | O | O | X | X |   | O |   | O | X | O
----+   +---+---+---+---+---+---+---+---+
- B | O |   | X |   |   |   | O |   | X | O
----+   +---+---+---+---+---+---+---+---+
- C | O | X | O | O |   | X |   | X |   | O
----+   +---+---+---+---+---+---+---+---+
- D | O |   |   | X | O |   |   | X |   | O
----+   +---+---+---+---+---+---+---+---+
- E | O |   | X |   | O | O | O |   |   | O
----+   +---+---+---+---+---+---+---+---+
- F | O |   | O |   |   |   |   |   | O | O
----+   +---+---+---+---+---+---+---+---+
- G | O |   |   |   |   | X |   | X |   | O
----+   +---+---+---+---+---+---+---+---+
- H | O | X | O | O | X |   |   | X |   | O
----+   +---+---+---+---+---+---+---+---+
-         X   X   X   X   X   X   X   X
-```
+To display **Blue** and **Red** player's **pieces** we used the characters **X** and **O** respectively, and for the **empty board cells** used a **white space**.
+
+To print the game board we used some predicates:
+- `printBoard(+Board)` prints the columns' header and calls `printMatrix(+Board, +RowIndex)`.
+- `printMatrix(+Board, +RowIndex)` prints the rows' letters (using `letter(+RowIndex, -Letter)` to represent the RowIndex with the corresponding Letter), calls `printRow(List)` and recursively calls itself.
+- `printRow(List)` prints the list's Head (using `character(+MatrixValue, -Character)` to represent the MatrixValue with the corresponding Character) which represents a cell in the board, and recursively calls itself with the list's Tail.
+
+**Initial Board console view:**
+
+![initalGameState](img/initialGameState.jpg)
+
+**Mid game Board console view:**
+
+![midGameState](img/midGameState.jpg)
+
+
+**Game end Board console view:**
+
+![finalGameState](img/finalGameState.jpg)
+
+---
+
+## Final Notes
+
+To run the program you simply need to consult src/talpa.pl in SICStus Prolog and type _play._ in the console.
+
+For rows input type _'R.'_ (where R represents a letter) and for columns input type _C._ (where C represents a number).
