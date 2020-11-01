@@ -53,7 +53,7 @@ validateContent(Board, SelRow, SelColumn, Player, FinalRow, FinalColumn) :-
     getValueFromMatrix(Board, SelRow, SelColumn, Value),
     Player == Value, FinalRow is SelRow, FinalColumn is SelColumn;
     (
-        write('That is not your piece!\n'),
+        write('ERROR! That is not your piece!\n'),
         manageRow(NewRow),
         manageColumn(NewColumn),
         validateContent(Board, NewRow, NewColumn, Player, FinalRow, FinalColumn)
@@ -68,11 +68,11 @@ when not given a valid position the player is asked again to write the position 
 verifyOrtMove(SelRow, SelColumn, MovRow, MovColumn, FinalRow, FinalColumn) :-
     MovRow=:=SelRow, (MovColumn=:=SelColumn+1 ; MovColumn=:=SelColumn-1), FinalRow is MovRow, FinalColumn is MovColumn; /*Same row*/
     MovColumn=:=SelColumn, (MovRow=:=SelRow+1 ; MovRow=:=SelRow-1), FinalRow is MovRow, FinalColumn is MovColumn; /*Same column */
-     (
-     write('ERROR! That is not a valid move!\n'),
-     manageRow(NewRow),
-     manageColumn(NewColumn),
-     verifyOrtMove(SelRow, SelColumn, NewRow, NewColumn, FinalRow, FinalColumn)
+    (
+        write('ERROR! That is not a valid move!\n'),
+        manageRow(NewRow),
+        manageColumn(NewColumn),
+        verifyOrtMove(SelRow, SelColumn, NewRow, NewColumn, FinalRow, FinalColumn)
     ).
 
 /*the player selects the piece he wants to move

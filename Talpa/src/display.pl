@@ -10,6 +10,7 @@ initialGameState([
     [blue,red,blue,red,blue,red,blue,red]
 ]).
 
+%board on a mid game state
 midGameState([
     [red,blue,blue,empty,red,empty,red,blue],
     [empty,blue,empty,empty,empty,red,empty,blue],
@@ -21,6 +22,7 @@ midGameState([
     [blue,red,blue,blue,empty,blue,blue,red]
 ]).
 
+%board on a final game state, representing red win
 finalGameState([
     [red,blue,blue,empty,red,empty,red,blue],
     [empty,blue,empty,empty,empty,red,empty,blue],
@@ -30,7 +32,7 @@ finalGameState([
     [empty,red,empty,empty,empty,empty,empty,red],
     [empty,empty,empty,empty,blue,empty,blue,empty],
     [blue,red,red,blue,empty,empty,blue,empty]
-]). /* RED victory */
+]).
 
 symbol(empty,' '). %symbol for an empty space representing a piece removed
 symbol(blue,'X'). %symbol representing the blue player
@@ -69,17 +71,18 @@ printMatrix([Head|Tail], N):-
     letter(N, L), /* Row indicator */
     write(L),
     write(' | O | '),  /* Print Os on the left side */
-    printLine(Head),
+    printRow(Head),
     write('\n---+   +---+---+---+---+---+---+---+---+\n'),
     N1 is N + 1,
     printMatrix(Tail, N1).
 
 %prints a line of O's on the right side of the board representing the right side of the red player
-printLine([]):-
+printRow([]):-
     write('O'). 
 
-printLine([Head|Tail]) :-
+%prints a list representing a matrix row
+printRow([Head|Tail]) :-
     symbol(Head, S),
     write(S),
     write(' | '),
-    printLine(Tail).
+    printRow(Tail).
