@@ -1,6 +1,6 @@
 # Talpa
 
-## T6GTalpa_1
+## T6 Talpa_1
 | Name             | Number    | E-Mail               |
 | ---------------- | --------- | ---------------------|
 | Ana Teresa Feliciano da Cruz  | 201806460 | up201806460@fe.up.pt |
