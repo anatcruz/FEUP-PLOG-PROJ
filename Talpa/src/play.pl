@@ -1,15 +1,14 @@
-play:-
-    initialGameState(GameState),
-    printBoard(GameState),
-    gameLoop(GameState).
+initial(GameState) :- initialGameState(GameState).
+            %midGameState(GameState).
+            %finalGameState(GameState).
 
 gameLoop(Board) :-
-    playerTurn(Board, FinalBoardBlue, blue),
-    playerTurn(FinalBoardBlue, FinalBoardRed, red),
+    display_game(Board, FinalBoardBlue, blue),
+    display_game(FinalBoardBlue, FinalBoardRed, red),
     gameLoop(FinalBoardRed).
 
 
-playerTurn(Board, FinalBoard, Player) :-
-    (Player==blue, write('\n BLUE(X) turn\n'); Player==red, write('\n RED(O) turn\n')),
+display_game(Board, FinalBoard, Player) :-
+    ((Player==blue, write('\nBLUE(X) turn\n')); (Player==red, write('\nRED(O) turn\n'))),
     selectPiece(Board, FinalBoard, Player),
     printBoard(FinalBoard).
