@@ -1,6 +1,6 @@
 # Talpa
 
-## Turma 6 Talpa_1
+## T6GTalpa_1
 | Name             | Number    | E-Mail               |
 | ---------------- | --------- | ---------------------|
 | Ana Teresa Feliciano da Cruz  | 201806460 | up201806460@fe.up.pt |
@@ -100,6 +100,8 @@ To print the game board we used some predicates:
 
 
 **Game end Board console view:**
+
+(representing RED victory)
 
 ![finalGameState](img/finalGameState.jpg)
 
