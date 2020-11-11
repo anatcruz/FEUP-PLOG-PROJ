@@ -65,9 +65,10 @@ when the movement is within the same row, the player can only select the positio
 when the movement is within the same column, the player can only select the position immediately to the top or down
 when not given a valid position the player is asked again to write the position to move to
 */
-verifyOrtMove(SelRow, SelColumn, MovRow, MovColumn, FinalRow, FinalColumn) :-
-    MovRow=:=SelRow, (MovColumn=:=SelColumn+1 ; MovColumn=:=SelColumn-1), FinalRow is MovRow, FinalColumn is MovColumn; /*Same row*/
-    MovColumn=:=SelColumn, (MovRow=:=SelRow+1 ; MovRow=:=SelRow-1), FinalRow is MovRow, FinalColumn is MovColumn; /*Same column */
+verifyOrtMove(SelBoard, Player, SelRow, SelColumn, MovRow, MovColumn, FinalRow, FinalColumn) :-
+    getValueFromMatrix(SelBoard, MovRow, MovColumn, Enemy),
+    MovRow=:=SelRow, (MovColumn=:=SelColumn+1 ; MovColumn=:=SelColumn-1), Player \= Enemy, FinalRow is MovRow, FinalColumn is MovColumn; /*Same row*/
+    MovColumn=:=SelColumn, (MovRow=:=SelRow+1 ; MovRow=:=SelRow-1), Player \= Enemy, FinalRow is MovRow, FinalColumn is MovColumn; /*Same column */
     (
         write('ERROR! That is not a valid move!\n'),
         manageRow(NewRow),
@@ -97,5 +98,5 @@ movePiece(SelBoard, FinalBoard, Player, SelRow, SelColumn) :-
     write('\nMove to:\n'),
     manageRow(MovRow),
     manageColumn(MovColumn),
-    verifyOrtMove(SelRow, SelColumn, MovRow, MovColumn, FinalRow, FinalColumn),
+    verifyOrtMove(SelBoard, Player, SelRow, SelColumn, MovRow, MovColumn, FinalRow, FinalColumn),
     replaceInMatrix(SelBoard, FinalRow, FinalColumn, Player , FinalBoard).

@@ -4,7 +4,7 @@ initial(GameState) :- initialGameState(GameState).
 
 gameLoop(Board) :-
     display_game(Board, FinalBoardRed, red),
-    display_game(FinalBoardBRed, FinalBoardBlue, blue),
+    display_game(FinalBoardRed, FinalBoardBlue, blue),
     gameLoop(FinalBoardBlue).
 
 
