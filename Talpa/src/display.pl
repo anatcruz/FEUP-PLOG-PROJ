@@ -52,29 +52,61 @@ letter(7, 'H').
 prints a line of X's on the top of the board representing the top side of the blue player 
 */
 printBoard(Board) :-
+    length(Board, Size),
     nl,
-    write('       | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |\n'), /* Columns indicator */
-    write('       +---+---+---+---+---+---+---+---+\n'),
-    write('         X   X   X   X   X   X   X   X  \n'), /* Print Xs on the top side */
-    write('---+   +---+---+---+---+---+---+---+---+\n'),
-    printMatrix(Board, 0).
+    printBoardHeader(Size),
+    printMatrix(Board, 0, Size),
+    printBoardBottom(Size).
+
+printBoardHeader(Size) :-
+    write('       '),
+    printHeaderNumbers(1, Size), /* Columns indicator */
+    write('       '),
+    printSeparator(1, Size),
+    write('       '),
+    printXLine(1, Size), /* Print Xs on the top side */
+    printBoardRowSeparator(Size).
+
+printHeaderNumbers(Current, Size) :- Current=:=Size+1, write('|\n').
+printHeaderNumbers(Current, Size) :-
+    write('| '), write(Current), write(' '), CurrentN is Current+1,
+    printBoardHeader(CurrentN, Size).
+
+printSeparator(Current, Size) :- Current=:=Size+1, write('+\n').
+printSeparator(Current, Size) :-
+    write('+---'), CurrentN is Current+1,
+    printHeaderSeparator(CurrentN, Size).
+
+printXLine(Current, Size) :- Current=:=Size+1, write(' \n').
+printXLine(Current, Size) :-
+    write('  X  '), CurrentN is Current+1,
+    printHeaderX(CurrentN, Size).
+
+printBoardRowSeparator(Size) :-
+    write('---+   '),
+    printSeparator(1, Size).
 
 %prints a line of X's on the bottom of the board representing the bottom side of the blue player 
-printMatrix([], 8):-
-    write('         X   X   X   X   X   X   X   X  \n'). 
+printBoardBottom(Size) :-
+    write('       '),
+    printXLine(1, Size). 
+
+
+printMatrix([], N, Size).
 
 /*prints the matrix representing the board with the row indicators
 prints a line of O's on the left side of the board representing the left side of the red player
 */
-printMatrix([Head|Tail], N):-
+printMatrix([Head|Tail], N, Size):-
     write(' '),
     letter(N, L), /* Row indicator */
     write(L),
     write(' | O | '),  /* Print Os on the left side */
     printRow(Head),
-    write('\n---+   +---+---+---+---+---+---+---+---+\n'),
+    nl,
+    printBoardRowSeparator(Size),
     N1 is N + 1,
-    printMatrix(Tail, N1).
+    printMatrix(Tail, N1, Size).
 
 %prints a line of O's on the right side of the board representing the right side of the red player
 printRow([]):-
