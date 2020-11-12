@@ -1,12 +1,12 @@
 %reads Row input
 readRow(Row) :-
     write('  -> Row    '),
-    read(Row).
+    get_char(Row).
 
 %reads Column input
 readColumn(Column) :-
     write('  -> Column '),
-    read(Column).
+    get_code(Column).
 
 %checks if the Row selected is between the limits of the board
 validateRow('A', 0).
@@ -23,14 +23,14 @@ validateRow(_Row, NewRow) :-
     validateRow(Input, NewRow).
 
 %checks if the Column selected is between the limits of the board
-validateColumn(1, 0).
-validateColumn(2, 1).
-validateColumn(3, 2).
-validateColumn(4, 3).
-validateColumn(5, 4).
-validateColumn(6, 5).
-validateColumn(7, 6).
-validateColumn(8, 7).
+validateColumn(49, 0).
+validateColumn(50, 1).
+validateColumn(51, 2).
+validateColumn(52, 3).
+validateColumn(53, 4).
+validateColumn(54, 5).
+validateColumn(55, 6).
+validateColumn(56, 7).
 validateColumn(_Column, NewColumn) :-
     write('ERROR! That column is not valid!\n'),
     readColumn(Input),
