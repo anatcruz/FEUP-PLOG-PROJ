@@ -70,17 +70,17 @@ printBoardHeader(Size) :-
 printHeaderNumbers(Current, Size) :- Current=:=Size+1, write('|\n').
 printHeaderNumbers(Current, Size) :-
     write('| '), write(Current), write(' '), CurrentN is Current+1,
-    printBoardHeader(CurrentN, Size).
+    printHeaderNumbers(CurrentN, Size).
 
 printSeparator(Current, Size) :- Current=:=Size+1, write('+\n').
 printSeparator(Current, Size) :-
     write('+---'), CurrentN is Current+1,
-    printHeaderSeparator(CurrentN, Size).
+    printSeparator(CurrentN, Size).
 
 printXLine(Current, Size) :- Current=:=Size+1, write(' \n').
 printXLine(Current, Size) :-
-    write('  X  '), CurrentN is Current+1,
-    printHeaderX(CurrentN, Size).
+    write('  X '), CurrentN is Current+1,
+    printXLine(CurrentN, Size).
 
 printBoardRowSeparator(Size) :-
     write('---+   '),
