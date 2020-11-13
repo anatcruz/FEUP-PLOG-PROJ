@@ -48,6 +48,15 @@ letter(5, 'F').
 letter(6, 'G').
 letter(7, 'H').
 
+letter_lower(0, 'a').
+letter_lower(1, 'b').
+letter_lower(2, 'c').
+letter_lower(3, 'd').
+letter_lower(4, 'e').
+letter_lower(5, 'f').
+letter_lower(6, 'g').
+letter_lower(7, 'h').
+
 /*prints the board with the columns indicator
 prints a line of X's on the top of the board representing the top side of the blue player 
 */

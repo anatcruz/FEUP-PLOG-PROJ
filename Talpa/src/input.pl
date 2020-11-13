@@ -9,42 +9,48 @@ readColumn(Column) :-
     get_code(Column).
 
 %checks if the Row selected is between the limits of the board
-validateRow('A', 0).
-validateRow('B', 1).
-validateRow('C', 2).
-validateRow('D', 3).
-validateRow('E', 4).
-validateRow('F', 5).
-validateRow('G', 6).
-validateRow('H', 7).
-validateRow(_Row, NewRow) :-
+
+validateRow(RowInput, NewRow, Size) :-
+    (letter(Number, RowInput) ; letter_lower(Number, RowInput)),
+    Number < Size, 
+    NewRow = Number.
+
+
+validateRow(RowInput, NewRow, Size) :-
     write('ERROR! That row is not valid!\n'),
     readRow(Input),
-    validateRow(Input, NewRow).
+    validateRow(Input, NewRow, Size).
 
 %checks if the Column selected is between the limits of the board
-validateColumn(49, 0).
-validateColumn(50, 1).
-validateColumn(51, 2).
-validateColumn(52, 3).
-validateColumn(53, 4).
-validateColumn(54, 5).
-validateColumn(55, 6).
-validateColumn(56, 7).
-validateColumn(_Column, NewColumn) :-
-    write('ERROR! That column is not valid!\n'),
-    readColumn(Input),
-    validateColumn(Input, NewColumn).
+column_code(49, 0).
+column_code(50, 1).
+column_code(51, 2).
+column_code(52, 3).
+column_code(53, 4).
+column_code(54, 5).
+column_code(55, 6).
+column_code(56, 7).
+
+validateColumn(ColumnInput, NewColumn, Size) :-
+    peek_char(Char),
+    Char == '\n',
+    column_code(ColumnInput, Number), 
+    Number < Size, NewColumn is Number, skip_line.
+
+validateColumn(_, NewColumn, Size) :-
+    write('ERROR! That column is not valid!\n'), 
+    readColumn(Column),
+    validateColumn(Column, NewColumn, Size).
 
 %reads the input Row and checks if it is between the limits of the board
-manageRow(NewRow) :-
+manageRow(NewRow, Size) :-
     readRow(Row),
-    validateRow(Row, NewRow).
+    validateRow(Row, NewRow, Size).
 
 %reads the input Column and checks if it is between the limits of the board
-manageColumn(NewColumn) :-
+manageColumn(NewColumn, Size) :-
     readColumn(Column),
-    validateColumn(Column, NewColumn).
+    validateColumn(Column, NewColumn, Size).
 
 /*checks if the player is selecting his own piece
 if not, then he is asked again to input the position of the piece he wants to move
@@ -54,8 +60,8 @@ validateContent(Board, SelRow, SelColumn, Player, FinalRow, FinalColumn) :-
     Player == Value, FinalRow is SelRow, FinalColumn is SelColumn;
     (
         write('ERROR! That is not your piece!\n'),
-        manageRow(NewRow),
-        manageColumn(NewColumn),
+        manageRow(NewRow, Size),
+        manageColumn(NewColumn, Size),
         validateContent(Board, NewRow, NewColumn, Player, FinalRow, FinalColumn)
     ).
 
@@ -82,21 +88,24 @@ on the board the piece the player wants to move is replaced by an empty space
 then the piece is moved
 */
 selectPiece(Board, FinalBoard, Player) :-
+    length(Board, Size),
     write('\nSelect pice:\n'),
-    manageRow(SelRow),
-    manageColumn(SelColumn),
+    manageRow(SelRow, Size),
+    skip_line,
+    manageColumn(SelColumn, Size),
     validateContent(Board, SelRow, SelColumn, Player, FinalRow, FinalColumn),
     replaceInMatrix(Board, FinalRow, FinalColumn, empty, SelBoard),
-    movePiece(SelBoard, FinalBoard, Player, FinalRow, FinalColumn).
+    movePiece(SelBoard, Size, FinalBoard, Player, FinalRow, FinalColumn).
 
 /*the player selects the position for the piece he wants to move
 the inputs are checked if they are within the boundaries of the board
 it checks if the moving to position is valid
 then the piece in the moving to position is replaced by the player
 */
-movePiece(SelBoard, FinalBoard, Player, SelRow, SelColumn) :-
+movePiece(SelBoard, Size, FinalBoard, Player, SelRow, SelColumn) :-
     write('\nMove to:\n'),
-    manageRow(MovRow),
-    manageColumn(MovColumn),
+    manageRow(MovRow, Size),
+    skip_line,
+    manageColumn(MovColumn, Size),
     verifyOrtMove(SelBoard, Player, SelRow, SelColumn, MovRow, MovColumn, FinalRow, FinalColumn),
     replaceInMatrix(SelBoard, FinalRow, FinalColumn, Player , FinalBoard).
