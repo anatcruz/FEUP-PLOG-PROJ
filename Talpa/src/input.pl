@@ -8,8 +8,6 @@ readColumn(Column) :-
     write('  -> Column '),
     get_code(Column).
 
-%checks if the Row selected is between the limits of the board
-
 validateRow(RowInput, NewRow, Size) :-
     (letter(Number, RowInput) ; letter_lower(Number, RowInput)),
     Number < Size, 
@@ -21,15 +19,9 @@ validateRow(RowInput, NewRow, Size) :-
     readRow(Input),
     validateRow(Input, NewRow, Size).
 
-%checks if the Column selected is between the limits of the board
 column_code(49, 0).
-column_code(50, 1).
-column_code(51, 2).
-column_code(52, 3).
-column_code(53, 4).
-column_code(54, 5).
-column_code(55, 6).
-column_code(56, 7).
+column_code(X, Y) :-
+    X1 is X - 1, column_code(X1, Y1), Y is Y1 + 1.
 
 validateColumn(ColumnInput, NewColumn, Size) :-
     peek_char(Char),
