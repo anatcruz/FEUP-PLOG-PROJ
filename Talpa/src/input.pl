@@ -37,6 +37,7 @@ validateColumn(_, NewColumn, Size) :-
 %reads the input Row and checks if it is between the limits of the board
 manageRow(NewRow, Size) :-
     readRow(Row),
+    skip_line,
     validateRow(Row, NewRow, Size).
 
 %reads the input Column and checks if it is between the limits of the board
@@ -63,15 +64,15 @@ when the movement is within the same row, the player can only select the positio
 when the movement is within the same column, the player can only select the position immediately to the top or down
 when not given a valid position the player is asked again to write the position to move to
 */
-verifyOrtMove(SelBoard, Player, SelRow, SelColumn, MovRow, MovColumn, FinalRow, FinalColumn) :-
+verifyOrtMove(SelBoard, Size, Player, SelRow, SelColumn, MovRow, MovColumn, FinalRow, FinalColumn) :-
     getValueFromMatrix(SelBoard, MovRow, MovColumn, Enemy),
     MovRow=:=SelRow, (MovColumn=:=SelColumn+1 ; MovColumn=:=SelColumn-1), Player \= Enemy, FinalRow is MovRow, FinalColumn is MovColumn; /*Same row*/
     MovColumn=:=SelColumn, (MovRow=:=SelRow+1 ; MovRow=:=SelRow-1), Player \= Enemy, FinalRow is MovRow, FinalColumn is MovColumn; /*Same column */
     (
         write('ERROR! That is not a valid move!\n'),
-        manageRow(NewRow),
-        manageColumn(NewColumn),
-        verifyOrtMove(SelRow, SelColumn, NewRow, NewColumn, FinalRow, FinalColumn)
+        manageRow(NewRow, Size),
+        manageColumn(NewColumn, Size),
+        verifyOrtMove(SelBoard, Size, Player, SelRow, SelColumn, NewRow, NewColumn, FinalRow, FinalColumn)
     ).
 
 /*the player selects the piece he wants to move
@@ -83,7 +84,6 @@ selectPiece(Board, FinalBoard, Player) :-
     length(Board, Size),
     write('\nSelect pice:\n'),
     manageRow(SelRow, Size),
-    skip_line,
     manageColumn(SelColumn, Size),
     validateContent(Board, SelRow, SelColumn, Player, FinalRow, FinalColumn),
     replaceInMatrix(Board, FinalRow, FinalColumn, empty, SelBoard),
@@ -97,7 +97,6 @@ then the piece in the moving to position is replaced by the player
 movePiece(SelBoard, Size, FinalBoard, Player, SelRow, SelColumn) :-
     write('\nMove to:\n'),
     manageRow(MovRow, Size),
-    skip_line,
     manageColumn(MovColumn, Size),
-    verifyOrtMove(SelBoard, Player, SelRow, SelColumn, MovRow, MovColumn, FinalRow, FinalColumn),
+    verifyOrtMove(SelBoard, Size, Player, SelRow, SelColumn, MovRow, MovColumn, FinalRow, FinalColumn),
     replaceInMatrix(SelBoard, FinalRow, FinalColumn, Player , FinalBoard).
