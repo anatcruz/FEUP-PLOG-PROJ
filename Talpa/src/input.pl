@@ -45,6 +45,7 @@ manageColumn(NewColumn, Size) :-
     readColumn(Column),
     validateColumn(Column, NewColumn, Size).
 
+
 /*checks if the player is selecting his own piece
 if not, then he is asked again to input the position of the piece he wants to move
 */
