@@ -48,14 +48,14 @@ manageColumn(NewColumn, Size) :-
 /*checks if the player is selecting his own piece
 if not, then he is asked again to input the position of the piece he wants to move
 */
-validateContent(Board, SelRow, SelColumn, Player, FinalRow, FinalColumn) :-
+validateContent(Board, Size, SelRow, SelColumn, Player, FinalRow, FinalColumn) :-
     getValueFromMatrix(Board, SelRow, SelColumn, Value),
     Player == Value, FinalRow is SelRow, FinalColumn is SelColumn;
     (
         write('ERROR! That is not your piece!\n'),
         manageRow(NewRow, Size),
         manageColumn(NewColumn, Size),
-        validateContent(Board, NewRow, NewColumn, Player, FinalRow, FinalColumn)
+        validateContent(Board, Size, NewRow, NewColumn, Player, FinalRow, FinalColumn)
     ).
 
 /*check if the player is moving his piece correctly
@@ -85,7 +85,7 @@ selectPiece(Board, FinalBoard, Player) :-
     write('\nSelect pice:\n'),
     manageRow(SelRow, Size),
     manageColumn(SelColumn, Size),
-    validateContent(Board, SelRow, SelColumn, Player, FinalRow, FinalColumn),
+    validateContent(Board, Size, SelRow, SelColumn, Player, FinalRow, FinalColumn),
     replaceInMatrix(Board, FinalRow, FinalColumn, empty, SelBoard),
     movePiece(SelBoard, Size, FinalBoard, Player, FinalRow, FinalColumn).
 
