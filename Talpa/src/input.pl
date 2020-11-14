@@ -51,9 +51,9 @@ if not, then he is asked again to input the position of the piece he wants to mo
 */
 validateContent(Board, SelRow, SelColumn, Player, FinalRow, FinalColumn) :-
     getValueFromMatrix(Board, SelRow, SelColumn, Value),
-    Player == Value, FinalRow is SelRow, FinalColumn is SelColumn;
+    Player is Value, FinalRow is SelRow, FinalColumn is SelColumn;
     (
-        write('ERROR! That is not your piece!\n'),
+        write('\nERROR! That is not your piece!\n \nSelect piece:\n'),
         manageRow(NewRow),
         manageColumn(NewColumn),
         validateContent(Board, NewRow, NewColumn, Player, FinalRow, FinalColumn)
@@ -67,13 +67,13 @@ when not given a valid position the player is asked again to write the position 
 */
 verifyOrtMove(SelBoard, Player, SelRow, SelColumn, MovRow, MovColumn, FinalRow, FinalColumn) :-
     getValueFromMatrix(SelBoard, MovRow, MovColumn, Enemy),
-    MovRow=:=SelRow, (MovColumn=:=SelColumn+1 ; MovColumn=:=SelColumn-1), Player \= Enemy, FinalRow is MovRow, FinalColumn is MovColumn; /*Same row*/
-    MovColumn=:=SelColumn, (MovRow=:=SelRow+1 ; MovRow=:=SelRow-1), Player \= Enemy, FinalRow is MovRow, FinalColumn is MovColumn; /*Same column */
+    MovRow=:=SelRow, (MovColumn=:=SelColumn+1 ; MovColumn=:=SelColumn-1), Enemy is -Player, FinalRow is MovRow, FinalColumn is MovColumn; /*Same row*/
+    MovColumn=:=SelColumn, (MovRow=:=SelRow+1 ; MovRow=:=SelRow-1), Enemy is -Player, FinalRow is MovRow, FinalColumn is MovColumn; /*Same column */
     (
-        write('ERROR! That is not a valid move!\n'),
+        write('\nERROR! That is not a valid move!\n \nMove to:\n'),
         manageRow(NewRow),
         manageColumn(NewColumn),
-        verifyOrtMove(SelRow, SelColumn, NewRow, NewColumn, FinalRow, FinalColumn)
+        verifyOrtMove(SelBoard, Player, SelRow, SelColumn, NewRow, NewColumn, FinalRow, FinalColumn)
     ).
 
 /*the player selects the piece he wants to move
@@ -86,7 +86,7 @@ selectPiece(Board, FinalBoard, Player) :-
     manageRow(SelRow),
     manageColumn(SelColumn),
     validateContent(Board, SelRow, SelColumn, Player, FinalRow, FinalColumn),
-    replaceInMatrix(Board, FinalRow, FinalColumn, empty, SelBoard),
+    replaceInMatrix(Board, FinalRow, FinalColumn, 0, SelBoard),
     movePiece(SelBoard, FinalBoard, Player, FinalRow, FinalColumn).
 
 /*the player selects the position for the piece he wants to move

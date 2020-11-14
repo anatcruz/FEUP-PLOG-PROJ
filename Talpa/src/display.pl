@@ -1,42 +1,42 @@
 %board on it's initial state
 initialGameState([
-    [red,blue,red,blue,red,blue,red,blue],
-    [blue,red,blue,red,blue,red,blue,red],
-    [red,blue,red,blue,red,blue,red,blue],
-    [blue,red,blue,red,blue,red,blue,red],
-    [red,blue,red,blue,red,blue,red,blue],
-    [blue,red,blue,red,blue,red,blue,red],
-    [red,blue,red,blue,red,blue,red,blue],
-    [blue,red,blue,red,blue,red,blue,red]
+    [1,-1,1,-1,1,-1,1,-1],
+    [-1,1,-1,1,-1,1,-1,1],
+    [1,-1,1,-1,1,-1,1,-1],
+    [-1,1,-1,1,-1,1,-1,1],
+    [1,-1,1,-1,1,-1,1,-1],
+    [-1,1,-1,1,-1,1,-1,1],
+    [1,-1,1,-1,1,-1,1,-1],
+    [-1,1,-1,1,-1,1,-1,1]
 ]).
 
 %board on a mid game state
 midGameState([
-    [red,blue,blue,empty,red,empty,red,blue],
-    [empty,blue,empty,empty,empty,red,empty,blue],
-    [blue,red,red,empty,blue,empty,red,blue],
-    [empty,empty,blue,red,empty,empty,blue,empty],
-    [empty,red,red,red,red,blue,red,empty],
-    [empty,blue,blue,empty,empty,empty,empty,red],
-    [red,blue,red,blue,red,empty,blue,empty],
-    [blue,red,blue,blue,empty,blue,blue,red]
+    [1,-1,-1,0,1,0,1,-1],
+    [0,-1,0,0,0,1,0,-1],
+    [-1,1,1,0,-1,0,1,-1],
+    [0,0,-1,1,0,0,-1,0],
+    [0,1,1,1,1,-1,1,0],
+    [0,-1,-1,0,0,0,0,1],
+    [1,-1,1,-1,1,0,-1,0],
+    [-1,1,-1,-1,0,-1,-1,1]
 ]).
 
-%board on a final game state, representing red win
+%board on a final game state, representing 1 win
 finalGameState([
-    [red,blue,blue,empty,red,empty,red,blue],
-    [empty,blue,empty,empty,empty,red,empty,blue],
-    [blue,red,red,empty,blue,empty,blue,empty],
-    [empty,empty,blue,red,empty,empty,blue,empty],
-    [empty,blue,empty,red,red,red,empty,empty],
-    [empty,red,empty,empty,empty,empty,empty,red],
-    [empty,empty,empty,empty,blue,empty,blue,empty],
-    [blue,red,red,blue,empty,empty,blue,empty]
+    [1,-1,-1,0,1,0,1,-1],
+    [0,-1,0,0,0,1,0,-1],
+    [-1,1,1,0,-1,0,-1,0],
+    [0,0,-1,1,0,0,-1,0],
+    [0,-1,0,1,1,1,0,0],
+    [0,1,0,0,0,0,0,1],
+    [0,0,0,0,-1,0,-1,0],
+    [-1,1,1,-1,0,0,-1,0]
 ]).
 
-character(empty,' '). %character for an empty space representing a piece removed
-character(blue,'X'). %character representing the blue player piece
-character(red,'O'). %character representing the red player piece
+character(0,' '). %character for an empty space representing a piece removed
+character(-1,'X'). %character representing the blue player piece
+character(1,'O'). %character representing the red player piece
 
 %rows
 letter(0, 'A').
