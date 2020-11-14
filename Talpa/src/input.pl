@@ -46,36 +46,6 @@ manageColumn(NewColumn) :-
     readColumn(Column),
     validateColumn(Column, NewColumn).
 
-/*checks if the player is selecting his own piece
-if not, then he is asked again to input the position of the piece he wants to move
-*/
-validateContent(Board, SelRow, SelColumn, Player, FinalRow, FinalColumn) :-
-    getValueFromMatrix(Board, SelRow, SelColumn, Value),
-    Player is Value, FinalRow is SelRow, FinalColumn is SelColumn;
-    (
-        write('\nERROR! That is not your piece!\n \nSelect piece:\n'),
-        manageRow(NewRow),
-        manageColumn(NewColumn),
-        validateContent(Board, NewRow, NewColumn, Player, FinalRow, FinalColumn)
-    ).
-
-/*check if the player is moving his piece correctly
-the movements must be orthogonal
-when the movement is within the same row, the player can only select the position immediately to the right or left
-when the movement is within the same column, the player can only select the position immediately to the top or down
-when not given a valid position the player is asked again to write the position to move to
-*/
-verifyOrtMove(SelBoard, Player, SelRow, SelColumn, MovRow, MovColumn, FinalRow, FinalColumn) :-
-    getValueFromMatrix(SelBoard, MovRow, MovColumn, Enemy),
-    MovRow=:=SelRow, (MovColumn=:=SelColumn+1 ; MovColumn=:=SelColumn-1), Enemy is -Player, FinalRow is MovRow, FinalColumn is MovColumn; /*Same row*/
-    MovColumn=:=SelColumn, (MovRow=:=SelRow+1 ; MovRow=:=SelRow-1), Enemy is -Player, FinalRow is MovRow, FinalColumn is MovColumn; /*Same column */
-    (
-        write('\nERROR! That is not a valid move!\n \nMove to:\n'),
-        manageRow(NewRow),
-        manageColumn(NewColumn),
-        verifyOrtMove(SelBoard, Player, SelRow, SelColumn, NewRow, NewColumn, FinalRow, FinalColumn)
-    ).
-
 /*the player selects the piece he wants to move
 the inputs are checked if they are within the boundaries of the board and if the player is selecting his own piece
 on the board the piece the player wants to move is replaced by an empty space
