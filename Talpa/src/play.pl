@@ -1,5 +1,6 @@
 initial(GameState) :- %initialGameState(GameState).
             midGameState(GameState).
+            %testState(GameState).
             %finalGameState(GameState).
 
 gameLoop(Board) :-
@@ -9,6 +10,7 @@ gameLoop(Board) :-
 
 
 display_game(Board, FinalBoard, Player) :-
+    checkAvailableMoves(Board),
     ((Player is 1, write('\nRED(O) turn\n')); (Player is -1, write('\nBLUE(X) turn\n'))),
     selectPiece(Board, FinalBoard, Player),
     printBoard(FinalBoard).

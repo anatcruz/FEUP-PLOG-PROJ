@@ -1,11 +1,3 @@
-isPlayer(Board, Row, Column, Player) :-
-    getValueFromMatrix(Board, Row, Column, Value),
-    Player is Value.
-
-isEnemy(Board, Row, Column, Player) :-
-    getValueFromMatrix(Board, Row, Column, Enemy),
-    Enemy is -Player.
-    
 /*checks if the player is selecting his own piece
 if not, then he is asked again to input the position of the piece he wants to move
 */
@@ -21,6 +13,11 @@ validateContent(Board, Size, SelRow, SelColumn, Player, FinalRow, FinalColumn) :
     ).
 
 verifyPossibleMove(GameState, Size, SelRow, SelColumn, Player, ListOfMoves) :-
+    checkMove(GameState, Size, SelRow, SelColumn, Player, ListOfMoves), !,
+    \+isEmpty(ListOfMoves),
+    write('\nMoves available: '), printMovesList(ListOfMoves), nl.
+
+checkMove(GameState, Size, SelRow, SelColumn, Player, ListOfMoves) :-
     checkDownMove(GameState, Size, SelRow, SelColumn, Player, DownMove),
     checkUpMove(GameState, Size, SelRow, SelColumn, Player, UpMove),
     checkLeftMove(GameState, Size, SelRow, SelColumn, Player, LeftMove),
@@ -28,10 +25,9 @@ verifyPossibleMove(GameState, Size, SelRow, SelColumn, Player, ListOfMoves) :-
     appendListNotEmpty([], DownMove, L),
     appendListNotEmpty(L, UpMove, L1),
     appendListNotEmpty(L1, LeftMove, L2),
-    appendListNotEmpty(L2, RightMove, ListOfMoves), !,
-    \+isEmpty(ListOfMoves),
-    write('\nMoves available: '), printMovesList(ListOfMoves), nl.
- 
+    appendListNotEmpty(L2, RightMove, ListOfMoves).
+
+
 checkDownMove(GameState, Size, Row, Col, Player, DownMove):-
     Row>0, NewRow is Row-1,
     isEnemy(GameState, NewRow, Col, Player),
@@ -78,4 +74,49 @@ verifyOrtMove(SelBoard, Size, Player, SelRow, SelColumn, MovRow, MovColumn, Fina
         manageRow(NewRow, Size),
         manageColumn(NewColumn, Size),
         verifyOrtMove(SelBoard, Size, Player, SelRow, SelColumn, NewRow, NewColumn, FinalRow, FinalColumn)
+    ).
+
+
+findPlayerInRow(GameState, List, Size, Row, Column, Player, ListOfMoves) :-
+	findPlayerInRow(GameState, List, Size, Row, Column, Player, [], ListOfMoves).
+
+findPlayerInRow(GameState, [], Size, _, Size, Player, ListOfMoves, ListOfMoves).
+findPlayerInRow(GameState, [Head|Tail], Size, Row, Column, Player, Moves, ListOfMoves) :-
+	(
+		isPlayer(GameState, Row, Column, Player),
+		length(GameState, Size),
+		checkMove(GameState, Size, Row, Column, Player, ListInterm),
+		append(Moves, ListInterm, NewList),
+		X is Column + 1,
+		findPlayerInRow(GameState, Tail, Size, Row, X, Player, NewList, ListOfMoves)
+	);
+	(
+		X is Column + 1,
+		findPlayerInRow(GameState, Tail, Size, Row, X, Player, Moves, ListOfMoves)
+	).
+
+findPlayerInMatrix(GameState, Size, Player, ListOfMoves) :-
+	findPlayerInMatrix(GameState, GameState, Size, 0, 0, Player, [], ListOfMoves).
+
+findPlayerInMatrix(GameState, [], Size, Size, 0, Player, ListOfMoves, ListOfMoves).
+findPlayerInMatrix(GameState, [Head|Tail], Size, Row, 0, Player, ListInterm, ListOfMoves) :-
+	findPlayerInRow(GameState, Head, Size, Row, 0, Player, List),
+	append(ListInterm, List, NewList),
+	X is Row + 1,
+	findPlayerInMatrix(GameState, Tail, Size, X, 0, Player, NewList, ListOfMoves).
+
+checkAvailableMoves(GameState):-
+    length(GameState, Size),
+    findPlayerInMatrix(GameState, Size, 1, RedMoves),
+    findPlayerInMatrix(GameState, Size, -1, BlueMoves),
+    (
+        ( 
+            \+isEmpty(RedMoves),
+            write('RED(O) still has moves\n')
+        );
+        ( 
+            \+isEmpty(BlueMoves),
+            write('BLUE(X) still has moves\n')
+        );
+        write('NO MORE MOVES\n')
     ).
