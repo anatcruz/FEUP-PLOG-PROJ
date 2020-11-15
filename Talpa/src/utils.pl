@@ -50,3 +50,11 @@ printMovesList([]).
 printMovesList([H|T]):-
 	printMove(H),
 	printMovesList(T).
+
+isPlayer(Board, Row, Column, Player) :-
+    getValueFromMatrix(Board, Row, Column, Value),
+    Player is Value.
+
+isEnemy(Board, Row, Column, Player) :-
+    getValueFromMatrix(Board, Row, Column, Enemy),
+    Enemy is -Player.
