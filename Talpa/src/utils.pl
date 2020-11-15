@@ -39,3 +39,14 @@ isEmpty(List):-
 appendListNotEmpty(L1, [], L1).
 appendListNotEmpty(L1, L2, L12):-
 	append(L1, [L2], L12).
+
+printMove([]).
+printMove([H|T]):-
+	letter(H, Row),
+	Col is T+1,
+	format(" ~w~w ", [Row,Col]).
+
+printMovesList([]).
+printMovesList([H|T]):-
+	printMove(H),
+	printAllMoves(T).

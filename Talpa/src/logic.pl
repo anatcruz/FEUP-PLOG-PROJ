@@ -22,7 +22,8 @@ verifyPossibleMove(GameState, Size, SelRow, SelColumn, Player, ListOfMoves) :-
     appendListNotEmpty(L, UpMove, L1),
     appendListNotEmpty(L1, LeftMove, L2),
     appendListNotEmpty(L2, RightMove, ListOfMoves), !,
-    \+isEmpty(ListOfMoves).
+    \+isEmpty(ListOfMoves),
+    printMovesList(ListOfMoves).
  
 checkDownMove(GameState, Size, Row, Col, Player, DownMove):-
     Row>0, NewRow is Row-1,
