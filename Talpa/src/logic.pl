@@ -9,12 +9,12 @@ verifyPlayer(Board, Size, SelRow, SelColumn, Player, FinalRow, FinalColumn) :-
         write('\nERROR! You can not play that piece!\n \nSelect piece:\n'),
         manageRow(NewRow, Size),
         manageColumn(NewColumn, Size),
-        verifyPlayer(Board, Size, SelRow, SelColumn, Player, FinalRow, FinalColumn)
+        verifyPlayer(Board, Size, NewRow, NewColumn, Player, FinalRow, FinalColumn)
     ).
 
 validateContent(Board, Size, SelRow, SelColumn, Player, FinalRow, FinalColumn) :-
     isPlayer(Board, SelRow, SelColumn, Player),
-    verifyPossibleMove(Board, Size, SelRow, SelColumn, Player, ListOfMoves),
+    verifyPossibleMove(Board, Size, SelRow, SelColumn, Player, _),
     FinalRow is SelRow, FinalColumn is SelColumn;
     (
         write('\nERROR! You can not play that piece!\n \nSelect piece:\n'),
@@ -39,33 +39,33 @@ checkMove(GameState, Size, SelRow, SelColumn, Player, ListOfMoves) :-
     appendListNotEmpty(L2, RightMove, ListOfMoves).
 
 
-checkDownMove(GameState, Size, Row, Col, Player, DownMove):-
+checkDownMove(GameState, _, Row, Col, Player, DownMove):-
     Row>0, NewRow is Row-1,
     isEnemy(GameState, NewRow, Col, Player),
     append([], [NewRow, Col], DownMove).
 
-checkDownMove(GameState, Size, Row, Col, Player, []).
+checkDownMove(_, _, _, _, _, []).
 
 checkUpMove(GameState, Size, Row, Col, Player, UpMove):-
     Row<Size, NewRow is Row+1,
     isEnemy(GameState, NewRow, Col, Player),
     append([], [NewRow, Col], UpMove).
 
-checkUpMove(GameState, Size, Row, Col, Player, []).
+checkUpMove(_, _, _, _, _, []).
 
-checkLeftMove(GameState, Size, Row, Col, Player, LeftMove):-
+checkLeftMove(GameState, _, Row, Col, Player, LeftMove):-
     Col>0, NewCol is Col-1,
     isEnemy(GameState, Row, NewCol, Player),
     append([], [Row, NewCol], LeftMove).
 
-checkLeftMove(GameState, Size, Row, Col, Player, []).
+checkLeftMove(_, _, _, _, _, []).
 
 checkRightMove(GameState, Size, Row, Col, Player, RightMove):-
     Col<Size, NewCol is Col+1,
     isEnemy(GameState, Row, NewCol, Player),
     append([], [Row, NewCol], RightMove).
 
-checkRightMove(GameState, Size, Row, Col, Player, []).
+checkRightMove(_, _, _, _, _, []).
 
 /*check if the player is moving his piece correctly
 the movements must be orthogonal
@@ -91,8 +91,8 @@ verifyOrtMove(SelBoard, Size, Player, SelRow, SelColumn, MovRow, MovColumn, Fina
 findPlayerInRow(GameState, List, Size, Row, Column, Player, ListOfMoves) :-
 	findPlayerInRow(GameState, List, Size, Row, Column, Player, [], ListOfMoves).
 
-findPlayerInRow(GameState, [], Size, _, Size, Player, ListOfMoves, ListOfMoves).
-findPlayerInRow(GameState, [Head|Tail], Size, Row, Column, Player, Moves, ListOfMoves) :-
+findPlayerInRow(_, [], Size, _, Size, _, ListOfMoves, ListOfMoves).
+findPlayerInRow(GameState, [_|Tail], Size, Row, Column, Player, Moves, ListOfMoves) :-
 	(
 		isPlayer(GameState, Row, Column, Player),
 		length(GameState, Size),
@@ -109,7 +109,7 @@ findPlayerInRow(GameState, [Head|Tail], Size, Row, Column, Player, Moves, ListOf
 findPlayerInMatrix(GameState, Size, Player, ListOfMoves) :-
 	findPlayerInMatrix(GameState, GameState, Size, 0, 0, Player, [], ListOfMoves).
 
-findPlayerInMatrix(GameState, [], Size, Size, 0, Player, ListOfMoves, ListOfMoves).
+findPlayerInMatrix(_, [], Size, Size, 0, _, ListOfMoves, ListOfMoves).
 findPlayerInMatrix(GameState, [Head|Tail], Size, Row, 0, Player, ListInterm, ListOfMoves) :-
 	findPlayerInRow(GameState, Head, Size, Row, 0, Player, List),
 	append(ListInterm, List, NewList),

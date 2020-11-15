@@ -50,7 +50,7 @@ generateBoard(GameState, Size):-
     buildBoard([], GameState, Size, 0, 1).
 
 %create a board with given Size
-buildBoard(FinalBoard, FinalBoard, Size, Size, Cell).
+buildBoard(FinalBoard, FinalBoard, Size, Size, _).
 buildBoard(InitialBoard, FinalBoard, Size, RowIndex, Cell):-
     buildRow([], BuiltRow, Size, 0, Cell),
     append(InitialBoard, BuiltRow, UpdatedBoard),
@@ -59,7 +59,7 @@ buildBoard(InitialBoard, FinalBoard, Size, RowIndex, Cell):-
     buildBoard(UpdatedBoard, FinalBoard, Size, NewRowIndex, NewCell).
 
 %create a board row based on board Size and row initial Cell
-buildRow(Row, BuiltRow, Size, Size, Cell):- BuiltRow=[Row].
+buildRow(Row, BuiltRow, Size, Size, _):- BuiltRow=[Row].
 buildRow(Row, BuiltRow, Size, ColIndex, Cell):-
     append(Row, [Cell], UpdatedRow),
     NewColIndex is ColIndex+1,
@@ -114,8 +114,7 @@ printBoardBottom(Size) :-
     printXLine(1, Size). 
 
 
-printMatrix([], N, Size).
-
+printMatrix([], _, _).
 /*prints the matrix representing the board with the row indicators
 prints a line of O's on the left side of the board representing the left side of the red player
 */

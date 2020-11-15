@@ -20,7 +20,7 @@ display_game(Board, FinalBoard, Player) :-
             (
                 (
                     HasMoves is 1,
-                    selectPiece(Board, Size, SelBoard, Player, InputRow, InputColumn, FinalBoard),
+                    selectPiece(Board, Size, SelBoard, Player, InputRow, InputColumn),
                     movePiece(SelBoard, Size, FinalBoard, Player, InputRow, InputColumn)
                 );
                 (

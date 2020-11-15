@@ -32,7 +32,7 @@ validateRow(RowInput, NewRow, Size) :-
     Number < Size, 
     NewRow = Number.
 
-validateRow(RowInput, NewRow, Size) :-
+validateRow(_, NewRow, Size) :-
     write('ERROR! That row is not valid!\n'),
     readRow(Input),
     validateRow(Input, NewRow, Size).
@@ -68,7 +68,7 @@ the inputs are checked if they are within the boundaries of the board and if the
 on the board the piece the player wants to move is replaced by an empty space
 then the piece is moved
 */
-selectPiece(Board, Size, SelBoard, Player, InputRow, InputColumn, FinalBoard) :-
+selectPiece(Board, Size, SelBoard, Player, InputRow, InputColumn) :-
     write('\nSelect pice:\n'),
     manageRow(SelRow, Size),
     manageColumn(SelColumn, Size),
