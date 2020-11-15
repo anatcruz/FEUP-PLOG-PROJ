@@ -45,6 +45,27 @@ testState([
     [-1,0,0,0,0,0,-1,0]
 ]).
 
+%generate GameState with given Size
+generateBoard(GameState, Size):-
+    buildBoard([], GameState, Size, 0, 1).
+
+%create a board with given Size
+buildBoard(FinalBoard, FinalBoard, Size, Size, Cell).
+buildBoard(InitialBoard, FinalBoard, Size, RowIndex, Cell):-
+    buildRow([], BuiltRow, Size, 0, Cell),
+    append(InitialBoard, BuiltRow, UpdatedBoard),
+    NewRowIndex is RowIndex+1,
+    NewCell is -Cell,
+    buildBoard(UpdatedBoard, FinalBoard, Size, NewRowIndex, NewCell).
+
+%create a board row based on board Size and row initial Cell
+buildRow(Row, BuiltRow, Size, Size, Cell):- BuiltRow=[Row].
+buildRow(Row, BuiltRow, Size, ColIndex, Cell):-
+    append(Row, [Cell], UpdatedRow),
+    NewColIndex is ColIndex+1,
+    NewCell is -Cell,
+    buildRow(UpdatedRow, BuiltRow, Size, NewColIndex, NewCell).
+
 character(0,' '). %character for an empty space representing a piece removed
 character(-1,'X'). %character representing the blue player piece
 character(1,'O'). %character representing the red player piece

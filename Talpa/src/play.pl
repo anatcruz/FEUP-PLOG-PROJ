@@ -2,6 +2,7 @@ initial(GameState) :- %initialGameState(GameState).
             midGameState(GameState).
             %testState(GameState).
             %finalGameState(GameState).
+            %generateBoard(GameState, 3).
 
 gameLoop(Board) :-
     display_game(Board, FinalBoardRed, 1),
