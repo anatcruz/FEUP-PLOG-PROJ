@@ -1,6 +1,17 @@
 /*checks if the player is selecting his own piece
 if not, then he is asked again to input the position of the piece he wants to move
 */
+
+verifyPlayer(Board, Size, SelRow, SelColumn, Player, FinalRow, FinalColumn) :-
+    isPlayer(Board, SelRow, SelColumn, Player),
+    FinalRow is SelRow, FinalColumn is SelColumn;
+    (
+        write('\nERROR! You can not play that piece!\n \nSelect piece:\n'),
+        manageRow(NewRow, Size),
+        manageColumn(NewColumn, Size),
+        verifyPlayer(Board, Size, SelRow, SelColumn, Player, FinalRow, FinalColumn)
+    ).
+
 validateContent(Board, Size, SelRow, SelColumn, Player, FinalRow, FinalColumn) :-
     isPlayer(Board, SelRow, SelColumn, Player),
     verifyPossibleMove(Board, Size, SelRow, SelColumn, Player, ListOfMoves),
@@ -105,20 +116,20 @@ findPlayerInMatrix(GameState, [Head|Tail], Size, Row, 0, Player, ListInterm, Lis
 	X is Row + 1,
 	findPlayerInMatrix(GameState, Tail, Size, X, 0, Player, NewList, ListOfMoves).
 
-checkAvailableMoves(GameState, Player):-
-    length(GameState, Size),
+checkAvailableMoves(GameState, Size, Player, HasMoves):-
     findPlayerInMatrix(GameState, Size, 1, RedMoves),
     findPlayerInMatrix(GameState, Size, -1, BlueMoves),
     (
         ( 
             Player is 1,
             \+isEmpty(RedMoves),
-            write('RED(O) still has moves\n')
+            HasMoves is 1
         );
         ( 
             Player is -1,
             \+isEmpty(BlueMoves),
-            write('BLUE(X) still has moves\n')
+            HasMoves is 1
         );
-        write('NO MORE MOVES\n')
+        write('Now you have to remove your own piece\n'),
+        HasMoves is 0
     ).
