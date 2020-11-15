@@ -68,23 +68,21 @@ the inputs are checked if they are within the boundaries of the board and if the
 on the board the piece the player wants to move is replaced by an empty space
 then the piece is moved
 */
-selectPiece(Board, FinalBoard, Player) :-
-    length(Board, Size),
+selectPiece(Board, Size, SelBoard, Player, InputRow, InputColumn, FinalBoard) :-
     write('\nSelect pice:\n'),
     manageRow(SelRow, Size),
     manageColumn(SelColumn, Size),
-    validateContent(Board, Size, SelRow, SelColumn, Player, FinalRow, FinalColumn),
-    replaceInMatrix(Board, FinalRow, FinalColumn, 0, SelBoard),
-    movePiece(SelBoard, Size, FinalBoard, Player, FinalRow, FinalColumn).
+    validateContent(Board, Size, SelRow, SelColumn, Player, InputRow, InputColumn),
+    replaceInMatrix(Board, InputRow, InputColumn, 0, SelBoard).
 
 /*the player selects the position for the piece he wants to move
 the inputs are checked if they are within the boundaries of the board
 it checks if the moving to position is valid
 then the piece in the moving to position is replaced by the player
 */
-movePiece(SelBoard, Size, FinalBoard, Player, SelRow, SelColumn) :-
+movePiece(SelBoard, Size, FinalBoard, Player, InputRow, InputColumn) :-
     write('\nMove to:\n'),
     manageRow(MovRow, Size),
     manageColumn(MovColumn, Size),
-    verifyOrtMove(SelBoard, Size, Player, SelRow, SelColumn, MovRow, MovColumn, FinalRow, FinalColumn),
+    verifyOrtMove(SelBoard, Size, Player, InputRow, InputColumn, MovRow, MovColumn, FinalRow, FinalColumn),
     replaceInMatrix(SelBoard, FinalRow, FinalColumn, Player , FinalBoard).
