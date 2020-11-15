@@ -8,11 +8,29 @@ readColumn(Column) :-
     write('  -> Column '),
     get_code(Column).
 
+%rows
+letter(0, 'A').
+letter(1, 'B').
+letter(2, 'C').
+letter(3, 'D').
+letter(4, 'E').
+letter(5, 'F').
+letter(6, 'G').
+letter(7, 'H').
+
+letter_lower(0, 'a').
+letter_lower(1, 'b').
+letter_lower(2, 'c').
+letter_lower(3, 'd').
+letter_lower(4, 'e').
+letter_lower(5, 'f').
+letter_lower(6, 'g').
+letter_lower(7, 'h').
+
 validateRow(RowInput, NewRow, Size) :-
     (letter(Number, RowInput) ; letter_lower(Number, RowInput)),
     Number < Size, 
     NewRow = Number.
-
 
 validateRow(RowInput, NewRow, Size) :-
     write('ERROR! That row is not valid!\n'),

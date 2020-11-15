@@ -38,25 +38,6 @@ character(0,' '). %character for an empty space representing a piece removed
 character(-1,'X'). %character representing the blue player piece
 character(1,'O'). %character representing the red player piece
 
-%rows
-letter(0, 'A').
-letter(1, 'B').
-letter(2, 'C').
-letter(3, 'D').
-letter(4, 'E').
-letter(5, 'F').
-letter(6, 'G').
-letter(7, 'H').
-
-letter_lower(0, 'a').
-letter_lower(1, 'b').
-letter_lower(2, 'c').
-letter_lower(3, 'd').
-letter_lower(4, 'e').
-letter_lower(5, 'f').
-letter_lower(6, 'g').
-letter_lower(7, 'h').
-
 /*prints the board with the columns indicator
 prints a line of X's on the top of the board representing the top side of the blue player 
 */
