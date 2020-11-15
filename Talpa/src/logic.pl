@@ -4,7 +4,7 @@ if not, then he is asked again to input the position of the piece he wants to mo
 validateContent(Board, Size, SelRow, SelColumn, Player, FinalRow, FinalColumn) :-
     getValueFromMatrix(Board, SelRow, SelColumn, Value),
     Player is Value,
-    verifyPossibleMove(Board, Size, SelRow, SelColumn, Player),
+    verifyPossibleMove(Board, Size, SelRow, SelColumn, Player, ListOfMoves),
     FinalRow is SelRow, FinalColumn is SelColumn;
     (
         write('\nERROR! You can not play that piece!\n \nSelect piece:\n'),
@@ -13,11 +13,48 @@ validateContent(Board, Size, SelRow, SelColumn, Player, FinalRow, FinalColumn) :
         validateContent(Board, Size, NewRow, NewColumn, Player, FinalRow, FinalColumn)
     ).
 
-verifyPossibleMove(Board, Size, SelRow, SelColumn, Player) :-
-    ((SelRow>0, Row is SelRow-1, getValueFromMatrix(Board, Row, SelColumn, Enemy), Enemy is -Player);
-    (SelRow<Size, Row is SelRow+1, getValueFromMatrix(Board, Row, SelColumn, Enemy), Enemy is -Player);
-    (SelColumn>0, Column is SelColumn-1, getValueFromMatrix(Board, SelRow, Column, Enemy), Enemy is -Player);
-    (SelColumn<Size, Column is SelColumn+1, getValueFromMatrix(Board, SelRow, Column, Enemy), Enemy is -Player)).
+verifyPossibleMove(GameState, Size, SelRow, SelColumn, Player, ListOfMoves) :-
+    checkDownMove(GameState, Size, SelRow, SelColumn, Player, DownMove),
+    checkUpMove(GameState, Size, SelRow, SelColumn, Player, UpMove),
+    checkLeftMove(GameState, Size, SelRow, SelColumn, Player, LeftMove),
+    checkRightMove(GameState, Size, SelRow, SelColumn, Player, RightMove),
+    appendListNotEmpty([], DownMove, L),
+    appendListNotEmpty(L, UpMove, L1),
+    appendListNotEmpty(L1, LeftMove, L2),
+    appendListNotEmpty(L2, RightMove, ListOfMoves), !,
+    \+isEmpty(ListOfMoves).
+ 
+checkDownMove(GameState, Size, Row, Col, Player, DownMove):-
+    Row>0, NewRow is Row-1,
+    getValueFromMatrix(GameState, NewRow, Col, Enemy),
+    Enemy is -Player,
+    append([], [NewRow, Col], DownMove).
+
+checkDownMove(GameState, Size, Row, Col, Player, []).
+
+checkUpMove(GameState, Size, Row, Col, Player, UpMove):-
+    Row<Size, NewRow is Row+1,
+    getValueFromMatrix(GameState, NewRow, Col, Enemy),
+    Enemy is -Player,
+    append([], [NewRow, Col], UpMove).
+
+checkUpMove(GameState, Size, Row, Col, Player, []).
+
+checkLeftMove(GameState, Size, Row, Col, Player, LeftMove):-
+    Col>0, NewCol is Col-1,
+    getValueFromMatrix(GameState, Row, NewCol, Enemy),
+    Enemy is -Player,
+    append([], [Row, NewCol], LeftMove).
+
+checkLeftMove(GameState, Size, Row, Col, Player, []).
+
+checkRightMove(GameState, Size, Row, Col, Player, LeftMove):-
+    Col<Size, NewCol is Col+1,
+    getValueFromMatrix(GameState, Row, NewCol, Enemy),
+    Enemy is -Player,
+    append([], [Row, NewCol], LeftMove).
+
+checkRightMove(GameState, Size, Row, Col, Player, []).
 
 /*check if the player is moving his piece correctly
 the movements must be orthogonal
