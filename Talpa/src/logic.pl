@@ -105,16 +105,18 @@ findPlayerInMatrix(GameState, [Head|Tail], Size, Row, 0, Player, ListInterm, Lis
 	X is Row + 1,
 	findPlayerInMatrix(GameState, Tail, Size, X, 0, Player, NewList, ListOfMoves).
 
-checkAvailableMoves(GameState):-
+checkAvailableMoves(GameState, Player):-
     length(GameState, Size),
     findPlayerInMatrix(GameState, Size, 1, RedMoves),
     findPlayerInMatrix(GameState, Size, -1, BlueMoves),
     (
         ( 
+            Player is 1,
             \+isEmpty(RedMoves),
             write('RED(O) still has moves\n')
         );
         ( 
+            Player is -1,
             \+isEmpty(BlueMoves),
             write('BLUE(X) still has moves\n')
         );
