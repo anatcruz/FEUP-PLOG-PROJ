@@ -86,3 +86,10 @@ movePiece(SelBoard, Size, FinalBoard, Player, InputRow, InputColumn) :-
     manageColumn(MovColumn, Size),
     verifyOrtMove(SelBoard, Size, Player, InputRow, InputColumn, MovRow, MovColumn, FinalRow, FinalColumn),
     replaceInMatrix(SelBoard, FinalRow, FinalColumn, Player , FinalBoard).
+
+removePiece(Board, Size, FinalBoard, Player) :-
+    write('\nSelect pice:\n'),
+    manageRow(SelRow, Size),
+    manageColumn(SelColumn, Size),
+    verifyPlayer(Board, Size, SelRow, SelColumn, Player, InputRow, InputColumn),
+    replaceInMatrix(Board, InputRow, InputColumn, 0, FinalBoard).
