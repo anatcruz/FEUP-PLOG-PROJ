@@ -34,6 +34,17 @@ finalGameState([
     [-1,1,1,-1,0,0,-1,0]
 ]).
 
+testState([
+    [1,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,-1],
+    [0,1,0,0,-1,0,0,0],
+    [0,0,-1,0,0,0,-1,0],
+    [0,-1,0,0,0,1,0,0],
+    [0,0,0,0,0,0,0,1],
+    [0,0,0,0,-1,0,0,0],
+    [-1,0,0,0,0,0,-1,0]
+]).
+
 character(0,' '). %character for an empty space representing a piece removed
 character(-1,'X'). %character representing the blue player piece
 character(1,'O'). %character representing the red player piece
