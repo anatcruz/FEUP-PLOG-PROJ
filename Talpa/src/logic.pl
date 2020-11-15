@@ -23,7 +23,7 @@ verifyPossibleMove(GameState, Size, SelRow, SelColumn, Player, ListOfMoves) :-
     appendListNotEmpty(L1, LeftMove, L2),
     appendListNotEmpty(L2, RightMove, ListOfMoves), !,
     \+isEmpty(ListOfMoves),
-    printMovesList(ListOfMoves).
+    write('\nMoves available: '), printMovesList(ListOfMoves), nl.
  
 checkDownMove(GameState, Size, Row, Col, Player, DownMove):-
     Row>0, NewRow is Row-1,
@@ -49,11 +49,11 @@ checkLeftMove(GameState, Size, Row, Col, Player, LeftMove):-
 
 checkLeftMove(GameState, Size, Row, Col, Player, []).
 
-checkRightMove(GameState, Size, Row, Col, Player, LeftMove):-
+checkRightMove(GameState, Size, Row, Col, Player, RightMove):-
     Col<Size, NewCol is Col+1,
     getValueFromMatrix(GameState, Row, NewCol, Enemy),
     Enemy is -Player,
-    append([], [Row, NewCol], LeftMove).
+    append([], [Row, NewCol], RightMove).
 
 checkRightMove(GameState, Size, Row, Col, Player, []).
 

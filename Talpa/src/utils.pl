@@ -49,4 +49,4 @@ printMove([H|T]):-
 printMovesList([]).
 printMovesList([H|T]):-
 	printMove(H),
-	printAllMoves(T).
+	printMovesList(T).
