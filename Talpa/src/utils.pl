@@ -1,36 +1,18 @@
-%Replaces given Value (content) in Index position of the List
-replaceInList([_H|T], 0, Value, [Value|T]).
-replaceInList([H|T], Index, Value, [H|TNew]) :-
-	Index > 0,
-	Index1 is Index - 1,
-	replaceInList(T, Index1, Value, TNew).
+%https://stackoverflow.com/questions/8519203/prolog-replace-an-element-in-a-list-at-a-specified-index
+replaceInList(I, L, E, K) :-
+  nth0(I, L, _, R),
+  nth0(I, K, E, R).
 
 %Replaces Value (content) in given Row and Column of the Matrix
-replaceInMatrix([H|T], 0, Col, Value, [HNew|T]) :-
-	replaceInList(H, Col, Value, HNew).
-
-replaceInMatrix([H|T], Row, Col, Value, [H|TNew]) :-
-	Row > 0,
-	Row1 is Row - 1,
-	replaceInMatrix(T, Row1, Col, Value, TNew).
-
-%Gets Value (content) in Index position of the List
-getValueFromList([H|_T], 0, Value) :-
-	Value = H.
-
-getValueFromList([_H|T], Index, Value) :-
-	Index > 0,
-	Index1 is Index - 1,
-	getValueFromList(T, Index1, Value).
+replaceInMatrix(Matrix, Row, Col, Value, FinalMatrix) :-
+	nth0(Row, Matrix, RowList),
+	replaceInList(Col, RowList, Value, NewRow),
+	replaceInList(Row, Matrix, NewRow, FinalMatrix).
 
 %Gets Value (content) in given Row and Column of the Matrix
-getValueFromMatrix([H|_T], 0, Col, Value) :-
-	getValueFromList(H, Col, Value).
-
-getValueFromMatrix([_H|T], Row, Col, Value) :-
-	Row > 0,
-	Row1 is Row - 1,
-	getValueFromMatrix(T, Row1, Col, Value).
+getValueFromMatrix(Matrix, Row, Col, Value) :-
+	nth0(Row, Matrix, RowList),
+	nth0(Col, RowList, Value).
 
 isEmpty(List):-
 	length(List, Size),
