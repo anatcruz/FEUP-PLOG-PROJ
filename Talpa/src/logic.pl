@@ -107,11 +107,11 @@ findPlayerInRow(GameState, [_|Tail], Size, Row, Column, Player, Moves, ListOfMov
 	).
 
 findPlayerInMatrix(GameState, Size, Player, ListOfMoves) :-
-	findPlayerInMatrix(GameState, GameState, Size, 0, 0, Player, [], ListOfMoves).
+	findPlayerInMatrix(GameState, GameState, Size, 0, Player, [], ListOfMoves).
 
 findPlayerInMatrix(_, [], Size, Size, _, ListOfMoves, ListOfMoves).
 findPlayerInMatrix(GameState, [Head|Tail], Size, Row, Player, ListInterm, ListOfMoves) :-
-	findPlayerInRow(GameState, Head, Size, Row, Player, List),
+	findPlayerInRow(GameState, Head, Size, Row, 0, Player, List),
 	append(ListInterm, List, NewList),
 	X is Row + 1,
 	findPlayerInMatrix(GameState, Tail, Size, X, Player, NewList, ListOfMoves).
