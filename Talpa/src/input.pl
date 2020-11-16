@@ -39,7 +39,7 @@ validateRow(_, NewRow, Size) :-
 
 column_code(49, 0).
 column_code(X, Y) :-
-    X1 is X - 1, column_code(X1, Y1), Y is Y1 + 1.
+    X > 48, X1 is X - 1, column_code(X1, Y1), Y is Y1 + 1.
 
 validateColumn(ColumnInput, NewColumn, Size) :-
     peek_char(Char),
@@ -48,7 +48,8 @@ validateColumn(ColumnInput, NewColumn, Size) :-
     Number < Size, NewColumn is Number, skip_line.
 
 validateColumn(_, NewColumn, Size) :-
-    write('ERROR! That column is not valid!\n'), 
+    write('ERROR! That column is not valid!\n'),
+    skip_line,
     readColumn(Column),
     validateColumn(Column, NewColumn, Size).
 
