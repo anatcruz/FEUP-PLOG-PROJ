@@ -1,13 +1,17 @@
 initial(GameState) :- %initialGameState(GameState).
             %midGameState(GameState).
-            testState(GameState).
-            %finalGameState(GameState).
+            %testState(GameState).
+            finalGameState(GameState).
             %generateBoard(GameState, 3).
 
 gameLoop(Board) :-
-    display_game(Board, FinalBoardRed, 1),
+    length(Board, Size),
+    floodFill(Board, Size, 4, 0, 0, 2, FinalMatrix),
+    write(FinalMatrix),
+    printBoard(FinalMatrix).
+    /*display_game(Board, FinalBoardRed, 1),
     display_game(FinalBoardRed, FinalBoardBlue, -1),
-    gameLoop(FinalBoardBlue).
+    gameLoop(FinalBoardBlue).*/
 
 
 display_game(Board, FinalBoard, Player) :-
