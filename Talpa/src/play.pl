@@ -12,38 +12,17 @@ gameLoop(Board) :-
 
 display_game(Board, FinalBoard, Player) :-
     length(Board, Size),
+    ((Player is 1, write('\nRED(O) turn\n')) ; (Player is -1, write('\nBLUE(X) turn\n'))),
     checkAvailableMoves(Board, Size, Player, HasMoves),
     (
         (
-            Player is 1,
-            write('\nRED(O) turn\n'),
-            (
-                (
-                    HasMoves is 1,
-                    selectPiece(Board, Size, SelBoard, Player, InputRow, InputColumn),
-                    movePiece(SelBoard, Size, FinalBoard, Player, InputRow, InputColumn)
-                );
-                (
-                    HasMoves is 0,
-                    removePiece(Board, Size, FinalBoard, Player)
-                )
-            )
+            HasMoves is 1,
+            selectPiece(Board, Size, SelBoard, Player, InputRow, InputColumn),
+            movePiece(SelBoard, Size, FinalBoard, Player, InputRow, InputColumn)
         );
         (
-            Player is -1,
-            write('\nBLUE(X) turn\n'),
-            (
-                (
-                    HasMoves is 1,
-                    selectPiece(Board, Size, SelBoard, Player, InputRow, InputColumn, FinalBoard),
-                    movePiece(SelBoard, Size, FinalBoard, Player, InputRow, InputColumn)
-                );
-                (
-                    HasMoves is 0,
-                    removePiece(Board, Size, FinalBoard, Player)
-                )
-            )
-       
+            HasMoves is 0,
+            removePiece(Board, Size, FinalBoard, Player)
         )
     ),
     printBoard(FinalBoard).

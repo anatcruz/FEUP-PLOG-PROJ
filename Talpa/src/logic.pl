@@ -107,29 +107,22 @@ findPlayerInRow(GameState, [_|Tail], Size, Row, Column, Player, Moves, ListOfMov
 	).
 
 findPlayerInMatrix(GameState, Size, Player, ListOfMoves) :-
-	findPlayerInMatrix(GameState, GameState, Size, 0, 0, Player, [], ListOfMoves).
+	findPlayerInMatrix(GameState, GameState, Size, 0, Player, [], ListOfMoves).
 
-findPlayerInMatrix(_, [], Size, Size, 0, _, ListOfMoves, ListOfMoves).
-findPlayerInMatrix(GameState, [Head|Tail], Size, Row, 0, Player, ListInterm, ListOfMoves) :-
+findPlayerInMatrix(_, [], Size, Size, _, ListOfMoves, ListOfMoves).
+findPlayerInMatrix(GameState, [Head|Tail], Size, Row, Player, ListInterm, ListOfMoves) :-
 	findPlayerInRow(GameState, Head, Size, Row, 0, Player, List),
 	append(ListInterm, List, NewList),
 	X is Row + 1,
-	findPlayerInMatrix(GameState, Tail, Size, X, 0, Player, NewList, ListOfMoves).
+	findPlayerInMatrix(GameState, Tail, Size, X, Player, NewList, ListOfMoves).
 
 checkAvailableMoves(GameState, Size, Player, HasMoves):-
-    findPlayerInMatrix(GameState, Size, 1, RedMoves),
-    findPlayerInMatrix(GameState, Size, -1, BlueMoves),
+    findPlayerInMatrix(GameState, Size, Player, Moves),
     (
-        ( 
-            Player is 1,
-            \+isEmpty(RedMoves),
+        (
+            \+isEmpty(Moves),
             HasMoves is 1
         );
-        ( 
-            Player is -1,
-            \+isEmpty(BlueMoves),
-            HasMoves is 1
-        );
-        write('Now you have to remove your own piece\n'),
+        write('No moves available, remove your own piece\n'),
         HasMoves is 0
     ).
