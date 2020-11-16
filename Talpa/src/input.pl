@@ -29,12 +29,13 @@ letter_lower(7, 'h').
 
 validateRow(RowInput, NewRow, Size) :-
     (letter(Number, RowInput) ; letter_lower(Number, RowInput)),
-    Number < Size, 
+    Number < Size, Number >= 0,
     NewRow = Number.
 
 validateRow(_, NewRow, Size) :-
     write('ERROR! That row is not valid!\n'),
     readRow(Input),
+    skip_line,
     validateRow(Input, NewRow, Size).
 
 column_code(49, 0).
