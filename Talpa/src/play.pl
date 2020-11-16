@@ -6,9 +6,15 @@ initial(GameState) :- %initialGameState(GameState).
 
 gameLoop(Board) :-
     length(Board, Size),
-    floodFill(Board, Size, 4, 0, 0, 2, FinalMatrix),
-    write(FinalMatrix),
-    printBoard(FinalMatrix).
+    (
+        (
+            checkRedVictory(Board, Size, 0, 0),
+            write('\nRed Won\n')
+        );
+        (
+            write('\nRed did not win yet\n')
+        )
+    ).
     /*display_game(Board, FinalBoardRed, 1),
     display_game(FinalBoardRed, FinalBoardBlue, -1),
     gameLoop(FinalBoardBlue).*/
@@ -30,3 +36,33 @@ display_game(Board, FinalBoard, Player) :-
         )
     ),
     printBoard(FinalBoard).
+
+checkRedVictory(Board, Size, Row, Col):-
+    format("Check Start, Row~w Col~w \n", [Row,Col]),
+    Row < Size,
+    (
+        (
+            getValueFromMatrix(Board, Row, Col, 0),
+            floodFill(Board, Size, Row, Col, 0, 2, FinalBoard),
+            FinalCol is Size-1,
+            (checkRedPath(FinalBoard, Size, 0, FinalCol) ; (NextRow is Row + 1, !, checkRedVictory(Board, Size, NextRow, Col)))
+        );
+        (
+            NextRow is Row + 1, !,
+            checkRedVictory(Board, Size, NextRow, Col)
+        )
+    ).
+    
+
+checkRedPath(Board, Size, Row, Col):-
+    format("Check End, Row~w Col~w \n", [Row,Col]),
+    Row < Size,
+    (
+        (
+            getValueFromMatrix(Board, Row, Col, 2)
+        );
+        (
+            NextRow is Row + 1, !,
+            checkRedPath(Board, Size, NextRow, Col)
+        )
+    ).
