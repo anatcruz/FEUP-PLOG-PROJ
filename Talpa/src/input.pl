@@ -1,7 +1,7 @@
 %reads Row input
 readRow(Row) :-
     write('  -> Row    '),
-    get_char(Row).
+    get_code(Row).
 
 %reads Column input
 readColumn(Column) :-
@@ -18,22 +18,21 @@ letter(5, 'F').
 letter(6, 'G').
 letter(7, 'H').
 
-letter_lower(0, 'a').
-letter_lower(1, 'b').
-letter_lower(2, 'c').
-letter_lower(3, 'd').
-letter_lower(4, 'e').
-letter_lower(5, 'f').
-letter_lower(6, 'g').
-letter_lower(7, 'h').
-
 validateRow(RowInput, NewRow, Size) :-
-    (letter(Number, RowInput) ; letter_lower(Number, RowInput)),
+    (
+        (
+            RowInput < 97,
+            NewRow is RowInput - 65
+        );
+        (
+            RowInput >= 97,
+            NewRow is RowInput - 97
+        )
+    ),
     Valid is Size-1,
-    between(0, Valid, Number),
-    NewRow = Number.
+    between(0, Valid, NewRow).
 
-validateRow(_, NewRow, Size) :-
+validateRow(_, _, _) :-
     write('ERROR! That row is not valid!\n'), fail.
 
 validateColumn(ColumnInput, NewColumn, Size) :-
@@ -42,7 +41,7 @@ validateColumn(ColumnInput, NewColumn, Size) :-
     between(0, Valid, NewColumn),
     skip_line.
 
-validateColumn(_, NewColumn, Size) :-
+validateColumn(_, _, _) :-
     write('ERROR! That column is not valid!\n'), skip_line, fail.
 
 %reads the input Row and checks if it is between the limits of the board
