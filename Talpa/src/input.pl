@@ -29,39 +29,32 @@ letter_lower(7, 'h').
 
 validateRow(RowInput, NewRow, Size) :-
     (letter(Number, RowInput) ; letter_lower(Number, RowInput)),
-    Number < Size, Number >= 0,
+    Valid is Size-1,
+    between(0, Valid, Number),
     NewRow = Number.
 
 validateRow(_, NewRow, Size) :-
-    write('ERROR! That row is not valid!\n'),
-    readRow(Input),
-    skip_line,
-    validateRow(Input, NewRow, Size).
-
-column_code(49, 0).
-column_code(X, Y) :-
-    X > 48, X1 is X - 1, column_code(X1, Y1), Y is Y1 + 1.
+    write('ERROR! That row is not valid!\n'), fail.
 
 validateColumn(ColumnInput, NewColumn, Size) :-
-    peek_char(Char),
-    Char == '\n',
-    column_code(ColumnInput, Number), 
-    Number < Size, NewColumn is Number, skip_line.
+    NewColumn is ColumnInput - 49,
+    Valid is Size-1,
+    between(0, Valid, NewColumn),
+    skip_line.
 
 validateColumn(_, NewColumn, Size) :-
-    write('ERROR! That column is not valid!\n'),
-    skip_line,
-    readColumn(Column),
-    validateColumn(Column, NewColumn, Size).
+    write('ERROR! That column is not valid!\n'), skip_line, fail.
 
 %reads the input Row and checks if it is between the limits of the board
 manageRow(NewRow, Size) :-
+    repeat,
     readRow(Row),
     skip_line,
     validateRow(Row, NewRow, Size).
 
 %reads the input Column and checks if it is between the limits of the board
 manageColumn(NewColumn, Size) :-
+    repeat,
     readColumn(Column),
     validateColumn(Column, NewColumn, Size).
 
