@@ -120,9 +120,8 @@ prints a line of O's on the left side of the board representing the left side of
 */
 printMatrix([Head|Tail], N, Size):-
     write(' '),
-    letter(N, L), /* Row indicator */
-    write(L),
-    write(' | O | '),  /* Print Os on the left side */
+    get_letter(N), % Row indicator
+    write(' | O | '),  % Print Os on the left side
     printRow(Head),
     nl,
     printBoardRowSeparator(Size),

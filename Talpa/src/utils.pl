@@ -40,3 +40,8 @@ isPlayer(Board, Row, Column, Player) :-
 isEnemy(Board, Row, Column, Player) :-
     getValueFromMatrix(Board, Row, Column, Enemy),
     Enemy is -Player.
+
+get_letter(Row) :-
+	NewRow is Row + 65,
+	char_code(X, NewRow),
+	write(X).
