@@ -1,67 +1,51 @@
 %reads Row input
 readRow(Row) :-
     write('  -> Row    '),
-    get_char(Row).
+    get_code(Row).
 
 %reads Column input
 readColumn(Column) :-
     write('  -> Column '),
     get_code(Column).
 
-%rows
-letter(0, 'A').
-letter(1, 'B').
-letter(2, 'C').
-letter(3, 'D').
-letter(4, 'E').
-letter(5, 'F').
-letter(6, 'G').
-letter(7, 'H').
-
-letter_lower(0, 'a').
-letter_lower(1, 'b').
-letter_lower(2, 'c').
-letter_lower(3, 'd').
-letter_lower(4, 'e').
-letter_lower(5, 'f').
-letter_lower(6, 'g').
-letter_lower(7, 'h').
-
 validateRow(RowInput, NewRow, Size) :-
-    (letter(Number, RowInput) ; letter_lower(Number, RowInput)),
-    Number < Size, Number >= 0,
-    NewRow = Number.
-
-validateRow(_, NewRow, Size) :-
-    write('ERROR! That row is not valid!\n'),
-    readRow(Input),
+    peek_char('\n'),
     skip_line,
-    validateRow(Input, NewRow, Size).
+    (
+        (
+            RowInput < 97,
+            NewRow is RowInput - 65
+        );
+        (
+            RowInput >= 97,
+            NewRow is RowInput - 97
+        )
+    ),
+    Valid is Size-1,
+    between(0, Valid, NewRow).
 
-column_code(49, 0).
-column_code(X, Y) :-
-    X > 48, X1 is X - 1, column_code(X1, Y1), Y is Y1 + 1.
+validateRow(_, _, _) :-
+    write('\nERROR! That row is not valid!\n\n'), skip_line, fail.
 
 validateColumn(ColumnInput, NewColumn, Size) :-
-    peek_char(Char),
-    Char == '\n',
-    column_code(ColumnInput, Number), 
-    Number < Size, NewColumn is Number, skip_line.
-
-validateColumn(_, NewColumn, Size) :-
-    write('ERROR! That column is not valid!\n'),
+    peek_char('\n'),
     skip_line,
-    readColumn(Column),
-    validateColumn(Column, NewColumn, Size).
+    NewColumn is ColumnInput - 49,
+    Valid is Size-1,
+    between(0, Valid, NewColumn).
+
+validateColumn(_, _, _) :-
+    write('\nERROR! That column is not valid!\n\n'), skip_line, fail.
 
 %reads the input Row and checks if it is between the limits of the board
 manageRow(NewRow, Size) :-
+    repeat,
     readRow(Row),
-    skip_line,
     validateRow(Row, NewRow, Size).
 
 %reads the input Column and checks if it is between the limits of the board
 manageColumn(NewColumn, Size) :-
+    repeat,
     readColumn(Column),
     validateColumn(Column, NewColumn, Size).
 
