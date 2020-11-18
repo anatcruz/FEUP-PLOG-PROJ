@@ -9,6 +9,8 @@ readColumn(Column) :-
     get_code(Column).
 
 validateRow(RowInput, NewRow, Size) :-
+    peek_char('\n'),
+    skip_line,
     (
         (
             RowInput < 97,
@@ -23,22 +25,22 @@ validateRow(RowInput, NewRow, Size) :-
     between(0, Valid, NewRow).
 
 validateRow(_, _, _) :-
-    write('ERROR! That row is not valid!\n'), fail.
+    write('\nERROR! That row is not valid!\n\n'), skip_line, fail.
 
 validateColumn(ColumnInput, NewColumn, Size) :-
+    peek_char('\n'),
+    skip_line,
     NewColumn is ColumnInput - 49,
     Valid is Size-1,
-    between(0, Valid, NewColumn),
-    skip_line.
+    between(0, Valid, NewColumn).
 
 validateColumn(_, _, _) :-
-    write('ERROR! That column is not valid!\n'), skip_line, fail.
+    write('\nERROR! That column is not valid!\n\n'), skip_line, fail.
 
 %reads the input Row and checks if it is between the limits of the board
 manageRow(NewRow, Size) :-
     repeat,
     readRow(Row),
-    skip_line,
     validateRow(Row, NewRow, Size).
 
 %reads the input Column and checks if it is between the limits of the board
