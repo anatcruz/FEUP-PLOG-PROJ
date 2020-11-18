@@ -1,23 +1,14 @@
 initial(GameState) :- %initialGameState(GameState).
             %midGameState(GameState).
-            %testState(GameState).
-            finalGameState(GameState).
+            testState(GameState).
+            %finalGameState(GameState).
             %generateBoard(GameState, 3).
 
 gameLoop(Board) :-
     length(Board, Size),
-    (
-        (
-            checkRedVictory(Board, Size, 0, 0),
-            write('\nRed Won\n')
-        );
-        (
-            write('\nRed did not win yet\n')
-        )
-    ).
-    /*display_game(Board, FinalBoardRed, 1),
+    display_game(Board, FinalBoardRed, 1),
     display_game(FinalBoardRed, FinalBoardBlue, -1),
-    gameLoop(FinalBoardBlue).*/
+    gameLoop(FinalBoardBlue).
 
 
 display_game(Board, FinalBoard, Player) :-
@@ -35,7 +26,8 @@ display_game(Board, FinalBoard, Player) :-
             removePiece(Board, Size, FinalBoard, Player)
         )
     ),
-    printBoard(FinalBoard).
+    printBoard(FinalBoard),
+    ((write('Red Won?\n'), checkRedVictory(FinalBoard, Size, 0, 0), write('\nRed Won\n')) ; (write('Blue Won?\n'), checkBlueVictory(FinalBoard, Size, 0, 0), write('\nBlue Won\n')) ; true).
 
 checkRedVictory(Board, Size, Row, Col):-
     format("Check Start, Row~w Col~w \n", [Row,Col]),
@@ -68,5 +60,34 @@ checkRedPath(Board, Size, Row, Col):-
         (
             NextRow is Row + 1,
             checkRedPath(Board, Size, NextRow, Col)
+        )
+    ).
+
+checkBlueVictory(Board, Size, Row, Col):-
+    format("Check Start, Row~w Col~w \n", [Row,Col]),
+    Col < Size,
+    (
+        (
+            tryFloodFill(Board, Size, Row, Col, FinalBoard),
+            FinalRow is Size-1,
+            checkBluePath(FinalBoard, Size, FinalRow, 0)
+        );
+        (
+            NextCol is Col + 1,
+            checkBlueVictory(Board, Size, Row, NextCol)
+        )
+    ).
+    
+
+checkBluePath(Board, Size, Row, Col):-
+    format("Check End, Row~w Col~w \n", [Row,Col]),
+    Col < Size,
+    (
+        (
+            getValueFromMatrix(Board, Row, Col, 2)
+        );
+        (
+            NextCol is Col + 1,
+            checkBluePath(Board, Size, Row, NextCol)
         )
     ).
