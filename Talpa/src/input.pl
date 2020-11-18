@@ -1,12 +1,14 @@
 %reads Row input
 readRow(Row) :-
     write('  -> Row    '),
-    get_code(Row).
+    get_code(Row),
+    Row\=10.
 
 %reads Column input
 readColumn(Column) :-
     write('  -> Column '),
-    get_code(Column).
+    get_code(Column),
+    Column\=10.
 
 validateRow(RowInput, NewRow, Size) :-
     peek_char('\n'),
