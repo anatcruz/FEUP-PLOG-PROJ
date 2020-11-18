@@ -35,14 +35,14 @@ finalGameState([
 ]).
 
 testState([
-    [1,-1,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,-1],
-    [0,1,0,0,-1,0,0,0],
-    [0,0,-1,0,0,0,-1,0],
-    [0,-1,0,0,0,1,0,0],
-    [0,0,0,0,0,0,0,1],
-    [0,0,0,0,-1,0,0,0],
-    [-1,0,0,0,0,0,-1,0]
+    [1,-1,-1,0,1,0,1,-1],
+    [0,-1,0,0,1,-1,0,-1],
+    [-1,1,1,0,-1,0,-1,0],
+    [0,0,-1,1,0,0,-1,0],
+    [0,-1,0,1,1,0,0,0],
+    [0,1,0,0,0,0,0,1],
+    [0,0,1,0,-1,0,-1,0],
+    [-1,1,1,-1,0,0,-1,0]
 ]).
 
 %generate GameState with given Size
@@ -69,6 +69,7 @@ buildRow(Row, BuiltRow, Size, ColIndex, Cell):-
 character(0,' '). %character for an empty space representing a piece removed
 character(-1,'X'). %character representing the blue player piece
 character(1,'O'). %character representing the red player piece
+flocharacter(2,'?').
 
 /*prints the board with the columns indicator
 prints a line of X's on the top of the board representing the top side of the blue player 

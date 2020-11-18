@@ -95,7 +95,6 @@ findPlayerInRow(_, [], Size, _, Size, _, ListOfMoves, ListOfMoves).
 findPlayerInRow(GameState, [_|Tail], Size, Row, Column, Player, Moves, ListOfMoves) :-
 	(
 		isPlayer(GameState, Row, Column, Player),
-		length(GameState, Size),
 		checkMove(GameState, Size, Row, Column, Player, ListInterm),
 		append(Moves, ListInterm, NewList),
 		X is Column + 1,
@@ -116,13 +115,14 @@ findPlayerInMatrix(GameState, [Head|Tail], Size, Row, Player, ListInterm, ListOf
 	X is Row + 1,
 	findPlayerInMatrix(GameState, Tail, Size, X, Player, NewList, ListOfMoves).
 
-checkAvailableMoves(GameState, Size, Player, HasMoves):-
+checkAvailableMoves(GameState, Size, Player):-
     findPlayerInMatrix(GameState, Size, Player, Moves),
     (
         (
-            \+isEmpty(Moves),
-            HasMoves is 1
+            \+isEmpty(Moves)
         );
-        write('No moves available, remove your own piece\n'),
-        HasMoves is 0
+        (
+            write('No moves available, remove your own piece\n'),
+            fail
+        )
     ).
