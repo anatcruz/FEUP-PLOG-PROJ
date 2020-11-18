@@ -42,16 +42,20 @@ checkRedVictory(Board, Size, Row, Col):-
     Row < Size,
     (
         (
-            getValueFromMatrix(Board, Row, Col, 0),
-            floodFill(Board, Size, Row, Col, 0, 2, FinalBoard),
+            tryFloodFill(Board, Size, Row, Col, FinalBoard),
             FinalCol is Size-1,
-            (checkRedPath(FinalBoard, Size, 0, FinalCol) ; (NextRow is Row + 1, !, checkRedVictory(Board, Size, NextRow, Col)))
+            checkRedPath(FinalBoard, Size, 0, FinalCol)
         );
         (
-            NextRow is Row + 1, !,
+            NextRow is Row + 1,
             checkRedVictory(Board, Size, NextRow, Col)
         )
     ).
+
+tryFloodFill(Board, Size, Row, Col, FinalBoard):-
+    getValueFromMatrix(Board, Row, Col, 0),
+    floodFill(Board, Size, Row, Col, 0, 2, FinalBoard), !,
+    Board \= FinalBoard.
     
 
 checkRedPath(Board, Size, Row, Col):-
@@ -62,7 +66,7 @@ checkRedPath(Board, Size, Row, Col):-
             getValueFromMatrix(Board, Row, Col, 2)
         );
         (
-            NextRow is Row + 1, !,
+            NextRow is Row + 1,
             checkRedPath(Board, Size, NextRow, Col)
         )
     ).
