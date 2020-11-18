@@ -24,9 +24,8 @@ appendListNotEmpty(L1, L2, L12):-
 
 printMove([]).
 printMove([H|T]):-
-	letter(H, Row),
-	Col is T+1,
-	format(" ~w~w ", [Row,Col]).
+	get_letter(H),
+	get_number(T).
 
 printMovesList([]).
 printMovesList([H|T]):-
@@ -44,4 +43,9 @@ isEnemy(Board, Row, Column, Player) :-
 get_letter(Row) :-
 	NewRow is Row + 65,
 	char_code(X, NewRow),
+	write(X).
+
+get_number(Column) :-
+	NewColumn is Column + 49,
+	char_code(X, NewColumn),
 	write(X).

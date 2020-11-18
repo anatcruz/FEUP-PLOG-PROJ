@@ -8,16 +8,6 @@ readColumn(Column) :-
     write('  -> Column '),
     get_code(Column).
 
-%rows
-letter(0, 'A').
-letter(1, 'B').
-letter(2, 'C').
-letter(3, 'D').
-letter(4, 'E').
-letter(5, 'F').
-letter(6, 'G').
-letter(7, 'H').
-
 validateRow(RowInput, NewRow, Size) :-
     (
         (
