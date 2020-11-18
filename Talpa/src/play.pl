@@ -1,7 +1,7 @@
 initial(GameState) :- %initialGameState(GameState).
             %midGameState(GameState).
-            %testState(GameState).
-            finalGameState(GameState).
+            testState(GameState).
+            %finalGameState(GameState).
             %generateBoard(GameState, 3).
 
 gameLoop(Board, Player) :-
@@ -20,15 +20,13 @@ gameLoop(Board, Player) :-
 display_game(Board, FinalBoard, Player) :-
     length(Board, Size),
     ((Player is 1, write('\nRED(O) turn\n')) ; (Player is -1, write('\nBLUE(X) turn\n'))),
-    checkAvailableMoves(Board, Size, Player, HasMoves),
     (
         (
-            HasMoves is 1,
+            checkAvailableMoves(Board, Size, Player),
             selectPiece(Board, Size, SelBoard, Player, InputRow, InputColumn),
             movePiece(SelBoard, Size, FinalBoard, Player, InputRow, InputColumn)
         );
         (
-            HasMoves is 0,
             removePiece(Board, Size, FinalBoard, Player)
         )
     ),
@@ -36,13 +34,11 @@ display_game(Board, FinalBoard, Player) :-
 
 checkVictory(Player, Board, Size):-
     (
-        write(Player),nl,
         checkWinner(Player, Board, Size, 0, 0),
         format("\n~w player won\n", [Player])
     );
     (
         Enemy is -Player,
-        write(Enemy),nl,
         checkWinner(Enemy, Board, Size, 0, 0),
         format("\n~w player won\n", [Enemy])
     );
@@ -62,24 +58,6 @@ checkWinner(1, Board, Size, Row, Col):-
         )
     ).
 
-tryFloodFill(Board, Size, Row, Col, FinalBoard):-
-    getValueFromMatrix(Board, Row, Col, 0),
-    floodFill(Board, Size, Row, Col, 0, 2, FinalBoard), !,
-    Board \= FinalBoard.
-    
-
-checkRedPath(Board, Size, Row, Col):-
-    Row < Size,
-    (
-        (
-            getValueFromMatrix(Board, Row, Col, 2)
-        );
-        (
-            NextRow is Row + 1,
-            checkRedPath(Board, Size, NextRow, Col)
-        )
-    ).
-
 checkWinner(-1, Board, Size, Row, Col):-
     Col < Size,
     (
@@ -95,6 +73,19 @@ checkWinner(-1, Board, Size, Row, Col):-
     ).
     
 
+checkRedPath(Board, Size, Row, Col):-
+    Row < Size,
+    (
+        (
+            getValueFromMatrix(Board, Row, Col, 2)
+        );
+        (
+            NextRow is Row + 1,
+            checkRedPath(Board, Size, NextRow, Col)
+        )
+    ).
+    
+
 checkBluePath(Board, Size, Row, Col):-
     Col < Size,
     (
@@ -106,3 +97,8 @@ checkBluePath(Board, Size, Row, Col):-
             checkBluePath(Board, Size, Row, NextCol)
         )
     ).
+
+tryFloodFill(Board, Size, Row, Col, FinalBoard):-
+    getValueFromMatrix(Board, Row, Col, 0),
+    floodFill(Board, Size, Row, Col, 0, 2, FinalBoard), !,
+    Board \= FinalBoard.
