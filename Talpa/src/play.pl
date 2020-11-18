@@ -1,14 +1,20 @@
 initial(GameState) :- %initialGameState(GameState).
             %midGameState(GameState).
-            testState(GameState).
-            %finalGameState(GameState).
+            %testState(GameState).
+            finalGameState(GameState).
             %generateBoard(GameState, 3).
 
-gameLoop(Board) :-
-    length(Board, Size),
-    display_game(Board, FinalBoardRed, 1),
-    display_game(FinalBoardRed, FinalBoardBlue, -1),
-    gameLoop(FinalBoardBlue).
+gameLoop(Board, Player) :-
+    (
+        length(Board, Size),
+        checkVictory(Player, Board, Size)
+    );
+    (
+        display_game(Board, FinalBoard, Player),
+        Enemy is -Player,
+        write(FinalBoard),
+        gameLoop(FinalBoard, Enemy)
+    ).
 
 
 display_game(Board, FinalBoard, Player) :-
@@ -26,11 +32,23 @@ display_game(Board, FinalBoard, Player) :-
             removePiece(Board, Size, FinalBoard, Player)
         )
     ),
-    printBoard(FinalBoard),
-    ((write('Red Won?\n'), checkRedVictory(FinalBoard, Size, 0, 0), write('\nRed Won\n')) ; (write('Blue Won?\n'), checkBlueVictory(FinalBoard, Size, 0, 0), write('\nBlue Won\n')) ; true).
+    printBoard(FinalBoard).
 
-checkRedVictory(Board, Size, Row, Col):-
-    format("Check Start, Row~w Col~w \n", [Row,Col]),
+checkVictory(Player, Board, Size):-
+    (
+        write(Player),nl,
+        checkWinner(Player, Board, Size, 0, 0),
+        format("\n~w player won\n", [Player])
+    );
+    (
+        Enemy is -Player,
+        write(Enemy),nl,
+        checkWinner(Enemy, Board, Size, 0, 0),
+        format("\n~w player won\n", [Enemy])
+    );
+    fail.
+
+checkWinner(1, Board, Size, Row, Col):-
     Row < Size,
     (
         (
@@ -40,7 +58,7 @@ checkRedVictory(Board, Size, Row, Col):-
         );
         (
             NextRow is Row + 1,
-            checkRedVictory(Board, Size, NextRow, Col)
+            checkWinner(1, Board, Size, NextRow, Col)
         )
     ).
 
@@ -51,7 +69,6 @@ tryFloodFill(Board, Size, Row, Col, FinalBoard):-
     
 
 checkRedPath(Board, Size, Row, Col):-
-    format("Check End, Row~w Col~w \n", [Row,Col]),
     Row < Size,
     (
         (
@@ -63,8 +80,7 @@ checkRedPath(Board, Size, Row, Col):-
         )
     ).
 
-checkBlueVictory(Board, Size, Row, Col):-
-    format("Check Start, Row~w Col~w \n", [Row,Col]),
+checkWinner(-1, Board, Size, Row, Col):-
     Col < Size,
     (
         (
@@ -74,13 +90,12 @@ checkBlueVictory(Board, Size, Row, Col):-
         );
         (
             NextCol is Col + 1,
-            checkBlueVictory(Board, Size, Row, NextCol)
+            checkWinner(-1, Board, Size, Row, NextCol)
         )
     ).
     
 
 checkBluePath(Board, Size, Row, Col):-
-    format("Check End, Row~w Col~w \n", [Row,Col]),
     Col < Size,
     (
         (

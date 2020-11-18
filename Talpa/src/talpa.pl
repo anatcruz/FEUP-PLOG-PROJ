@@ -7,4 +7,4 @@
 
 play :- initial(GameState),
         printBoard(GameState),
-        gameLoop(GameState).
+        gameLoop(GameState, 1).
