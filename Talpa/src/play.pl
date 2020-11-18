@@ -1,8 +1,8 @@
-initial(GameState) :- %initialGameState(GameState).
-            %midGameState(GameState).
-            testState(GameState).
-            %finalGameState(GameState).
-            %generateBoard(GameState, 3).
+initial(GameState, Size) :- generateBoard(GameState, Size).
+                            %initialGameState(GameState).
+                            %midGameState(GameState).
+                            %testState(GameState).
+                            %finalGameState(GameState).
 
 gameLoop(Board, Player) :-
     (

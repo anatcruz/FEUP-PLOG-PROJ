@@ -139,3 +139,22 @@ printRow([Head|Tail]) :-
     write(S),
     write(' | '),
     printRow(Tail).
+
+printMainMenu:-
+    write('\n\n ___________________________________\n'),
+    write('|                                   |\n'),
+    write('|                                   |\n'),
+    write('|     _____       _                 |\n'),
+    write('|    |_   _|__ _ | | ____  __ _     |\n'),
+    write('|      | | / _` || ||  _ |/ _` |    |\n'),
+    write('|      |_| |__,_||_|| .__/|__,_|    |\n'),
+    write('|                   |_|             |\n'),
+    write('|                                   |\n'),
+    write('|     1. Player vs Player (6x6)     |\n'),
+    write('|                                   |\n'),
+    write('|     2. Player vs Player (8x8)     |\n'),
+    write('|                                   |\n'),
+    write('|     0. Exit                       |\n'),
+    write('|                                   |\n'),
+    write('|                                   |\n'),
+    write('|___________________________________|\n\n').
