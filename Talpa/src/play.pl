@@ -4,21 +4,16 @@ initial(GameState, Size) :- generateBoard(GameState, Size).
                             %testState(GameState).
                             %finalGameState(GameState).
 
-gameLoop(Board, Player) :-
+gameLoop(Board, Size, Player) :-
+    display_game(Board, FinalBoard, Size, Player),
+    Enemy is -Player,
     (
-        length(Board, Size),
-        checkVictory(Player, Board, Size)
-    );
-    (
-        display_game(Board, FinalBoard, Player),
-        Enemy is -Player,
-        write(FinalBoard),
-        gameLoop(FinalBoard, Enemy)
+        checkVictory(Player, Board, Size);
+        gameLoop(FinalBoard, Size, Enemy)
     ).
 
 
-display_game(Board, FinalBoard, Player) :-
-    length(Board, Size),
+display_game(Board, FinalBoard, Size, Player) :-
     ((Player is 1, write('\nRED(O) turn\n')) ; (Player is -1, write('\nBLUE(X) turn\n'))),
     (
         (
@@ -33,79 +28,54 @@ display_game(Board, FinalBoard, Player) :-
     printBoard(FinalBoard).
 
 checkVictory(Player, Board, Size):-
-    (  
-        (
-            (
-                checkWinner(Player, Board, Size, 0, 0),
-                Winner is Player
-            );
-            (
-                Enemy is -Player,
-                checkWinner(Enemy, Board, Size, 0, 0),
-                Winner is Enemy
-            )
-        ),
-        (
-            Winner is 1, Won = 'Red';
-            Winner is -1, Won = 'Blue'
-        ),
-        format("\n~w player won\n", [Won])
-    );
-    fail.
+    Enemy is -Player,
+    checkWinner(Enemy, Board, Size, 0, 0),
+    printWinner(Enemy).
+
+checkVictory(Player, Board, Size):-
+    checkWinner(Player, Board, Size, 0, 0),
+    printWinner(Player).
 
 checkWinner(1, Board, Size, Row, Col):-
     Row < Size,
-    (
-        (
-            tryFloodFill(Board, Size, Row, Col, FinalBoard),
-            FinalCol is Size-1,
-            checkRedPath(FinalBoard, Size, 0, FinalCol)
-        );
-        (
-            NextRow is Row + 1,
-            checkWinner(1, Board, Size, NextRow, Col)
-        )
-    ).
+    tryFloodFill(Board, Size, Row, Col, FinalBoard),
+    FinalCol is Size-1,
+    checkRedPath(FinalBoard, Size, 0, FinalCol).
+
+checkWinner(1, Board, Size, Row, Col):-
+    Row < Size,
+    NextRow is Row + 1,
+    checkWinner(1, Board, Size, NextRow, Col).
 
 checkWinner(-1, Board, Size, Row, Col):-
     Col < Size,
-    (
-        (
-            tryFloodFill(Board, Size, Row, Col, FinalBoard),
-            FinalRow is Size-1,
-            checkBluePath(FinalBoard, Size, FinalRow, 0)
-        );
-        (
-            NextCol is Col + 1,
-            checkWinner(-1, Board, Size, Row, NextCol)
-        )
-    ).
+    tryFloodFill(Board, Size, Row, Col, FinalBoard),
+    FinalRow is Size-1,
+    checkBluePath(FinalBoard, Size, FinalRow, 0).
+
+checkWinner(-1, Board, Size, Row, Col):-
+    Col < Size,
+    NextCol is Col + 1,
+    checkWinner(-1, Board, Size, Row, NextCol).
     
 
 checkRedPath(Board, Size, Row, Col):-
     Row < Size,
-    (
-        (
-            getValueFromMatrix(Board, Row, Col, 2)
-        );
-        (
-            NextRow is Row + 1,
-            checkRedPath(Board, Size, NextRow, Col)
-        )
-    ).
-    
+    getValueFromMatrix(Board, Row, Col, 2).
+
+checkRedPath(Board, Size, Row, Col):-
+    Row < Size,
+    NextRow is Row + 1,
+    checkRedPath(Board, Size, NextRow, Col).
 
 checkBluePath(Board, Size, Row, Col):-
     Col < Size,
-    (
-        (
-            getValueFromMatrix(Board, Row, Col, 2)
-        );
-        (
-            NextCol is Col + 1,
-            checkBluePath(Board, Size, Row, NextCol)
-        )
-    ).
+    getValueFromMatrix(Board, Row, Col, 2).
+
+checkBluePath(Board, Size, Row, Col):-
+    Col < Size,
+    NextCol is Col + 1,
+    checkBluePath(Board, Size, Row, NextCol).
 
 tryFloodFill(Board, Size, Row, Col, FinalBoard):-
     getValueFromMatrix(Board, Row, Col, 0),

@@ -46,9 +46,9 @@ menuAction(0) :-
 menuAction(1) :-
     initial(GameState,6),
     printBoard(GameState),
-    gameLoop(GameState, 1).
+    gameLoop(GameState, 6, 1).
 
 menuAction(2) :-
     initial(GameState,8),
     printBoard(GameState),
-    gameLoop(GameState, 1).
+    gameLoop(GameState, 8, 1).
