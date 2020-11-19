@@ -76,8 +76,8 @@ when not given a valid position the player is asked again to write the position 
 verifyOrtMove(SelBoard, Size, Player, SelRow, SelColumn, MovRow, MovColumn, FinalRow, FinalColumn) :-
     isEnemy(SelBoard, MovRow, MovColumn, Player),
     (
-        (MovRow=:=SelRow,  between(SelColumn-1, MovColumn, SelColumn+1));  %Same row
-        (MovColumn=:=SelColumn, between(SelRow-1, MovColumn, SelRow+1)) %Same column
+        (MovRow=:=SelRow, (MovColumn=:=SelColumn+1 ; MovColumn=:=SelColumn-1));  /*Same row*/
+        (MovColumn=:=SelColumn, (MovRow=:=SelRow+1 ; MovRow=:=SelRow-1)) /*Same column */
     ),
     FinalRow is MovRow, FinalColumn is MovColumn;
     (
