@@ -24,8 +24,9 @@ appendListNotEmpty(L1, L2, L12):-
 
 printMove([]).
 printMove([H|T]):-
-	get_letter(H),
-	get_number(T).
+	get_letter(H, Row),
+	get_number(T, Col),
+  format(" ~w~w ", [Row,Col]).
 
 printMovesList([]).
 printMovesList([H|T]):-
@@ -40,15 +41,13 @@ isEnemy(Board, Row, Column, Player) :-
     getValueFromMatrix(Board, Row, Column, Enemy),
     Enemy is -Player.
 
-get_letter(Row) :-
+get_letter(Row, Letter) :-
 	NewRow is Row + 65,
-	char_code(X, NewRow),
-	write(X).
+	char_code(Letter, NewRow).
 
-get_number(Column) :-
+get_number(Column, Number) :-
 	NewColumn is Column + 49,
-	char_code(X, NewColumn),
-	write(X).
+	char_code(Number, NewColumn).
 
 /*A recursive function to replace 
 previous char 'prevC' at '(Row, Col)' 

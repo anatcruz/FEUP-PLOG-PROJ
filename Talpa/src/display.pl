@@ -121,7 +121,8 @@ prints a line of O's on the left side of the board representing the left side of
 */
 printMatrix([Head|Tail], N, Size):-
     write(' '),
-    get_letter(N), % Row indicator
+    get_letter(N, Row), % Row indicator
+    write(Row),
     write(' | O | '),  % Print Os on the left side
     printRow(Head),
     nl,
