@@ -3,6 +3,7 @@
 :-consult('input.pl').
 :-consult('logic.pl').
 :-consult('utils.pl').
+:-consult('menu.pl').
 :-use_module(library(lists)).
 :-use_module(library(between)).
 
