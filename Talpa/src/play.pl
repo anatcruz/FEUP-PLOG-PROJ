@@ -33,14 +33,23 @@ display_game(Board, FinalBoard, Player) :-
     printBoard(FinalBoard).
 
 checkVictory(Player, Board, Size):-
-    (
-        checkWinner(Player, Board, Size, 0, 0),
-        format("\n~w player won\n", [Player])
-    );
-    (
-        Enemy is -Player,
-        checkWinner(Enemy, Board, Size, 0, 0),
-        format("\n~w player won\n", [Enemy])
+    (  
+        (
+            (
+                checkWinner(Player, Board, Size, 0, 0),
+                Winner is Player
+            );
+            (
+                Enemy is -Player,
+                checkWinner(Enemy, Board, Size, 0, 0),
+                Winner is Enemy
+            )
+        ),
+        (
+            Winner is 1, Won = 'Red';
+            Winner is -1, Won = 'Blue'
+        ),
+        format("\n~w player won\n", [Won])
     );
     fail.
 
