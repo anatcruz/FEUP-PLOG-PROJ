@@ -1,10 +1,10 @@
-%reads Row input
+%reads Row input code, ignoring newlines (ascii code 10)
 readRow(Row) :-
     write('  -> Row    '),
     get_code(Row),
     Row\=10.
 
-%reads Column input
+%reads Column input code, ignoring newlines (ascii code 10)
 readColumn(Column) :-
     write('  -> Column '),
     get_code(Column),
@@ -81,5 +81,3 @@ removePiece(Board, Size, FinalBoard, Player) :-
     manageColumn(SelColumn, Size),
     verifyPlayer(Board, Size, SelRow, SelColumn, Player, InputRow, InputColumn),
     replaceInMatrix(Board, InputRow, InputColumn, 0, FinalBoard).
-
-/* ---- MENU ---- */

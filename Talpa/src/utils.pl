@@ -14,33 +14,6 @@ getValueFromMatrix(Matrix, Row, Col, Value) :-
 	nth0(Row, Matrix, RowList),
 	nth0(Col, RowList, Value).
 
-isEmpty(List):-
-	length(List, Size),
-	Size=0.
-
-appendListNotEmpty(L1, [], L1).
-appendListNotEmpty(L1, L2, L12):-
-	append(L1, [L2], L12).
-
-printMove([]).
-printMove([H|T]):-
-	get_letter(H, Row),
-	get_number(T, Col),
-  format(" ~w~w ", [Row,Col]).
-
-printMovesList([]).
-printMovesList([H|T]):-
-	printMove(H),
-	printMovesList(T).
-
-isPlayer(Board, Row, Column, Player) :-
-    getValueFromMatrix(Board, Row, Column, Value),
-    Player is Value.
-
-isEnemy(Board, Row, Column, Player) :-
-    getValueFromMatrix(Board, Row, Column, Enemy),
-    Enemy is -Player.
-
 get_letter(Row, Letter) :-
 	NewRow is Row + 65,
 	char_code(Letter, NewRow).
@@ -49,9 +22,42 @@ get_number(Column, Number) :-
 	NewColumn is Column + 49,
 	char_code(Number, NewColumn).
 
+%Checks is List is empty
+isEmpty(List):-
+	length(List, 0),
+
+%If given L2 list is not empty, append it to L1 and result is L12
+appendListNotEmpty(L1, [], L1).
+appendListNotEmpty(L1, L2, L12):-
+	append(L1, [L2], L12).
+
+%Given a move (represented as a list of [Row, Column]), prints first two elements
+printMove([]).
+printMove([H, T|_]):-
+	get_letter(H, Row),
+	get_number(T, Col),
+  format(" ~w~w ", [Row,Col]).
+
+%Prints a list of several moves (represented as [[Row,Col], ...])
+printMovesList([]).
+printMovesList([H|T]):-
+	printMove(H),
+	printMovesList(T).
+
+%Checks if board value in the given position (row and column) is the current player
+isPlayer(Board, Row, Column, Player) :-
+    getValueFromMatrix(Board, Row, Column, Player).
+
+%Checks if board value in the given position (row and column) is the current player's enemy
+isEnemy(Board, Row, Column, Player) :-
+    getValueFromMatrix(Board, Row, Column, Enemy),
+    Enemy is -Player.
+
+%Print formated red player win
 printWinner(1):-
   write('\n!!! RED(O) player won !!!\n\n').
 
+%Print formated blue player win
 printWinner(-1):-
   write('\n!!! BLUE(X) player won !!!\n\n').
 
@@ -74,3 +80,8 @@ floodFill(Matrix, Size, Row, Col, PrevC, NewC, FinalMatrix):-
   ;
     (FinalMatrix = Matrix) 
   ).
+
+%If given position is an empty space, floodfill the board replacing empty spaces(0) with '?'(2)
+tryFloodFill(Board, Size, Row, Col, FinalBoard):-
+    getValueFromMatrix(Board, Row, Col, 0),
+    floodFill(Board, Size, Row, Col, 0, 2, FinalBoard), !.

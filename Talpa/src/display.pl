@@ -69,7 +69,7 @@ buildRow(Row, BuiltRow, Size, ColIndex, Cell):-
 character(0,' '). %character for an empty space representing a piece removed
 character(-1,'X'). %character representing the blue player piece
 character(1,'O'). %character representing the red player piece
-flocharacter(2,'?').
+character(2,'?'). %auxiliar character for floodfill, filling empty spaces
 
 /*prints the board with the columns indicator
 prints a line of X's on the top of the board representing the top side of the blue player 
