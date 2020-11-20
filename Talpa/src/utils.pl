@@ -27,6 +27,11 @@ isEmpty(List):-
 	length(List, 0),
 
 %If given L2 list is not empty, append it to L1 and result is L12
+appendNotEmpty(L1, [], L1).
+appendNotEmpty(L1, L2, L12):-
+	append(L1, L2, L12).
+
+%If given L2 list is not empty, append [L2] to L1 and result is L12
 appendListNotEmpty(L1, [], L1).
 appendListNotEmpty(L1, L2, L12):-
 	append(L1, [L2], L12).
@@ -85,3 +90,45 @@ floodFill(Matrix, Size, Row, Col, PrevC, NewC, FinalMatrix):-
 tryFloodFill(Board, Size, Row, Col, FinalBoard):-
     getValueFromMatrix(Board, Row, Col, 0),
     floodFill(Board, Size, Row, Col, 0, 2, FinalBoard), !.
+
+getPosition([Row, Column | _], Row, Column).
+
+
+
+getPlayerInRow(GameState, List, Size, Row, Column, Player, ListOfMoves) :-
+	getPlayerInRow(GameState, List, Size, Row, Column, Player, [], ListOfMoves).
+
+getPlayerInRow(_, [], Size, _, Size, _, ListOfMoves, ListOfMoves).
+getPlayerInRow(GameState, [_|Tail], Size, Row, Column, Player, Moves, ListOfMoves) :-
+	(
+		isPlayer(GameState, Row, Column, Player),
+		appendListNotEmpty(Moves, [Row,Column], NewList),
+		X is Column + 1,
+		getPlayerInRow(GameState, Tail, Size, Row, X, Player, NewList, ListOfMoves)
+	);
+	(
+		X is Column + 1,
+		getPlayerInRow(GameState, Tail, Size, Row, X, Player, Moves, ListOfMoves)
+	).
+
+getPlayerInMatrix(GameState, Size, Player, ListOfPositions) :-
+	getPlayerInMatrix(GameState, GameState, Size, 0, Player, [], ListOfPositions).
+
+getPlayerInMatrix(_, [], Size, Size, _, ListOfPositions, ListOfPositions).
+getPlayerInMatrix(GameState, [Head|Tail], Size, Row, Player, ListInterm, ListOfPositions) :-
+	getPlayerInRow(GameState, Head, Size, Row, 0, Player, List),
+	appendNotEmpty(ListInterm, List, NewList),
+	X is Row + 1,
+	getPlayerInMatrix(GameState, Tail, Size, X, Player, NewList, ListOfPositions), !.
+
+
+
+getAllMoves(GameState, Size, Player, Positions, ListOfMoves):-
+  getAllMoves(GameState, Size, Player, Positions, [], ListOfMoves).
+
+getAllMoves(_, _, _, [], ListOfMoves, ListOfMoves).
+getAllMoves(GameState, Size, Player, [Pos|PosRest], ListInterm, ListOfMoves):-
+  getPosition(Pos, SelRow, SelColumn),
+  checkMove(GameState, Size, SelRow, SelColumn, Player, Moves),
+  appendNotEmpty(ListInterm, Moves, NewList),
+  getAllMoves(GameState, Size, Player, PosRest, NewList, ListOfMoves), !.

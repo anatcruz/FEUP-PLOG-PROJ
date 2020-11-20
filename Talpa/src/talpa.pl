@@ -6,9 +6,11 @@
 :-consult('menu.pl').
 :-use_module(library(lists)).
 :-use_module(library(between)).
+:-use_module(library(random)).
+:-use_module(library(system)).
 
-play :- printMainMenu,
-        selectMenuOption(2).
-        /*initial(GameState,0),
-        printBoard(GameState),
-        gameLoop(GameState, 1).*/
+play :- 
+    now(X),
+    setrand(X), 
+    printMainMenu,
+    selectMenuOption(2).
