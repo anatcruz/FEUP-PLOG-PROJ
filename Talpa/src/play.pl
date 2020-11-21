@@ -4,20 +4,34 @@ initial(GameState, Size) :- generateBoard(GameState, Size).
                             %testState(GameState).
                             %finalGameState(GameState).
 
-gameLoop(Board, Size, Player) :-
+playerVSplayer(Board,Size,Player):-
     display_game(Board, FinalBoard, Size, Player),
     Enemy is -Player,
     (
-        checkVictory(Player, Board, Size);
-        gameLoop(FinalBoard, Size, Enemy)
+        checkVictory(Player, FinalBoard, Size);
+        playerVSplayer(FinalBoard, Size, Enemy)
+    ).
+
+playerVSbot(Board, Size, Player) :-
+    display_game(Board, FinalBoard, Size, Player),
+    (
+        checkVictory(Player, FinalBoard, Size);
+        (
+            Enemy is -Player,
+            bot_play(FinalBoard, BotBoard, Size, Enemy),
+            (
+                checkVictory(Enemy, BotBoard, Size);
+                playerVSbot(BotBoard, Size, Player)
+            )
+        )
     ).
 
 
 display_game(Board, FinalBoard, Size, Player) :-
-    ((Player is 1, write('\nRED(O) turn\n')) ; (Player is -1, write('\nBLUE(X) turn\n'))),
+    printTurn(Player),
     (
         (
-            checkAvailableMoves(Board, Size, Player),
+            valid_moves(Board, Size, Player, _),
             selectPiece(Board, Size, SelBoard, Player, InputRow, InputColumn),
             movePiece(SelBoard, Size, FinalBoard, Player, InputRow, InputColumn)
         );

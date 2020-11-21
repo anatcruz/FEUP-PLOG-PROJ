@@ -36,6 +36,10 @@ appendListNotEmpty(L1, [], L1).
 appendListNotEmpty(L1, L2, L12):-
 	append(L1, [L2], L12).
 
+appendMoves(_, [], []).
+appendMoves(Pos, Moves, Ret):-
+  append(Pos, Moves, Ret).
+
 %Given a move (represented as a list of [Row, Column]), prints first two elements
 printMove([]).
 printMove([H, T|_]):-
@@ -57,6 +61,12 @@ isPlayer(Board, Row, Column, Player) :-
 isEnemy(Board, Row, Column, Player) :-
     getValueFromMatrix(Board, Row, Column, Enemy),
     Enemy is -Player.
+
+printTurn(1):-
+	write('\nRED(O) turn\n').
+
+printTurn(-1):-
+	write('\nBLUE(X) turn\n').
 
 %Print formated red player win
 printWinner(1):-
@@ -93,7 +103,7 @@ tryFloodFill(Board, Size, Row, Col, FinalBoard):-
 
 getPosition([Row, Column | _], Row, Column).
 
-
+getPositionAndMoves([Row, Col | Moves], [Row, Col], Moves).
 
 getPlayerInRow(GameState, List, Size, Row, Column, Player, ListOfMoves) :-
 	getPlayerInRow(GameState, List, Size, Row, Column, Player, [], ListOfMoves).
@@ -130,5 +140,6 @@ getAllMoves(_, _, _, [], ListOfMoves, ListOfMoves).
 getAllMoves(GameState, Size, Player, [Pos|PosRest], ListInterm, ListOfMoves):-
   getPosition(Pos, SelRow, SelColumn),
   checkMove(GameState, Size, SelRow, SelColumn, Player, Moves),
-  appendNotEmpty(ListInterm, Moves, NewList),
+  appendMoves(Pos, Moves, CurrentMoves),
+  appendListNotEmpty(ListInterm, CurrentMoves, NewList),
   getAllMoves(GameState, Size, Player, PosRest, NewList, ListOfMoves), !.

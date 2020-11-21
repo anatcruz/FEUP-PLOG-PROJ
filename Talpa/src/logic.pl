@@ -87,11 +87,11 @@ verifyOrtMove(SelBoard, Size, Player, SelRow, SelColumn, MovRow, MovColumn, Fina
         verifyOrtMove(SelBoard, Size, Player, SelRow, SelColumn, NewRow, NewColumn, FinalRow, FinalColumn)
     ).
 
-checkAvailableMoves(GameState, Size, Player):-
+valid_moves(GameState, Size, Player, ListOfMoves):-
     getPlayerInMatrix(GameState, Size, Player, Positions),
     getAllMoves(GameState, Size, Player, Positions, ListOfMoves),
     \+isEmpty(ListOfMoves).
 
-checkAvailableMoves(_, _, _):-
+valid_moves(_, _, _, _):-
     write('No moves available, remove your own piece\n'),
     fail.

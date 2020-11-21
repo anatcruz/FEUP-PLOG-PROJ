@@ -4,6 +4,7 @@
 :-consult('logic.pl').
 :-consult('utils.pl').
 :-consult('menu.pl').
+:-consult('bot.pl').
 :-use_module(library(lists)).
 :-use_module(library(between)).
 :-use_module(library(random)).
@@ -13,4 +14,4 @@ play :-
     now(X),
     setrand(X), 
     printMainMenu,
-    selectMenuOption(2).
+    selectMainMenuOption(2).

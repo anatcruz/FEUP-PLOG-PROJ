@@ -8,18 +8,17 @@ printMainMenu :-
     write('|      |_| |__,_||_|| .__/|__,_|    |\n'),
     write('|                   |_|             |\n'),
     write('|                                   |\n'),
-    write('|     1. Player vs Player (6x6)     |\n'),
+    write('|         1. Player vs Player       |\n'),
     write('|                                   |\n'),
-    write('|     2. Player vs Player (8x8)     |\n'),
+    write('|        2. Player vs Computer      |\n'),
     write('|                                   |\n'),
-    write('|     0. Exit                       |\n'),
+    write('|               0. Exit             |\n'),
     write('|                                   |\n'),
     write('|                                   |\n'),
     write('|___________________________________|\n\n').
 
-
 %Select menu option and call the respective action
-selectMenuOption(NumOptions) :-
+selectMainMenuOption(NumOptions) :-
     write('\nInsert option:\n'),
     repeat,
     readMenuOption(OptionInput),
@@ -48,12 +47,34 @@ menuAction(0) :-
 
 %Player vs Player 6x6
 menuAction(1) :-
-    initial(GameState,6),
-    printBoard(GameState),
-    gameLoop(GameState, 6, 1).
+    boardSizeMenu,
+    selectBoardSizeOption(2).
 
 %Player vs Player 8x8
 menuAction(2) :-
     initial(GameState,8),
     printBoard(GameState),
-    gameLoop(GameState, 8, 1).
+    playerVSbot(GameState, 8, 1).
+
+boardSizeMenu:-
+    write('\n\n1. 6x6 Board\n2. 8x8 Board\n0. Main Menu').
+
+selectBoardSizeOption(NumOptions):-
+    write('\nInsert option:\n'),
+    repeat,
+    readMenuOption(OptionInput),
+    validateMenuOption(OptionInput, ValidOption, NumOptions),
+    sizeAction(ValidOption).
+
+sizeAction(0):-
+    menuAction(0).
+
+sizeAction(1):-
+    initial(GameState,6),
+    printBoard(GameState),
+    playerVSplayer(GameState, 6, 1).
+
+sizeAction(2) :-
+    initial(GameState,8),
+    printBoard(GameState),
+    playerVSplayer(GameState, 8, 1).
