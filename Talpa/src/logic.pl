@@ -87,11 +87,12 @@ verifyOrtMove(SelBoard, Size, Player, SelRow, SelColumn, MovRow, MovColumn, Fina
         verifyOrtMove(SelBoard, Size, Player, SelRow, SelColumn, NewRow, NewColumn, FinalRow, FinalColumn)
     ).
 
+/* ListOfMoves: [[Row, Col, [[MovR1, MovC1], [MovR2, MovC2]] ]]*/
 valid_moves(GameState, Size, Player, ListOfMoves):-
     getPlayerInMatrix(GameState, Size, Player, Positions),
     getAllMoves(GameState, Size, Player, Positions, ListOfMoves),
     \+isEmpty(ListOfMoves).
 
 valid_moves(_, _, _, _):-
-    write('No moves available, remove your own piece\n'),
+    write('\nNo moves available, remove your own piece\n'),
     fail.

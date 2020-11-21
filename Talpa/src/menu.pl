@@ -45,26 +45,26 @@ menuAction(0) :-
     write('\nWe are sad to see you go... :(\n'),
     write('If you enjoyed please consider staring our repository https://github.com/anatcruz/FEUP-PLOG-PROJ :D\n').
 
-%Player vs Player 6x6
+%Player vs Player
 menuAction(1) :-
     boardSizeMenu,
-    selectBoardSizeOption(2).
+    selectBoardSizeOption(2, ValidOption),
+    sizeAction(ValidOption).
 
-%Player vs Player 8x8
+%Player vs Computer 4x4
 menuAction(2) :-
     initial(GameState,8),
     printBoard(GameState),
-    playerVSbot(GameState, 8, 1).
+    playerVSbotRandom(GameState, 8, 1).
 
 boardSizeMenu:-
-    write('\n\n1. 6x6 Board\n2. 8x8 Board\n0. Main Menu').
+    write('\n\n1. 6x6 Board\n2. 8x8 Board\n0. Main Menu\n').
 
-selectBoardSizeOption(NumOptions):-
+selectBoardSizeOption(NumOptions, ValidOption):-
     write('\nInsert option:\n'),
     repeat,
     readMenuOption(OptionInput),
-    validateMenuOption(OptionInput, ValidOption, NumOptions),
-    sizeAction(ValidOption).
+    validateMenuOption(OptionInput, ValidOption, NumOptions).
 
 sizeAction(0):-
     menuAction(0).

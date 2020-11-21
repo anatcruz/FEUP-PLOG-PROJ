@@ -22,6 +22,10 @@ get_number(Column, Number) :-
 	NewColumn is Column + 49,
 	char_code(Number, NewColumn).
 
+enterContinue:-
+	write('\nPress ENTER to continue.'),
+    skip_line.
+
 %Checks is List is empty
 isEmpty(List):-
 	length(List, 0),
@@ -63,10 +67,10 @@ isEnemy(Board, Row, Column, Player) :-
     Enemy is -Player.
 
 printTurn(1):-
-	write('\nRED(O) turn\n').
+	write('\n > RED(O) turn <\n').
 
 printTurn(-1):-
-	write('\nBLUE(X) turn\n').
+	write('\n > BLUE(X) turn <\n').
 
 %Print formated red player win
 printWinner(1):-

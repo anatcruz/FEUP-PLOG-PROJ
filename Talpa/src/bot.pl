@@ -1,5 +1,6 @@
-bot_play(Board, FinalBoard, Size, Player):-
-    printTurn(Player),
+/*choose_move(GameState, Player, Level, Move)*/
+
+choose_move(Board, FinalBoard, Size, Player, 1):-
     (
         (
             valid_moves(Board, Size, Player, ListOfValidMoves),
@@ -10,10 +11,7 @@ bot_play(Board, FinalBoard, Size, Player):-
             removePieceBot(Board, Size, FinalBoard, Player)
         )
 
-    ),
-    printBoard(FinalBoard),
-    write('\nPress ENTER to continue.'),
-    skip_line.
+    ).
 
 selectPieceBot(Board, Size, SelBoard, Player, ListOfValidMoves, ListOfMoves):-
     random_member(SelMove, ListOfValidMoves),
@@ -30,7 +28,6 @@ movePieceBot(SelBoard, FinalBoard, Player, ListOfMoves):-
 
 removePieceBot(Board, Size, FinalBoard, Player):-
     getPlayerInMatrix(Board, Size, Player, Positions),
-    write(Positions),
     random_member(SelPosition, Positions),
     getPosition(SelPosition, SelRow, SelColumn),
     write('\nRemoved: '), printMove(SelPosition), nl,

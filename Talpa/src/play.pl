@@ -4,31 +4,11 @@ initial(GameState, Size) :- generateBoard(GameState, Size).
                             %testState(GameState).
                             %finalGameState(GameState).
 
-playerVSplayer(Board,Size,Player):-
-    display_game(Board, FinalBoard, Size, Player),
-    Enemy is -Player,
-    (
-        checkVictory(Player, FinalBoard, Size);
-        playerVSplayer(FinalBoard, Size, Enemy)
-    ).
+display_game(GameState, Player):-
+    printBoard(GameState),
+    printTurn(Player).
 
-playerVSbot(Board, Size, Player) :-
-    display_game(Board, FinalBoard, Size, Player),
-    (
-        checkVictory(Player, FinalBoard, Size);
-        (
-            Enemy is -Player,
-            bot_play(FinalBoard, BotBoard, Size, Enemy),
-            (
-                checkVictory(Enemy, BotBoard, Size);
-                playerVSbot(BotBoard, Size, Player)
-            )
-        )
-    ).
-
-
-display_game(Board, FinalBoard, Size, Player) :-
-    printTurn(Player),
+playerTurn(Board, FinalBoard, Size, Player) :-
     (
         (
             valid_moves(Board, Size, Player, _),
@@ -38,18 +18,44 @@ display_game(Board, FinalBoard, Size, Player) :-
         (
             removePiece(Board, Size, FinalBoard, Player)
         )
-    ),
-    printBoard(FinalBoard).
+    ).
+
+playerVSplayer(Board,Size,Player):-
+    printTurn(Player),
+    playerTurn(Board, FinalBoard, Size, Player),
+    printBoard(FinalBoard),
+    (
+        game_over(Player, FinalBoard, Size);
+        Enemy is -Player, playerVSplayer(FinalBoard, Size, Enemy)
+    ).
+
+playerVSbotRandom(Board, Size, Player) :-
+    printTurn(Player),
+    playerTurn(Board, FinalBoard, Size, Player),
+    printBoard(FinalBoard),
+    (
+        game_over(Player, FinalBoard, Size);
+        (
+            Enemy is -Player,
+            printTurn(Enemy),
+            choose_move(FinalBoard, BotBoard, Size, Enemy, 1),
+            printBoard(BotBoard),
+            (
+                game_over(Enemy, BotBoard, Size);
+                enterContinue, playerVSbotRandom(BotBoard, Size, Player)
+            )
+        )  
+    ).
 
     %Check victory from players
 %Check victory from the enemy first
-checkVictory(Player, Board, Size):-
+game_over(Player, Board, Size):-
     Enemy is -Player,
     checkWinner(Enemy, Board, Size, 0, 0),
     printWinner(Enemy).
 
 %Check victory from the player after
-checkVictory(Player, Board, Size):-
+game_over(Player, Board, Size):-
     checkWinner(Player, Board, Size, 0, 0),
     printWinner(Player).
 
