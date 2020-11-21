@@ -4,14 +4,27 @@ initial(GameState, Size) :- %generateBoard(GameState, Size).
                             testState(GameState).
                             %finalGameState(GameState).
 
-gameLoop(Board, Size, Player) :-
-    /*display_game(Board, FinalBoard, Size, Player),
+playerVSplayer(Board,Size,Player):-
+    display_game(Board, FinalBoard, Size, Player),
     Enemy is -Player,
     (
         checkVictory(Player, FinalBoard, Size);
-        gameLoop(FinalBoard, Size, Enemy)
-    ).*/
-    bot_play(Board, FinalBoard, Size, Player).
+        playerVSplayer(FinalBoard, Size, Enemy)
+    ).
+
+playerVSbot(Board, Size, Player) :-
+    display_game(Board, FinalBoard, Size, Player),
+    (
+        checkVictory(Player, FinalBoard, Size);
+        (
+            Bot is -Player,
+            bot_play(FinalBoard, BotBoard, Size, Bot),
+            (
+                checkVictory(Bot, BotBoard, Size);
+                playerVSbot(BotBoard, Size, Player)
+            )
+        )
+    ).
 
 
 display_game(Board, FinalBoard, Size, Player) :-
