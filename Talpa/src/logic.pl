@@ -92,6 +92,6 @@ valid_moves(GameState, Size, Player, ListOfMoves):-
     getAllMoves(GameState, Size, Player, Positions, ListOfMoves),
     \+isEmpty(ListOfMoves).
 
-valid_moves(_, _, _):-
+valid_moves(_, _, _, _):-
     write('No moves available, remove your own piece\n'),
     fail.

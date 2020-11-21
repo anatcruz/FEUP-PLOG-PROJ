@@ -1,21 +1,18 @@
 bot_play(Board, FinalBoard, Size, Player):-
-    selectPieceBot(Board, Size, SelBoard, Player, InputRow, InputColumn).
+    selectPieceBot(Board, Size, SelBoard, Player, ListOfMoves),
+    movePieceBot(SelBoard, FinalBoard, Player, ListOfMoves),
+    printBoard(FinalBoard).
 
-chose_position_available(ListOfPositions, Row, Column):-
-    length(ListOfPositions, Length),
-    Length1 is Length-1,
-    random(0, Length1, SelIndex),
-    nth0(SelIndex, ListOfPositions, SelectedPosition),
-    getPosition(SelectedPosition, Row, Column),
-    write('\nSelected: '), printMove([Row, Column]), nl, !.
+selectPieceBot(Board, Size, SelBoard, Player, ListOfMoves):-
+    valid_moves(Board, Size, Player, ListOfValidMoves),
+    random_member(SelMove, ListOfValidMoves),
+    getPositionAndMoves(SelMove, Position, ListOfMoves),
+    getPosition(Position, SelRow, SelColumn),
+    write('\nSelected: '), printMove(Position), nl,
+    replaceInMatrix(Board, SelRow, SelColumn, 0, SelBoard).
 
-selectPieceBot(Board, Size, SelBoard, Player, SelRow, SelColumn):-
-    getPlayerInMatrix(Board, Size, Player, ListOfPositions),
-    write('\nAvailable Player positions: '), printMovesList(ListOfPositions), nl,
-    repeat,
-    chose_position_available(ListOfPositions, Row, Column),
-    checkMove(Board, Size, Row, Column, Player, ListOfMoves),
-    write('\nAvailable Moves: '), printMovesList(ListOfMoves), nl,
-    \+isEmpty(ListOfMoves),
-    replaceInMatrix(Board, Row, Column, 0, SelBoard),
-    printBoard(SelBoard).
+movePieceBot(SelBoard, FinalBoard, Player, ListOfMoves):-
+    random_member(SelectedMove, ListOfMoves),
+    getPosition(SelectedMove, MovRow, MovColumn),
+    write('\nMove to: '), printMove([MovRow, MovColumn]), nl,
+    replaceInMatrix(SelBoard, MovRow, MovColumn, Player, FinalBoard).

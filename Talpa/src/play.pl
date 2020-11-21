@@ -18,7 +18,7 @@ display_game(Board, FinalBoard, Size, Player) :-
     ((Player is 1, write('\nRED(O) turn\n')) ; (Player is -1, write('\nBLUE(X) turn\n'))),
     (
         (
-            checkAvailableMoves(Board, Size, Player),
+            valid_moves(Board, Size, Player, _),
             selectPiece(Board, Size, SelBoard, Player, InputRow, InputColumn),
             movePiece(SelBoard, Size, FinalBoard, Player, InputRow, InputColumn)
         );
