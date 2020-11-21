@@ -1,16 +1,17 @@
-initial(GameState, Size) :- generateBoard(GameState, Size).
+initial(GameState, Size) :- %generateBoard(GameState, Size).
                             %initialGameState(GameState).
                             %midGameState(GameState).
-                            %testState(GameState).
+                            testState(GameState).
                             %finalGameState(GameState).
 
 gameLoop(Board, Size, Player) :-
-    display_game(Board, FinalBoard, Size, Player),
+    /*display_game(Board, FinalBoard, Size, Player),
     Enemy is -Player,
     (
-        checkVictory(Player, Board, Size);
+        checkVictory(Player, FinalBoard, Size);
         gameLoop(FinalBoard, Size, Enemy)
-    ).
+    ).*/
+    bot_play(Board, FinalBoard, Size, Player).
 
 
 display_game(Board, FinalBoard, Size, Player) :-
