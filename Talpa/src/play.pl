@@ -1,7 +1,7 @@
-initial(GameState, Size) :- %generateBoard(GameState, Size).
+initial(GameState, Size) :- generateBoard(GameState, Size).
                             %initialGameState(GameState).
                             %midGameState(GameState).
-                            testState(GameState).
+                            %testState(GameState).
                             %finalGameState(GameState).
 
 playerVSplayer(Board,Size,Player):-
@@ -17,10 +17,10 @@ playerVSbot(Board, Size, Player) :-
     (
         checkVictory(Player, FinalBoard, Size);
         (
-            Bot is -Player,
-            bot_play(FinalBoard, BotBoard, Size, Bot),
+            Enemy is -Player,
+            bot_play(FinalBoard, BotBoard, Size, Enemy),
             (
-                checkVictory(Bot, BotBoard, Size);
+                checkVictory(Enemy, BotBoard, Size);
                 playerVSbot(BotBoard, Size, Player)
             )
         )
@@ -28,7 +28,7 @@ playerVSbot(Board, Size, Player) :-
 
 
 display_game(Board, FinalBoard, Size, Player) :-
-    ((Player is 1, write('\nRED(O) turn\n')) ; (Player is -1, write('\nBLUE(X) turn\n'))),
+    printTurn(Player),
     (
         (
             valid_moves(Board, Size, Player, _),

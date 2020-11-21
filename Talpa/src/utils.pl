@@ -62,6 +62,12 @@ isEnemy(Board, Row, Column, Player) :-
     getValueFromMatrix(Board, Row, Column, Enemy),
     Enemy is -Player.
 
+printTurn(1):-
+	write('\nRED(O) turn\n').
+
+printTurn(-1):-
+	write('\nBLUE(X) turn\n').
+
 %Print formated red player win
 printWinner(1):-
   write('\n!!! RED(O) player won !!!\n\n').

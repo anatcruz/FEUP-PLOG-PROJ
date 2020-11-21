@@ -1,5 +1,5 @@
 bot_play(Board, FinalBoard, Size, Player):-
-    ((Player is 1, write('\nRED(O) turn\n')) ; (Player is -1, write('\nBLUE(X) turn\n'))),
+    printTurn(Player),
     (
         (
             valid_moves(Board, Size, Player, ListOfValidMoves),
@@ -11,7 +11,9 @@ bot_play(Board, FinalBoard, Size, Player):-
         )
 
     ),
-    printBoard(FinalBoard).
+    printBoard(FinalBoard),
+    write('\nPress ENTER to continue.'),
+    skip_line.
 
 selectPieceBot(Board, Size, SelBoard, Player, ListOfValidMoves, ListOfMoves):-
     random_member(SelMove, ListOfValidMoves),
