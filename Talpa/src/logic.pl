@@ -2,25 +2,25 @@
 if not, then he is asked again to input the position of the piece he wants to move
 */
 
-verifyPlayer(Board, Size, SelRow, SelColumn, Player, FinalRow, FinalColumn) :-
-    isPlayer(Board, SelRow, SelColumn, Player),
-    FinalRow is SelRow, FinalColumn is SelColumn;
+verifyPlayer(Board, Size, InputRow, InputColumn, Player, SelRow, SelColumn) :-
+    isPlayer(Board, InputRow, InputColumn, Player),
+    SelRow is InputRow, SelColumn is InputColumn;
     (
         write('\nERROR! You can not play that piece!\n \nSelect piece:\n'),
         manageRow(NewRow, Size),
         manageColumn(NewColumn, Size),
-        verifyPlayer(Board, Size, NewRow, NewColumn, Player, FinalRow, FinalColumn)
+        verifyPlayer(Board, Size, NewRow, NewColumn, Player, SelRow, SelColumn)
     ).
 
-validateContent(Board, Size, SelRow, SelColumn, Player, FinalRow, FinalColumn) :-
-    isPlayer(Board, SelRow, SelColumn, Player),
-    verifyPossibleMove(Board, Size, SelRow, SelColumn, Player, _),
-    FinalRow is SelRow, FinalColumn is SelColumn;
+validateContent(Board, Size, InputRow, InputColumn, Player, SelRow, SelColumn) :-
+    isPlayer(Board, InputRow, InputColumn, Player),
+    verifyPossibleMove(Board, Size, InputRow, InputColumn, Player, _),
+    SelRow is InputRow, SelColumn is InputColumn;
     (
         write('\nERROR! You can not play that piece!\n \nSelect piece:\n'),
         manageRow(NewRow, Size),
         manageColumn(NewColumn, Size),
-        validateContent(Board, Size, NewRow, NewColumn, Player, FinalRow, FinalColumn)
+        validateContent(Board, Size, NewRow, NewColumn, Player, SelRow, SelColumn)
     ).
 
 verifyPossibleMove(GameState, Size, SelRow, SelColumn, Player, ListOfMoves) :-
@@ -87,11 +87,11 @@ verifyOrtMove(SelBoard, Size, Player, SelRow, SelColumn, MovRow, MovColumn, Fina
         verifyOrtMove(SelBoard, Size, Player, SelRow, SelColumn, NewRow, NewColumn, FinalRow, FinalColumn)
     ).
 
-/* ListOfMoves: [[Row, Col, [[MovR1, MovC1], [MovR2, MovC2]] ]]*/
-valid_moves(GameState, Size, Player, ListOfMoves):-
+/* ListOfPossibleMoves: [[Row, Col, [[MovR1, MovC1], [MovR2, MovC2]..]]]*/
+valid_moves(GameState, Size, Player, ListOfPossibleMoves):-
     getPlayerInMatrix(GameState, Size, Player, Positions),
-    getAllMoves(GameState, Size, Player, Positions, ListOfMoves),
-    \+isEmpty(ListOfMoves).
+    getAllPossibleMoves(GameState, Size, Player, Positions, ListOfPossibleMoves),
+    \+isEmpty(ListOfPossibleMoves).
 
 valid_moves(_, _, _, _):-
     write('\nNo moves available, remove your own piece\n'),

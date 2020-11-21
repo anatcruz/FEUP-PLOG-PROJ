@@ -8,31 +8,32 @@ display_game(GameState, Player):-
     printBoard(GameState),
     printTurn(Player).
 
-playerTurn(Board, FinalBoard, Size, Player) :-
+move(GameState, Size, Player, NewGameState):-
+    valid_moves(GameState, Size, Player, _),
+    selectPiece(GameState, Size, SelBoard, Player, InputRow, InputColumn),
+    movePiece(SelBoard, Size, NewGameState, Player, InputRow, InputColumn).
+
+playerTurn(GameState, NewGameState, Size, Player) :-
+    printTurn(Player),
     (
         (
-            valid_moves(Board, Size, Player, _),
-            selectPiece(Board, Size, SelBoard, Player, InputRow, InputColumn),
-            movePiece(SelBoard, Size, FinalBoard, Player, InputRow, InputColumn)
+            move(GameState, Size, Player, NewGameState)
         );
         (
-            removePiece(Board, Size, FinalBoard, Player)
+            removePiece(GameState, Size, NewGameState, Player)
         )
-    ).
+    ),
+    printBoard(NewGameState).
 
-playerVSplayer(Board,Size,Player):-
-    printTurn(Player),
-    playerTurn(Board, FinalBoard, Size, Player),
-    printBoard(FinalBoard),
+playerVSplayer(GameState, Size, Player):-
+    playerTurn(GameState, NewGameState, Size, Player),
     (
-        game_over(Player, FinalBoard, Size);
-        Enemy is -Player, playerVSplayer(FinalBoard, Size, Enemy)
+        game_over(Player, NewGameState, Size);
+        Enemy is -Player, playerVSplayer(NewGameState, Size, Enemy)
     ).
 
 playerVSbotRandom(Board, Size, Player) :-
-    printTurn(Player),
     playerTurn(Board, FinalBoard, Size, Player),
-    printBoard(FinalBoard),
     (
         game_over(Player, FinalBoard, Size);
         (

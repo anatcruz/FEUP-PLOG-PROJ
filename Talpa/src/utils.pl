@@ -109,20 +109,20 @@ getPosition([Row, Column | _], Row, Column).
 
 getPositionAndMoves([Row, Col | Moves], [Row, Col], Moves).
 
-getPlayerInRow(GameState, List, Size, Row, Column, Player, ListOfMoves) :-
-	getPlayerInRow(GameState, List, Size, Row, Column, Player, [], ListOfMoves).
+getPlayerInRow(GameState, List, Size, Row, Column, Player, ListOfPositions) :-
+	getPlayerInRow(GameState, List, Size, Row, Column, Player, [], ListOfPositions).
 
-getPlayerInRow(_, [], Size, _, Size, _, ListOfMoves, ListOfMoves).
-getPlayerInRow(GameState, [_|Tail], Size, Row, Column, Player, Moves, ListOfMoves) :-
+getPlayerInRow(_, [], Size, _, Size, _, ListOfPositions, ListOfPositions).
+getPlayerInRow(GameState, [_|Tail], Size, Row, Column, Player, Moves, ListOfPositions) :-
 	(
 		isPlayer(GameState, Row, Column, Player),
 		appendListNotEmpty(Moves, [Row,Column], NewList),
 		X is Column + 1,
-		getPlayerInRow(GameState, Tail, Size, Row, X, Player, NewList, ListOfMoves)
+		getPlayerInRow(GameState, Tail, Size, Row, X, Player, NewList, ListOfPositions)
 	);
 	(
 		X is Column + 1,
-		getPlayerInRow(GameState, Tail, Size, Row, X, Player, Moves, ListOfMoves)
+		getPlayerInRow(GameState, Tail, Size, Row, X, Player, Moves, ListOfPositions)
 	).
 
 getPlayerInMatrix(GameState, Size, Player, ListOfPositions) :-
@@ -137,13 +137,13 @@ getPlayerInMatrix(GameState, [Head|Tail], Size, Row, Player, ListInterm, ListOfP
 
 
 
-getAllMoves(GameState, Size, Player, Positions, ListOfMoves):-
-  getAllMoves(GameState, Size, Player, Positions, [], ListOfMoves).
+getAllPossibleMoves(GameState, Size, Player, Positions, ListOfPossibleMoves):-
+  getAllPossibleMoves(GameState, Size, Player, Positions, [], ListOfPossibleMoves).
 
-getAllMoves(_, _, _, [], ListOfMoves, ListOfMoves).
-getAllMoves(GameState, Size, Player, [Pos|PosRest], ListInterm, ListOfMoves):-
+getAllPossibleMoves(_, _, _, [], ListOfPossibleMoves, ListOfPossibleMoves).
+getAllPossibleMoves(GameState, Size, Player, [Pos|PosRest], ListInterm, ListOfPossibleMoves):-
   getPosition(Pos, SelRow, SelColumn),
   checkMove(GameState, Size, SelRow, SelColumn, Player, Moves),
   appendMoves(Pos, Moves, CurrentMoves),
   appendListNotEmpty(ListInterm, CurrentMoves, NewList),
-  getAllMoves(GameState, Size, Player, PosRest, NewList, ListOfMoves), !.
+  getAllPossibleMoves(GameState, Size, Player, PosRest, NewList, ListOfPossibleMoves), !.

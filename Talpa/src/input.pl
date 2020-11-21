@@ -56,28 +56,28 @@ the inputs are checked if they are within the boundaries of the board and if the
 on the board the piece the player wants to move is replaced by an empty space
 then the piece is moved
 */
-selectPiece(Board, Size, SelBoard, Player, InputRow, InputColumn) :-
-    write('\nSelect pice:\n'),
-    manageRow(SelRow, Size),
-    manageColumn(SelColumn, Size),
-    validateContent(Board, Size, SelRow, SelColumn, Player, InputRow, InputColumn),
-    replaceInMatrix(Board, InputRow, InputColumn, 0, SelBoard).
+selectPiece(Board, Size, SelBoard, Player, SelRow, SelColumn) :-
+    write('\nSelect piece:\n'),
+    manageRow(InputRow, Size),
+    manageColumn(InputColumn, Size),
+    validateContent(Board, Size, InputRow, InputColumn, Player, SelRow, SelColumn),
+    replaceInMatrix(Board, SelRow, SelColumn, 0, SelBoard).
 
 /*the player selects the position for the piece he wants to move
 the inputs are checked if they are within the boundaries of the board
 it checks if the moving to position is valid
 then the piece in the moving to position is replaced by the player
 */
-movePiece(SelBoard, Size, FinalBoard, Player, InputRow, InputColumn) :-
+movePiece(SelBoard, Size, FinalBoard, Player, SelRow, SelColumn) :-
     write('\nMove to:\n'),
     manageRow(MovRow, Size),
     manageColumn(MovColumn, Size),
-    verifyOrtMove(SelBoard, Size, Player, InputRow, InputColumn, MovRow, MovColumn, FinalRow, FinalColumn),
+    verifyOrtMove(SelBoard, Size, Player, SelRow, SelColumn, MovRow, MovColumn, FinalRow, FinalColumn),
     replaceInMatrix(SelBoard, FinalRow, FinalColumn, Player , FinalBoard).
 
 removePiece(Board, Size, FinalBoard, Player) :-
-    write('\nSelect pice:\n'),
-    manageRow(SelRow, Size),
-    manageColumn(SelColumn, Size),
-    verifyPlayer(Board, Size, SelRow, SelColumn, Player, InputRow, InputColumn),
-    replaceInMatrix(Board, InputRow, InputColumn, 0, FinalBoard).
+    write('\nRemove piece:\n'),
+    manageRow(InputRow, Size),
+    manageColumn(InputColumn, Size),
+    verifyPlayer(Board, Size, InputRow, InputColumn, Player, SelRow, SelColumn),
+    replaceInMatrix(Board, SelRow, SelColumn, 0, FinalBoard).
