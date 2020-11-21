@@ -1,4 +1,5 @@
 printMainMenu :-
+    repeat,
     write('\n\n ___________________________________\n'),
     write('|                                   |\n'),
     write('|                                   |\n'),
@@ -8,11 +9,11 @@ printMainMenu :-
     write('|      |_| |__,_||_|| .__/|__,_|    |\n'),
     write('|                   |_|             |\n'),
     write('|                                   |\n'),
-    write('|         1. Player vs Player       |\n'),
+    write('|        1. Player vs Player        |\n'),
     write('|                                   |\n'),
     write('|        2. Player vs Computer      |\n'),
     write('|                                   |\n'),
-    write('|               0. Exit             |\n'),
+    write('|              0. Exit              |\n'),
     write('|                                   |\n'),
     write('|                                   |\n'),
     write('|___________________________________|\n\n').
@@ -48,33 +49,104 @@ menuAction(0) :-
 %Player vs Player
 menuAction(1) :-
     boardSizeMenu,
-    selectBoardSizeOption(2, ValidOption),
-    sizeAction(ValidOption).
-
-%Player vs Computer 4x4
+    selectOption(2, ValidOption),
+    sizeActionPlayer(ValidOption).
+    
+%Player vs Computer
 menuAction(2) :-
-    initial(GameState,8),
-    printBoard(GameState),
-    playerVSbotRandom(GameState, 8, 1).
+    boardSizeMenu,
+    selectOption(2, ValidOption1),
+    sizeActionBot(ValidOption1, GameState, Size).
 
 boardSizeMenu:-
-    write('\n\n1. 6x6 Board\n2. 8x8 Board\n0. Main Menu\n').
+    write('\n\n ___________________________________\n'),
+    write('|                                   |\n'),
+    write('|                                   |\n'),
+    write('|     _____       _                 |\n'),
+    write('|    |_   _|__ _ | | ____  __ _     |\n'),
+    write('|      | | / _` || ||  _ |/ _` |    |\n'),
+    write('|      |_| |__,_||_|| .__/|__,_|    |\n'),
+    write('|                   |_|             |\n'),
+    write('|                                   |\n'),
+    write('|          1. 6 x 6 Board           |\n'),
+    write('|                                   |\n'),
+    write('|          2. 8 x 8 Board           |\n'),
+    write('|                                   |\n'),
+    write('|          0. Main Menu             |\n'),
+    write('|                                   |\n'),
+    write('|                                   |\n'),
+    write('|___________________________________|\n\n').
 
-selectBoardSizeOption(NumOptions, ValidOption):-
+selectOption(NumOptions, ValidOption):-
     write('\nInsert option:\n'),
     repeat,
     readMenuOption(OptionInput),
     validateMenuOption(OptionInput, ValidOption, NumOptions).
 
-sizeAction(0):-
-    menuAction(0).
+sizeActionPlayer(1) :-
+    initial(GameState, 6),
+    playerVSplayerPlay(GameState, 6).
 
-sizeAction(1):-
-    initial(GameState,6),
-    printBoard(GameState),
-    playerVSplayer(GameState, 6, 1).
+sizeActionPlayer(2) :-
+    initial(GameState, 8),
+    playerVSplayerPlay(GameState, 8).
 
-sizeAction(2) :-
-    initial(GameState,8),
+sizeActionPlayer(0) :-
+    printMainMenu,
+    selectMainMenuOption(2).
+
+playerVSplayerPlay(GameState, Size) :-
     printBoard(GameState),
-    playerVSplayer(GameState, 8, 1).
+    playerVSplayer(GameState, Size, 1).
+
+sizeActionBot(1, GameState, Size) :-
+    initial(GameState, 6),
+    Size is 6,
+    botDificultyMenu,
+    selectOption(2, ValidOption2),
+    botAction(ValidOption2, GameState, Size).
+
+sizeActionBot(2, GameState, Size) :-
+    initial(GameState, 8),
+    Size is 8,
+    botDificultyMenu,
+    selectOption(2, ValidOption2),
+    botAction(ValidOption2, GameState, Size).
+
+sizeActionBot(0,_,_) :-
+    printMainMenu,
+    selectMainMenuOption(2).
+
+botAction(1, GameState, Size) :-
+    botVSplayerPlay(GameState, Size).
+
+botAction(2, GameState, Size) :-
+    botVSplayerPlay(GameState, Size).
+
+botAction(0, _, _) :-
+    printMainMenu,
+    selectMainMenuOption(2).
+
+botVSplayerPlay(GameState, Size) :-
+    printBoard(GameState),
+    playerVSbotRandom(GameState, Size, 1).
+
+
+botDificultyMenu:-
+    write('\n\n ___________________________________\n'),
+    write('|                                   |\n'),
+    write('|                                   |\n'),
+    write('|     _____       _                 |\n'),
+    write('|    |_   _|__ _ | | ____  __ _     |\n'),
+    write('|      | | / _` || ||  _ |/ _` |    |\n'),
+    write('|      |_| |__,_||_|| .__/|__,_|    |\n'),
+    write('|                   |_|             |\n'),
+    write('|                                   |\n'),
+    write('|          1. easy (random)         |\n'),
+    write('|                                   |\n'),
+    write('|          2. normal                |\n'),
+    write('|                                   |\n'),
+    write('|          0. Main Menu             |\n'),
+    write('|                                   |\n'),
+    write('|                                   |\n'),
+    write('|___________________________________|\n\n').
