@@ -37,6 +37,12 @@ playerTurn(GameState, NewGameState, Size, Player) :-
     move(GameState, Player, Move, NewGameState),
     printBoard(NewGameState).
 
+botTurn(GameState, NewGameState, Size, Player, Level) :-
+    printTurn(Player),
+    choose_move(GameState, Size, Player, Level, Move),
+    move(GameState, Player, Move, NewGameState),
+    printBoard(NewGameState).
+
 playerVSplayer(GameState, Size, Player):-
     playerTurn(GameState, NewGameState, Size, Player),
     (
@@ -44,18 +50,16 @@ playerVSplayer(GameState, Size, Player):-
         Enemy is -Player, playerVSplayer(NewGameState, Size, Enemy)
     ).
 
-playerVSbotRandom(Board, Size, Player) :-
-    playerTurn(Board, FinalBoard, Size, Player),
+playerVSbotRandom(GameState, Size, Player) :-
+    playerTurn(GameState, UpdatedGameState, Size, Player),
     (
-        game_over(Player, FinalBoard, Size);
+        game_over(Player, UpdatedGameState, Size);
         (
             Enemy is -Player,
-            printTurn(Enemy),
-            choose_move(FinalBoard, BotBoard, Size, Enemy, 1),
-            printBoard(BotBoard),
+            botTurn(UpdatedGameState, NewGameState, Size, Enemy, 1),
             (
-                game_over(Enemy, BotBoard, Size);
-                enterContinue, playerVSbotRandom(BotBoard, Size, Player)
+                game_over(Enemy, NewGameState, Size);
+                enterContinue, playerVSbotRandom(NewGameState, Size, Player)
             )
         )  
     ).
