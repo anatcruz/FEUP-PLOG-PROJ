@@ -6,7 +6,7 @@ verifyPlayer(Board, Size, InputRow, InputColumn, Player, SelRow, SelColumn) :-
     isPlayer(Board, InputRow, InputColumn, Player),
     SelRow is InputRow, SelColumn is InputColumn;
     (
-        write('\nERROR! You can not play that piece!\n \nSelect piece:\n'),
+        write('\nERROR! You can not play that piece!\n \nRemove piece:\n'),
         manageRow(NewRow, Size),
         manageColumn(NewColumn, Size),
         verifyPlayer(Board, Size, NewRow, NewColumn, Player, SelRow, SelColumn)

@@ -1,28 +1,40 @@
-initial(GameState, Size) :- generateBoard(GameState, Size).
+initial(GameState, Size) :- %generateBoard(GameState, Size).
                             %initialGameState(GameState).
                             %midGameState(GameState).
-                            %testState(GameState).
+                            testState(GameState).
                             %finalGameState(GameState).
 
 display_game(GameState, Player):-
     printBoard(GameState),
     printTurn(Player).
 
-move(GameState, Size, Player, NewGameState):-
+/*Selects a piece and a position to move if there are available moves for the player*/
+choose_move(GameState, Size, Player, Move):-
     valid_moves(GameState, Size, Player, _),
-    selectPiece(GameState, Size, SelBoard, Player, InputRow, InputColumn),
-    movePiece(SelBoard, Size, NewGameState, Player, InputRow, InputColumn).
+    selectPiece(GameState, Size, Player, SelRow, SelColumn),
+    movePiece(GameState, Size, Player, SelRow, SelColumn, FinalRow, FinalColumn),
+    Move = [SelRow, SelColumn, FinalRow, FinalColumn].
+
+/*If no available moves then select a piece to remove*/
+choose_move(GameState, Size, Player, Move):-
+    removePiece(GameState, Size, Player, SelRow, SelColumn),
+    Move = [SelRow, SelColumn].
+
+/*Move when available moves,
+replacing on board selected position with empty space and moving position with player piece*/
+move(GameState, Player, Move, NewGameState):-
+    (nth0(0, Move, SelRow), nth0(1, Move, SelColumn), nth0(2, Move, FinalRow), nth0(3, Move, FinalColumn)),
+    replaceInMatrix(GameState, SelRow, SelColumn, 0, UpdatedGameState),
+    replaceInMatrix(UpdatedGameState, FinalRow, FinalColumn, Player, NewGameState).
+
+/*Move when no available moves, replacing selected position on board with empty space*/
+move(GameState, Player, [Row, Column |_], NewGameState):-
+    replaceInMatrix(GameState, Row, Column, 0, NewGameState).
 
 playerTurn(GameState, NewGameState, Size, Player) :-
     printTurn(Player),
-    (
-        (
-            move(GameState, Size, Player, NewGameState)
-        );
-        (
-            removePiece(GameState, Size, NewGameState, Player)
-        )
-    ),
+    choose_move(GameState, Size, Player, Move),
+    move(GameState, Player, Move, NewGameState),
     printBoard(NewGameState).
 
 playerVSplayer(GameState, Size, Player):-
