@@ -1,7 +1,7 @@
-initial(GameState, Size) :- %generateBoard(GameState, Size).
+initial(GameState, Size) :- generateBoard(GameState, Size).
                             %initialGameState(GameState).
                             %midGameState(GameState).
-                            testState(GameState).
+                            %testState(GameState).
                             %finalGameState(GameState).
 
 display_game(GameState, Player):-
