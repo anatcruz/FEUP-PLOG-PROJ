@@ -13,5 +13,4 @@
 play :- 
     now(X),
     setrand(X), 
-    printMainMenu,
-    selectMainMenuOption(2).
+    mainMenu.

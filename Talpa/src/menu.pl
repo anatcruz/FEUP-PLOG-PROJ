@@ -1,5 +1,4 @@
-printMainMenu :-
-    repeat,
+mainMenu :-
     write('\n\n ___________________________________\n'),
     write('|                                   |\n'),
     write('|                                   |\n'),
@@ -16,15 +15,16 @@ printMainMenu :-
     write('|              0. Exit              |\n'),
     write('|                                   |\n'),
     write('|                                   |\n'),
-    write('|___________________________________|\n\n').
+    write('|___________________________________|\n\n'),
+    selectMenuOption(2, ValidOption),
+    menuAction(ValidOption).
 
 %Select menu option and call the respective action
-selectMainMenuOption(NumOptions) :-
+selectMenuOption(NumOptions, ValidOption) :-
     write('\nInsert option:\n'),
     repeat,
     readMenuOption(OptionInput),
-    validateMenuOption(OptionInput, ValidOption, NumOptions),
-    menuAction(ValidOption).
+    validateMenuOption(OptionInput, ValidOption, NumOptions).
 
 %Reads menu option input code, ignoring newlines (ascii code 10)
 readMenuOption(Option) :-
@@ -48,17 +48,19 @@ menuAction(0) :-
 
 %Player vs Player
 menuAction(1) :-
-    boardSizeMenu,
-    selectOption(2, ValidOption),
-    sizeActionPlayer(ValidOption).
+    boardSizeMenu(ValidOption),
+    sizeAction(ValidOption, GameState, Size),
+    printBoard(GameState),
+    playerVSplayer(GameState, Size, 1).
     
 %Player vs Computer
 menuAction(2) :-
-    boardSizeMenu,
-    selectOption(2, ValidOption1),
-    sizeActionBot(ValidOption1, GameState, Size).
+    boardSizeMenu(ValidOption),
+    sizeAction(ValidOption, GameState, Size),
+    botDificultyMenu(Difficulty),
+    botAction(Difficulty, GameState, Size).
 
-boardSizeMenu:-
+boardSizeMenu(ValidOption):-
     write('\n\n ___________________________________\n'),
     write('|                                   |\n'),
     write('|                                   |\n'),
@@ -75,47 +77,19 @@ boardSizeMenu:-
     write('|          0. Main Menu             |\n'),
     write('|                                   |\n'),
     write('|                                   |\n'),
-    write('|___________________________________|\n\n').
+    write('|___________________________________|\n\n'),
+    selectMenuOption(2, ValidOption).
 
-selectOption(NumOptions, ValidOption):-
-    write('\nInsert option:\n'),
-    repeat,
-    readMenuOption(OptionInput),
-    validateMenuOption(OptionInput, ValidOption, NumOptions).
-
-sizeActionPlayer(1) :-
+sizeAction(1, GameState, Size) :-
     initial(GameState, 6),
-    playerVSplayerPlay(GameState, 6).
+    Size is 6.
 
-sizeActionPlayer(2) :-
+sizeAction(2, GameState, Size) :-
     initial(GameState, 8),
-    playerVSplayerPlay(GameState, 8).
+    Size is 8.
 
-sizeActionPlayer(0) :-
-    printMainMenu,
-    selectMainMenuOption(2).
-
-playerVSplayerPlay(GameState, Size) :-
-    printBoard(GameState),
-    playerVSplayer(GameState, Size, 1).
-
-sizeActionBot(1, GameState, Size) :-
-    initial(GameState, 6),
-    Size is 6,
-    botDificultyMenu,
-    selectOption(2, ValidOption2),
-    botAction(ValidOption2, GameState, Size).
-
-sizeActionBot(2, GameState, Size) :-
-    initial(GameState, 8),
-    Size is 8,
-    botDificultyMenu,
-    selectOption(2, ValidOption2),
-    botAction(ValidOption2, GameState, Size).
-
-sizeActionBot(0,_,_) :-
-    printMainMenu,
-    selectMainMenuOption(2).
+sizeAction(0, _, _) :-
+    mainMenu.
 
 botAction(1, GameState, Size) :-
     botVSplayerPlay(GameState, Size).
@@ -124,15 +98,13 @@ botAction(2, GameState, Size) :-
     botVSplayerPlay(GameState, Size).
 
 botAction(0, _, _) :-
-    printMainMenu,
-    selectMainMenuOption(2).
+    mainMenu.
 
 botVSplayerPlay(GameState, Size) :-
     printBoard(GameState),
     playerVSbotRandom(GameState, Size, 1).
 
-
-botDificultyMenu:-
+botDificultyMenu(Difficulty) :-
     write('\n\n ___________________________________\n'),
     write('|                                   |\n'),
     write('|                                   |\n'),
@@ -149,4 +121,5 @@ botDificultyMenu:-
     write('|          0. Main Menu             |\n'),
     write('|                                   |\n'),
     write('|                                   |\n'),
-    write('|___________________________________|\n\n').
+    write('|___________________________________|\n\n'),
+    selectMenuOption(2, Difficulty).
