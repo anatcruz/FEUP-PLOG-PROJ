@@ -33,37 +33,37 @@ checkMove(GameState, Size, SelRow, SelColumn, Player, ListOfMoves) :-
     checkUpMove(GameState, Size, SelRow, SelColumn, Player, UpMove),
     checkLeftMove(GameState, Size, SelRow, SelColumn, Player, LeftMove),
     checkRightMove(GameState, Size, SelRow, SelColumn, Player, RightMove),
-    appendListNotEmpty([], DownMove, L),
-    appendListNotEmpty(L, UpMove, L1),
-    appendListNotEmpty(L1, LeftMove, L2),
-    appendListNotEmpty(L2, RightMove, ListOfMoves), !.
+    appendNotEmpty([], DownMove, L),
+    appendNotEmpty(L, UpMove, L1),
+    appendNotEmpty(L1, LeftMove, L2),
+    appendNotEmpty(L2, RightMove, ListOfMoves), !.
 
 
 checkDownMove(GameState, _, Row, Col, Player, DownMove):-
     Row>0, NewRow is Row-1,
     isEnemy(GameState, NewRow, Col, Player),
-    append([], [NewRow, Col], DownMove).
+    DownMove = [NewRow-Col].
 
 checkDownMove(_, _, _, _, _, []).
 
 checkUpMove(GameState, Size, Row, Col, Player, UpMove):-
     Row<Size, NewRow is Row+1,
     isEnemy(GameState, NewRow, Col, Player),
-    append([], [NewRow, Col], UpMove).
+    UpMove = [NewRow-Col].
 
 checkUpMove(_, _, _, _, _, []).
 
 checkLeftMove(GameState, _, Row, Col, Player, LeftMove):-
     Col>0, NewCol is Col-1,
     isEnemy(GameState, Row, NewCol, Player),
-    append([], [Row, NewCol], LeftMove).
+    LeftMove = [Row-NewCol].
 
 checkLeftMove(_, _, _, _, _, []).
 
 checkRightMove(GameState, Size, Row, Col, Player, RightMove):-
     Col<Size, NewCol is Col+1,
     isEnemy(GameState, Row, NewCol, Player),
-    append([], [Row, NewCol], RightMove).
+    RightMove = [Row-NewCol].
 
 checkRightMove(_, _, _, _, _, []).
 
@@ -87,7 +87,7 @@ verifyOrtMove(SelBoard, Size, Player, SelRow, SelColumn, MovRow, MovColumn, Fina
         verifyOrtMove(SelBoard, Size, Player, SelRow, SelColumn, NewRow, NewColumn, FinalRow, FinalColumn)
     ).
 
-/* ListOfPossibleMoves: [[Row, Col, [[MovR1, MovC1], [MovR2, MovC2]..]]]*/
+/* ListOfPossibleMoves: [[Row-Col, [MovRow1-MovCol2, MovRow2-MovCol2, ...]]]*/
 valid_moves(GameState, Size, Player, ListOfPossibleMoves):-
     getPlayerInMatrix(GameState, Size, Player, Positions),
     getAllPossibleMoves(GameState, Size, Player, Positions, ListOfPossibleMoves),
