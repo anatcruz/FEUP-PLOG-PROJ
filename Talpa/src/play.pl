@@ -1,22 +1,33 @@
-initial(GameState, Size) :- generateBoard(GameState, Size).
+initial(GameState, Size) :- %generateBoard(GameState, Size).
                             %initialGameState(GameState).
                             %midGameState(GameState).
-                            %testState(GameState).
+                            testState(GameState).
                             %finalGameState(GameState).
 
-display_game(GameState, Player):-
-    printBoard(GameState),
-    printTurn(Player).
+initialize(GameState, Size):-
+    initial(GameState, Size),
+    printBoard(GameState).
+
+play(GameState, Size, Player, PlayerType, EnemyType):-
+    game_over(GameState, Size, Player, Winner), !, printWinner(Winner).
+
+play(GameState, Size, Player, PlayerType, EnemyType):-
+    printTurn(Player),
+    choose_move(GameState, Size, Player, PlayerType, Move),
+    move(GameState, Player, Move, NewGameState),
+    printBoard(NewGameState),
+    Enemy is -Player,
+    !, play(NewGameState, Size, Enemy, EnemyType, PlayerType).
 
 /*Selects a piece and a position to move if there are available moves for the player*/
-choose_move(GameState, Size, Player, Move):-
+choose_move(GameState, Size, Player, 'Player', Move):-
     valid_moves(GameState, Size, Player, _),
     selectPiece(GameState, Size, Player, SelRow, SelColumn),
     movePiece(GameState, Size, Player, SelRow, SelColumn, FinalRow, FinalColumn),
     Move = [SelRow-SelColumn, FinalRow-FinalColumn].
 
 /*If no available moves then select a piece to remove*/
-choose_move(GameState, Size, Player, Move):-
+choose_move(GameState, Size, Player, 'Player', Move):-
     removePiece(GameState, Size, Player, SelRow, SelColumn),
     Move = SelRow-SelColumn.
 
@@ -31,50 +42,16 @@ move(GameState, Player, Move, NewGameState):-
 move(GameState, Player, Row-Column, NewGameState):-
     replaceInMatrix(GameState, Row, Column, 0, NewGameState).
 
-playerTurn(GameState, NewGameState, Size, Player) :-
-    printTurn(Player),
-    choose_move(GameState, Size, Player, Move),
-    move(GameState, Player, Move, NewGameState),
-    printBoard(NewGameState).
-
-botTurn(GameState, NewGameState, Size, Player, Level) :-
-    printTurn(Player),
-    choose_move(GameState, Size, Player, Level, Move),
-    move(GameState, Player, Move, NewGameState),
-    printBoard(NewGameState).
-
-playerVSplayer(GameState, Size, Player):-
-    playerTurn(GameState, NewGameState, Size, Player),
-    (
-        game_over(Player, NewGameState, Size);
-        Enemy is -Player, playerVSplayer(NewGameState, Size, Enemy)
-    ).
-
-playerVSbotRandom(GameState, Size, Player) :-
-    playerTurn(GameState, UpdatedGameState, Size, Player),
-    (
-        game_over(Player, UpdatedGameState, Size);
-        (
-            Enemy is -Player,
-            botTurn(UpdatedGameState, NewGameState, Size, Enemy, 1),
-            (
-                game_over(Enemy, NewGameState, Size);
-                enterContinue, playerVSbotRandom(NewGameState, Size, Player)
-            )
-        )  
-    ).
 
     %Check victory from players
-%Check victory from the enemy first
-game_over(Player, Board, Size):-
-    Enemy is -Player,
-    checkWinner(Enemy, Board, Size, 0, 0),
-    printWinner(Enemy).
+%Check victory from the current player first (last round enemy)
+game_over(Board, Size, Player, Player):-
+    checkWinner(Player, Board, Size, 0, 0).
 
-%Check victory from the player after
-game_over(Player, Board, Size):-
-    checkWinner(Player, Board, Size, 0, 0),
-    printWinner(Player).
+%Check victory from the enemy after
+game_over(Board, Size, Player, Enemy):-
+    Enemy is -Player,
+    checkWinner(Enemy, Board, Size, 0, 0).
 
 
 %Check if red player (O) won, using checkRedPath to avaliate board after floodfill

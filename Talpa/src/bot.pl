@@ -1,14 +1,14 @@
 /*choose_move(GameState, Size, Player, Level, Move)*/
 
 /*Selects random a piece and position to move if there are available moves for the player*/
-choose_move(GameState, Size, Player, 1, Move):-
+choose_move(GameState, Size, Player, 'Random', Move):-
     valid_moves(GameState, Size, Player, ListOfValidMoves),
     selectPieceBotRandom(ListOfValidMoves, SelPosition, ListOfMoves),
     movePieceBotRandom(ListOfMoves, MovPosition),
     Move = [SelPosition, MovPosition].
 
 /*If no available moves then select a random piece to remove*/
-choose_move(GameState, Size, Player, 1, Move):-
+choose_move(GameState, Size, Player, 'Random', Move):-
     removePieceBotRandom(GameState, Size, Player, Move).
 
 /*Select a random Move from the ListOfValidMoves, 

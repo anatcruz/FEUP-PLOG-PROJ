@@ -1,4 +1,5 @@
 mainMenu :-
+    write('\33\[2J'),
     write('\n\n ___________________________________\n'),
     write('|                                   |\n'),
     write('|                                   |\n'),
@@ -51,7 +52,7 @@ menuAction(1) :-
     boardSizeMenu(ValidOption),
     sizeAction(ValidOption, GameState, Size),
     printBoard(GameState),
-    playerVSplayer(GameState, Size, 1).
+    play(GameState, Size, 1, 'Player', 'Player').
     
 %Player vs Computer
 menuAction(2) :-
@@ -61,6 +62,7 @@ menuAction(2) :-
     botAction(Difficulty, GameState, Size).
 
 boardSizeMenu(ValidOption):-
+    write('\33\[2J'),
     write('\n\n ___________________________________\n'),
     write('|                                   |\n'),
     write('|                                   |\n'),
@@ -102,9 +104,10 @@ botAction(0, _, _) :-
 
 botVSplayerPlay(GameState, Size) :-
     printBoard(GameState),
-    playerVSbotRandom(GameState, Size, 1).
+    play(GameState, Size, 1, 'Player', 'Random').
 
 botDificultyMenu(Difficulty) :-
+    write('\33\[2J'),
     write('\n\n ___________________________________\n'),
     write('|                                   |\n'),
     write('|                                   |\n'),
