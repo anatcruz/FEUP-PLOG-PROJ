@@ -7,8 +7,7 @@ verifyPlayer(Board, Size, InputRow, InputColumn, Player, SelRow, SelColumn) :-
     SelRow is InputRow, SelColumn is InputColumn;
     (
         write('\nERROR! You can not play that piece!\n \nRemove piece:\n'),
-        manageRow(NewRow, Size),
-        manageColumn(NewColumn, Size),
+        manageInputs(NewRow, NewColumn, Size),
         verifyPlayer(Board, Size, NewRow, NewColumn, Player, SelRow, SelColumn)
     ).
 
@@ -18,8 +17,7 @@ validateContent(Board, Size, InputRow, InputColumn, Player, SelRow, SelColumn) :
     SelRow is InputRow, SelColumn is InputColumn;
     (
         write('\nERROR! You can not play that piece!\n \nSelect piece:\n'),
-        manageRow(NewRow, Size),
-        manageColumn(NewColumn, Size),
+        manageInputs(NewRow, NewColumn, Size),
         validateContent(Board, Size, NewRow, NewColumn, Player, SelRow, SelColumn)
     ).
 
@@ -81,8 +79,7 @@ verifyOrtMove(SelBoard, Size, Player, SelRow, SelColumn, MovRow, MovColumn, Fina
     FinalRow is MovRow, FinalColumn is MovColumn;
     (
         write('\nERROR! That is not a valid move!\n \nMove to:\n'),
-        manageRow(NewRow, Size),
-        manageColumn(NewColumn, Size),
+        manageInputs(NewRow, NewColumn, Size),
         verifyOrtMove(SelBoard, Size, Player, SelRow, SelColumn, NewRow, NewColumn, FinalRow, FinalColumn)
     ).
 

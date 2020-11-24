@@ -51,13 +51,16 @@ manageColumn(NewColumn, Size) :-
     readColumn(Column),
     validateColumn(Column, NewColumn, Size).
 
+manageInputs(NewRow, NewColumn, Size) :-
+    manageRow(NewRow, Size),
+    manageColumn(NewColumn, Size).
+
 /*the player selects the piece he wants to move
 the inputs are checked if they are within the boundaries of the board and if the player is selecting his own piece
 */
 selectPiece(Board, Size, Player, SelRow, SelColumn) :-
     write('\nSelect piece:\n'),
-    manageRow(InputRow, Size),
-    manageColumn(InputColumn, Size),
+    manageInputs(InputRow, InputColumn, Size),
     validateContent(Board, Size, InputRow, InputColumn, Player, SelRow, SelColumn).
 
 /*the player selects the position for the piece he wants to move
@@ -65,12 +68,10 @@ the inputs are checked if they are within the boundaries of the board
 */
 movePiece(Board, Size, Player, SelRow, SelColumn, FinalRow, FinalColumn) :-
     write('\nMove to:\n'),
-    manageRow(MovRow, Size),
-    manageColumn(MovColumn, Size),
+    manageInputs(MovRow, MovColumn, Size),
     verifyOrtMove(Board, Size, Player, SelRow, SelColumn, MovRow, MovColumn, FinalRow, FinalColumn).
 
 removePiece(Board, Size, Player, SelRow, SelColumn) :-
     write('\nRemove piece:\n'),
-    manageRow(InputRow, Size),
-    manageColumn(InputColumn, Size),
+    manageInputs(InputRow, InputColumn, Size),
     verifyPlayer(Board, Size, InputRow, InputColumn, Player, SelRow, SelColumn).
