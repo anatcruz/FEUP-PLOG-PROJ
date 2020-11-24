@@ -1,4 +1,5 @@
 mainMenu :-
+    repeat,
     write('\33\[2J'),
     write('\n\n ___________________________________\n'),
     write('|                                   |\n'),
@@ -25,7 +26,7 @@ selectMenuOption(NumOptions, ValidOption) :-
     write('\nInsert option:\n'),
     repeat,
     readMenuOption(OptionInput),
-    validateMenuOption(OptionInput, ValidOption, NumOptions).
+    validateMenuOption(OptionInput, ValidOption, NumOptions), !.
 
 %Reads menu option input code, ignoring newlines (ascii code 10)
 readMenuOption(Option) :-
@@ -49,19 +50,17 @@ menuAction(0) :-
 
 %Player vs Player
 menuAction(1) :-
-    boardSizeMenu(ValidOption),
-    sizeAction(ValidOption, GameState, Size),
+    boardSizeMenu(ValidOption, GameState, Size),
     printBoard(GameState),
     play(GameState, Size, 1, 'Player', 'Player').
     
 %Player vs Computer
 menuAction(2) :-
-    boardSizeMenu(ValidOption),
-    sizeAction(ValidOption, GameState, Size),
+    boardSizeMenu(ValidOption, GameState, Size),
     botDificultyMenu(Difficulty),
     botAction(Difficulty, GameState, Size).
 
-boardSizeMenu(ValidOption):-
+boardSizeMenu(ValidOption, GameState, Size):-
     write('\33\[2J'),
     write('\n\n ___________________________________\n'),
     write('|                                   |\n'),
@@ -80,7 +79,8 @@ boardSizeMenu(ValidOption):-
     write('|                                   |\n'),
     write('|                                   |\n'),
     write('|___________________________________|\n\n'),
-    selectMenuOption(2, ValidOption).
+    selectMenuOption(2, ValidOption),
+    sizeAction(ValidOption, GameState, Size).
 
 sizeAction(1, GameState, Size) :-
     initial(GameState, 6),
@@ -91,7 +91,7 @@ sizeAction(2, GameState, Size) :-
     Size is 8.
 
 sizeAction(0, _, _) :-
-    mainMenu.
+    fail.
 
 botAction(1, GameState, Size) :-
     botVSplayerPlay(GameState, Size).
