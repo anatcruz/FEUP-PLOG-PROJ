@@ -25,8 +25,7 @@ validateContent(Board, Size, InputRow, InputColumn, Player, SelRow, SelColumn) :
 
 verifyPossibleMove(GameState, Size, SelRow, SelColumn, Player, ListOfMoves) :-
     checkMove(GameState, Size, SelRow, SelColumn, Player, ListOfMoves),
-    \+isEmpty(ListOfMoves),
-    write('\nMoves available: '), printMovesList(ListOfMoves), nl.
+    \+isEmpty(ListOfMoves).
 
 checkMove(GameState, Size, SelRow, SelColumn, Player, ListOfMoves) :-
     checkDownMove(GameState, Size, SelRow, SelColumn, Player, DownMove),
