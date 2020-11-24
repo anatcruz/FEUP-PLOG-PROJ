@@ -28,7 +28,7 @@ enterContinue:-
 
 %Checks is List is empty
 isEmpty(List):-
-	length(List, 0),
+	length(List, 0).
 
 %If given L2 list is not empty, append it to L1 and result is L12
 appendNotEmpty(L1, [], L1).
@@ -41,8 +41,14 @@ appendListNotEmpty(L1, L2, L12):-
 	append(L1, [L2], L12).
 
 appendMoves(_, [], []).
-appendMoves(Pos, Moves, Ret):-
-  	append([Pos], [Moves], Ret).
+appendMoves(Pos, Moves, RetList):-
+	appendMoves(Pos, Moves, [], RetList).
+
+appendMoves(Pos, [], RetList, RetList).
+appendMoves(Pos, [Move | T], AuxList, RetList):-
+	CompleteMove = [Pos, Move],
+	append([CompleteMove], AuxList, NewAuxList),
+	appendMoves(Pos, T, NewAuxList, RetList).
 
 %Given a move (represented as a list of [Row, Column]), prints first two elements
 printMove([]).
@@ -106,7 +112,9 @@ tryFloodFill(Board, Size, Row, Col, FinalBoard):-
     getValueFromMatrix(Board, Row, Col, 0),
     floodFill(Board, Size, Row, Col, 0, 2, FinalBoard), !.
 
-getPositionAndMoves([Row-Col, Moves | _], Row-Col, Moves).
+getPositionAndMove(Move, SelPosition, MovPosition):-
+	nth0(0, Move, SelPosition),
+	nth0(1, Move, MovPosition).
 
 getPlayerInRow(GameState, List, Size, Row, Column, Player, ListOfPositions) :-
 	getPlayerInRow(GameState, List, Size, Row, Column, Player, [], ListOfPositions).
@@ -143,5 +151,5 @@ getAllPossibleMoves(_, _, _, [], ListOfPossibleMoves, ListOfPossibleMoves).
 getAllPossibleMoves(GameState, Size, Player, [Row-Column|PosRest], ListInterm, ListOfPossibleMoves):-
 	checkMove(GameState, Size, Row, Column, Player, Moves),
 	appendMoves(Row-Column, Moves, CurrentMoves),
-	appendListNotEmpty(ListInterm, CurrentMoves, NewList),
+	appendNotEmpty(ListInterm, CurrentMoves, NewList),
 	getAllPossibleMoves(GameState, Size, Player, PosRest, NewList, ListOfPossibleMoves), !.

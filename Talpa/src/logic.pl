@@ -87,7 +87,7 @@ verifyOrtMove(SelBoard, Size, Player, SelRow, SelColumn, MovRow, MovColumn, Fina
         verifyOrtMove(SelBoard, Size, Player, SelRow, SelColumn, NewRow, NewColumn, FinalRow, FinalColumn)
     ).
 
-/* ListOfPossibleMoves: [[Row-Col, [MovRow1-MovCol2, MovRow2-MovCol2, ...]]]*/
+/* ListOfPossibleMoves: [[SelectedRow-SelectedColumn, MoveRow-MoveColumn], [SelRow2-SelCol2, MovRow2-MovCol2], ...]*/
 valid_moves(GameState, Size, Player, ListOfPossibleMoves):-
     getPlayerInMatrix(GameState, Size, Player, Positions),
     getAllPossibleMoves(GameState, Size, Player, Positions, ListOfPossibleMoves),
