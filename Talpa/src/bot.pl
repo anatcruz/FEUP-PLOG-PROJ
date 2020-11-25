@@ -1,57 +1,47 @@
 /*choose_move(GameState, Size, Player, Level, Move)*/
 
 /*Selects random a piece and position to move if there are available moves for the player*/
-choose_move(GameState, Size, Player, 'Random', Move):-
+choose_move(GameState, Size, Player, Level, Move):-
     valid_moves(GameState, Size, Player, ListOfValidMoves),
-    selectSelAndMovPieceBot(ListOfValidMoves, SelPosition, MovPosition),
+    movePiecePositionBot(GameState, Size, Player, Level, ListOfValidMoves, SelPosition-MovPosition),
+    write('\nSelected: '), printMove(SelPosition), nl,
+    write('\nMoved to: '), printMove(MovPosition), nl,
     Move = [SelPosition, MovPosition].
 
-/*If no available moves then select a random piece to remove*/
-choose_move(GameState, Size, Player, 'Random', Move):-
-    removePieceBot(GameState, Size, Player, Move).
-
-choose_move(GameState, Size, Player, 'Greedy', Move):-
-    valid_moves(GameState, Size, Player, ListOfValidMoves),
-    selectSelAndMovPieceBotHard(GameState, Size, Player, ListOfValidMoves, SelPosition, MovPosition),
-    Move = [SelPosition, MovPosition].
-
-choose_move(GameState, Size, Player, 'Greedy', Move):-
-    removePieceBotHard(GameState, Size, Player, Move).
+/*If no available moves then select a random piece from the player to remove*/
+choose_move(GameState, Size, Player, Level, Move):-
+    getPlayerInMatrix(GameState, Size, Player, ListOfPositions),
+    removePiecePositionBot(GameState, Size, Player, Level, ListOfPositions, Move),
+    write('\nRemoved: '), printMove(Move), nl.
 
 /*Select a random Move from the ListOfValidMoves, 
 returning the Selected piece Position and the Move position*/
-selectSelAndMovPieceBot(ListOfValidMoves, SelPosition, MovPosition):-
-    random_member(SelMove, ListOfValidMoves),
-    getPositionAndMove(SelMove, SelPosition, MovPosition),
-    write('\nSelected: '), printMove(SelPosition), nl,
-    write('\nMoved to: '), printMove(MovPosition), nl.
+movePiecePositionBot(_, _, _, 'Random', ListOfValidMoves, SelMove):-
+    random_member(SelMove, ListOfValidMoves).
 
-/*Select a random Position of the current player to remove the piece*/
-removePieceBot(GameState, Size, Player, SelPosition):-
-    getPlayerInMatrix(GameState, Size, Player, Positions),
-    random_member(SelPosition, Positions),
-    write('\nRemoved: '), printMove(SelPosition), nl.
+/*Select a random position of the current player positions to remove the piece*/
+removePiecePositionBot(_, _, _, 'Random', ListOfPositions, SelPosition):-
+    random_member(SelPosition, ListOfPositions).
 
-selectSelAndMovPieceBotHard(GameState, Size, Player, ListOfValidMoves, SelPos, MovPos):-
+movePiecePositionBot(GameState, Size, Player, 'Greedy', ListOfValidMoves, SelPos-MovPos):-
     findall(
         Value1-SelPos1-MovPos1-Index,
         (
             nth0(Index, ListOfValidMoves, Move),
             move(GameState, Player, Move, NewGameState),
             value(NewGameState, Size, Player, Value1),
-            getPositionAndMove(Move, SelPos1, MovPos1),
+            getPositionAndMove(Move, SelPos1, MovPos1)
         ),
         ListResults
     ),
     sort(ListResults, Sorted),
     reverse(Sorted, [_-SelPos-MovPos-_|_]).
 
-removePieceBotHard(GameState, Size, Player, SelPos):-
-    getPlayerInMatrix(GameState, Size, Player, Positions),
+removePiecePositionBot(GameState, Size, Player, 'Greedy', ListOfPositions, SelPos):-
     findall(
         Value1-SelPos1-Index,
         (
-            nth0(Index, Positions, SelPos1),
+            nth0(Index, ListOfPositions, SelPos1),
             move(GameState, Player, SelPos1, NewGameState),
             value(NewGameState, Size, Player, Value1)
         ),
