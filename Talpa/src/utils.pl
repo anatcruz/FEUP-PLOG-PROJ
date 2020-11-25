@@ -153,3 +153,39 @@ getAllPossibleMoves(GameState, Size, Player, [Row-Column|PosRest], ListInterm, L
 	appendMoves(Row-Column, Moves, CurrentMoves),
 	appendNotEmpty(ListInterm, CurrentMoves, NewList),
 	getAllPossibleMoves(GameState, Size, Player, PosRest, NewList, ListOfPossibleMoves), !.
+
+check_end(Row, Col, Size):-
+	Row is (Size-1), Col is (Size-1).
+
+next_index(Row, Column, Length, NextRow, NextColumn):-
+    Column1 is Column + 1,
+    Column1 \== Length,
+    NextColumn is Column1, 
+    NextRow is Row.
+next_index(Row, Column, Length, NextRow, NextColumn):-
+    Column1 is Column + 1,
+    Column1 == Length, 
+    NextColumn is 0,
+    NextRow is Row + 1.
+
+count(_, [], 0).
+count(Num, [H|T], X) :- Num \= H, count(Num, T, X).
+count(Num, [H|T], X) :- Num = H, count(Num, T, X1), X is X1 + 1.
+
+% Receives [4,3,4,3,0,0] and returns 4
+% [0,1,0,0,1,4,2] returns 3
+% Returns in Result the longest sequence not formed by 0
+sequence(List, Result):-
+    sequence(List, 0, 0, Result).
+sequence([], Counter, MaxLength, Counter):-
+    Counter > MaxLength.
+sequence([], _, MaxLength, MaxLength).
+sequence([ToTest|Rest], Counter, MaxLength, Result):-
+    ToTest == 0, Counter > MaxLength, 
+    sequence(Rest, 0, Counter, Result).
+sequence([ToTest|Rest], _, MaxLength, Result):-
+    ToTest == 0, 
+    sequence(Rest, 0, MaxLength, Result).
+sequence([_|Rest], Counter, MaxLength, Result):-
+    Counter1 is Counter+1,
+    sequence(Rest, Counter1, MaxLength, Result).

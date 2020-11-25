@@ -34,7 +34,7 @@ choose_move(GameState, Size, Player, 'Player', Move):-
 /*Move when available moves,
 replacing on board selected position with empty space and moving position with player piece*/
 move(GameState, Player, Move, NewGameState):-
-    (nth0(0, Move, SelRow-SelColumn), nth0(1, Move, FinalRow-FinalColumn)),
+    getPositionAndMove(Move, SelRow-SelColumn, FinalRow-FinalColumn),
     replaceInMatrix(GameState, SelRow, SelColumn, 0, UpdatedGameState),
     replaceInMatrix(UpdatedGameState, FinalRow, FinalColumn, Player, NewGameState).
 
