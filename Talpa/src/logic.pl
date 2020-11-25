@@ -2,28 +2,24 @@
 if not, then he is asked again to input the position of the piece he wants to move
 */
 
-verifyPlayer(Board, Size, InputRow, InputColumn, Player, SelRow, SelColumn) :-
+verifyPlayer(Board, Size, InputRow, InputColumn, Player, SelRow, SelColumn):-
     isPlayer(Board, InputRow, InputColumn, Player),
-    SelRow is InputRow, SelColumn is InputColumn;
-    (
-        write('\nERROR! You can not play that piece!\n \nRemove piece:\n'),
-        manageInputs(NewRow, NewColumn, Size),
-        verifyPlayer(Board, Size, NewRow, NewColumn, Player, SelRow, SelColumn)
-    ).
+    SelRow is InputRow, SelColumn is InputColumn.
 
-validateContent(Board, Size, InputRow, InputColumn, Player, SelRow, SelColumn) :-
-    isPlayer(Board, InputRow, InputColumn, Player),
-    verifyPossibleMove(Board, Size, InputRow, InputColumn, Player, _),
-    SelRow is InputRow, SelColumn is InputColumn;
-    (
-        write('\nERROR! You can not play that piece!\n \nSelect piece:\n'),
-        manageInputs(NewRow, NewColumn, Size),
-        validateContent(Board, Size, NewRow, NewColumn, Player, SelRow, SelColumn)
-    ).
+verifyPlayer(_, _, _, _, _, _, _):-
+    write('\n! That is not your piece. Choose again !\n'), fail.
 
-verifyPossibleMove(GameState, Size, SelRow, SelColumn, Player, ListOfMoves) :-
+verifyPossibleMove(GameState, Size, SelRow, SelColumn, Player, ListOfMoves):-
     checkMove(GameState, Size, SelRow, SelColumn, Player, ListOfMoves),
     \+isEmpty(ListOfMoves).
+
+verifyPossibleMove(_, _, _, _, _, _):-
+    write('\n! No available moves for that piece. Choose again !\n'), fail.
+
+validateContent(Board, Size, InputRow, InputColumn, Player, SelRow, SelColumn):-
+    verifyPlayer(Board, Size, InputRow, InputColumn, Player, PlayerRow, PlayerColumn), !,
+    verifyPossibleMove(Board, Size, PlayerRow, PlayerColumn, Player, _),
+    SelRow is PlayerRow, SelColumn is PlayerColumn.
 
 checkMove(GameState, Size, SelRow, SelColumn, Player, ListOfMoves) :-
     checkDownMove(GameState, Size, SelRow, SelColumn, Player, DownMove),
@@ -76,12 +72,10 @@ verifyOrtMove(SelBoard, Size, Player, SelRow, SelColumn, MovRow, MovColumn, Fina
         (MovRow=:=SelRow, (MovColumn=:=SelColumn+1 ; MovColumn=:=SelColumn-1));  /*Same row*/
         (MovColumn=:=SelColumn, (MovRow=:=SelRow+1 ; MovRow=:=SelRow-1)) /*Same column */
     ),
-    FinalRow is MovRow, FinalColumn is MovColumn;
-    (
-        write('\nERROR! That is not a valid move!\n \nMove to:\n'),
-        manageInputs(NewRow, NewColumn, Size),
-        verifyOrtMove(SelBoard, Size, Player, SelRow, SelColumn, NewRow, NewColumn, FinalRow, FinalColumn)
-    ).
+    FinalRow is MovRow, FinalColumn is MovColumn.
+
+verifyOrtMove(_, _, _, _, _, _, _, _, _):-
+    write('\n! That is not a valid move. Choose again !\n'), fail.
 
 /* ListOfPossibleMoves: [[SelectedRow-SelectedColumn, MoveRow-MoveColumn], [SelRow2-SelCol2, MovRow2-MovCol2], ...]*/
 valid_moves(GameState, Size, Player, ListOfPossibleMoves):-
@@ -90,5 +84,4 @@ valid_moves(GameState, Size, Player, ListOfPossibleMoves):-
     \+isEmpty(ListOfPossibleMoves).
 
 valid_moves(_, _, _, _):-
-    write('\nNo moves available, remove your own piece\n'),
-    fail.
+    write('\nNo moves available, remove your own piece\n'), fail.

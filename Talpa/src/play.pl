@@ -22,13 +22,13 @@ play(GameState, Size, Player, PlayerType, EnemyType):-
 /*Selects a piece and a position to move if there are available moves for the player*/
 choose_move(GameState, Size, Player, 'Player', Move):-
     valid_moves(GameState, Size, Player, _),
-    selectPiece(GameState, Size, Player, SelRow, SelColumn),
-    movePiece(GameState, Size, Player, SelRow, SelColumn, FinalRow, FinalColumn),
+    selectPiecePosition(GameState, Size, Player, SelRow, SelColumn),
+    movePiecePosition(GameState, Size, Player, SelRow, SelColumn, FinalRow, FinalColumn),
     Move = [SelRow-SelColumn, FinalRow-FinalColumn].
 
 /*If no available moves then select a piece to remove*/
 choose_move(GameState, Size, Player, 'Player', Move):-
-    removePiece(GameState, Size, Player, SelRow, SelColumn),
+    removePiecePosition(GameState, Size, Player, SelRow, SelColumn),
     Move = SelRow-SelColumn.
 
 /*Move when available moves,

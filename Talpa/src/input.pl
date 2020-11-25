@@ -27,7 +27,7 @@ validateRow(RowInput, NewRow, Size) :-
     skip_line.
 
 validateRow(_, _, _) :-
-    write('\nERROR! That row is not valid!\n\n'), skip_line, fail.
+    write('\n! That row is not valid. Choose again !\n\n'), skip_line, fail.
 
 validateColumn(ColumnInput, NewColumn, Size) :-
     peek_char('\n'),
@@ -37,7 +37,7 @@ validateColumn(ColumnInput, NewColumn, Size) :-
     skip_line.
 
 validateColumn(_, _, _) :-
-    write('\nERROR! That column is not valid!\n\n'), skip_line, fail.
+    write('\n! That column is not valid. Choose again !\n\n'), skip_line, fail.
 
 %reads the input Row and checks if it is between the limits of the board
 manageRow(NewRow, Size) :-
@@ -53,12 +53,13 @@ manageColumn(NewColumn, Size) :-
 
 manageInputs(NewRow, NewColumn, Size) :-
     manageRow(NewRow, Size),
-    manageColumn(NewColumn, Size).
+    manageColumn(NewColumn, Size), !.
 
 /*the player selects the piece he wants to move
 the inputs are checked if they are within the boundaries of the board and if the player is selecting his own piece
 */
-selectPiece(Board, Size, Player, SelRow, SelColumn) :-
+selectPiecePosition(Board, Size, Player, SelRow, SelColumn):-
+    repeat,
     write('\nSelect piece:\n'),
     manageInputs(InputRow, InputColumn, Size),
     validateContent(Board, Size, InputRow, InputColumn, Player, SelRow, SelColumn).
@@ -66,12 +67,14 @@ selectPiece(Board, Size, Player, SelRow, SelColumn) :-
 /*the player selects the position for the piece he wants to move
 the inputs are checked if they are within the boundaries of the board
 */
-movePiece(Board, Size, Player, SelRow, SelColumn, FinalRow, FinalColumn) :-
+movePiecePosition(Board, Size, Player, SelRow, SelColumn, FinalRow, FinalColumn):-
+    repeat,
     write('\nMove to:\n'),
     manageInputs(MovRow, MovColumn, Size),
     verifyOrtMove(Board, Size, Player, SelRow, SelColumn, MovRow, MovColumn, FinalRow, FinalColumn).
 
-removePiece(Board, Size, Player, SelRow, SelColumn) :-
+removePiecePosition(Board, Size, Player, SelRow, SelColumn):-
+    repeat,
     write('\nRemove piece:\n'),
     manageInputs(InputRow, InputColumn, Size),
     verifyPlayer(Board, Size, InputRow, InputColumn, Player, SelRow, SelColumn).
