@@ -27,8 +27,7 @@ enterContinue:-
     skip_line.
 
 %Checks is List is empty
-isEmpty(List):-
-	length(List, 0).
+isEmpty([]).
 
 %If given L2 list is not empty, append it to L1 and result is L12
 appendNotEmpty(L1, [], L1).
@@ -116,33 +115,22 @@ getPositionAndMove(Move, SelPosition, MovPosition):-
 	nth0(0, Move, SelPosition),
 	nth0(1, Move, MovPosition).
 
-getPlayerInRow(GameState, List, Size, Row, Column, Player, ListOfPositions) :-
-	getPlayerInRow(GameState, List, Size, Row, Column, Player, [], ListOfPositions).
-
-getPlayerInRow(_, [], Size, _, Size, _, ListOfPositions, ListOfPositions).
-getPlayerInRow(GameState, [_|Tail], Size, Row, Column, Player, Moves, ListOfPositions) :-
-	(
-		isPlayer(GameState, Row, Column, Player),
-		append(Moves, [Row-Column], NewList),
-		X is Column + 1,
-		getPlayerInRow(GameState, Tail, Size, Row, X, Player, NewList, ListOfPositions)
-	);
-	(
-		X is Column + 1,
-		getPlayerInRow(GameState, Tail, Size, Row, X, Player, Moves, ListOfPositions)
-	).
 
 getPlayerInMatrix(GameState, Size, Player, ListOfPositions) :-
-	getPlayerInMatrix(GameState, GameState, Size, 0, Player, [], ListOfPositions).
+	getPlayerInMatrix(GameState, Size, 0, 0, Player, [], ListOfPositions), !.
 
-getPlayerInMatrix(_, [], Size, Size, _, ListOfPositions, ListOfPositions).
-getPlayerInMatrix(GameState, [Head|Tail], Size, Row, Player, ListInterm, ListOfPositions) :-
-	getPlayerInRow(GameState, Head, Size, Row, 0, Player, List),
-	appendNotEmpty(ListInterm, List, NewList),
-	X is Row + 1,
-	getPlayerInMatrix(GameState, Tail, Size, X, Player, NewList, ListOfPositions), !.
+getPlayerInMatrix(_, Size, Row, Column, _, ListOfPositions, ListOfPositions):-
+	check_end(Row, Column, Size).
 
+getPlayerInMatrix(GameState, Size, Row, Column, Player, ListInterm, ListOfPositions):-
+	isPlayer(GameState, Row, Column, Player),
+	append(ListInterm, [Row-Column], NewList),
+	next_index(Row, Column, Size, NextRow, NextColumn),
+	getPlayerInMatrix(GameState, Size, NextRow, NextColumn, Player, NewList, ListOfPositions).
 
+getPlayerInMatrix(GameState, Size, Row, Column, Player, ListInterm, ListOfPositions):-
+	next_index(Row, Column, Size, NextRow, NextColumn),
+	getPlayerInMatrix(GameState, Size, NextRow, NextColumn, Player, ListInterm, ListOfPositions).
 
 getAllPossibleMoves(GameState, Size, Player, Positions, ListOfPossibleMoves):-
 	getAllPossibleMoves(GameState, Size, Player, Positions, [], ListOfPossibleMoves).
@@ -154,9 +142,6 @@ getAllPossibleMoves(GameState, Size, Player, [Row-Column|PosRest], ListInterm, L
 	appendNotEmpty(ListInterm, CurrentMoves, NewList),
 	getAllPossibleMoves(GameState, Size, Player, PosRest, NewList, ListOfPossibleMoves), !.
 
-check_end(Row, Col, Size):-
-	Row is (Size-1), Col is (Size-1).
-
 next_index(Row, Column, Length, NextRow, NextColumn):-
     Column1 is Column + 1,
     Column1 \== Length,
@@ -167,6 +152,9 @@ next_index(Row, Column, Length, NextRow, NextColumn):-
     Column1 == Length, 
     NextColumn is 0,
     NextRow is Row + 1.
+
+check_end(Row, Col, Size):-
+	Row is Size, Col is 0.
 
 count(_, [], 0).
 count(Num, [H|T], X) :- Num \= H, count(Num, T, X).
