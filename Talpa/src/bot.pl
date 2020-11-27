@@ -3,10 +3,10 @@
 /*Selects random a piece and position to move if there are available moves for the player*/
 choose_move(GameState, Size, Player, Level, Move):-
     valid_moves(GameState, Size, Player, ListOfValidMoves),
-    movePiecePositionBot(GameState, Size, Player, Level, ListOfValidMoves, SelPosition-MovPosition),
+    movePiecePositionBot(GameState, Size, Player, Level, ListOfValidMoves, Move),
+    getPositionAndMove(Move, SelPosition, MovPosition),
     write('\nSelected: '), printMove(SelPosition), nl,
-    write('\nMoved to: '), printMove(MovPosition), nl,
-    Move = [SelPosition, MovPosition].
+    write('\nMoved to: '), printMove(MovPosition), nl.
 
 /*If no available moves then select a random piece from the player to remove*/
 choose_move(GameState, Size, Player, Level, Move):-
@@ -23,7 +23,7 @@ movePiecePositionBot(_, _, _, 'Random', ListOfValidMoves, SelMove):-
 removePiecePositionBot(_, _, _, 'Random', ListOfPositions, SelPosition):-
     random_member(SelPosition, ListOfPositions).
 
-movePiecePositionBot(GameState, Size, Player, 'Greedy', ListOfValidMoves, SelPos-MovPos):-
+movePiecePositionBot(GameState, Size, Player, 'Greedy', ListOfValidMoves, [SelPos, MovPos]):-
     findall(
         Value1-SelPos1-MovPos1-Index,
         (
@@ -63,11 +63,6 @@ value(GameState, Size, 1, Value):-
 
 getFFSpots(GameState, Size, ListOfFFSpots):-
     getFFSpots(GameState, Size, 0, 0, ListOfFFSpots).
-
-getFFSpots(GameState, Size, Row, Column, [Size1, Size1]):-
-    check_end(Row, Column, Size),
-    getValueFromMatrix(GameState, Row, Column, 0),
-    Size1 is Size-1.
 
 getFFSpots(GameState, Size, Row, Column, []):-
     check_end(Row, Col, Size).
