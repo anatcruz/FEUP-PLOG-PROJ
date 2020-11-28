@@ -296,10 +296,10 @@ botDificultyMenu(Difficulty) :-
     write('|                                             |\n'),
     write('|    Choose the difficulty fot the computer   |\n'),
     write('|                                             |\n'),
-    write('|               1. Easy (Random)              |\n'),
+    write('|               1. Easy (Easy)              |\n'),
     write('|                                             |\n'),
     write('|                                             |\n'),
-    write('|              2. Normal (Greedy)             |\n'),
+    write('|              2. Normal (Normal)             |\n'),
     write('|                                             |\n'),
     write('|                                             |\n'),
     write('|                0. Main Menu                 |\n'),
@@ -313,17 +313,17 @@ botDificultyMenu(Difficulty) :-
 
 %difficultyAction(+ValidOption,+Difficulty)
 /*
-The difficulty chosen for the bot is Random
+The difficulty chosen for the bot is Easy
 */
 difficultyAction(1, Difficulty) :-
-    Difficulty = 'Random'.
+    Difficulty = 'Easy'.
 
 %difficultyAction(+ValidOption,+Difficulty)
 /*
-The difficulty chosen for the bot is Greedy
+The difficulty chosen for the bot is Normal
 */
 difficultyAction(2, Difficulty) :-
-    Difficulty = 'Greedy'.
+    Difficulty = 'Normal'.
 
 %difficultyAction(+ValidOption,+Difficulty)
 /*
@@ -420,38 +420,38 @@ botsDifficultyMenu(ValidOption) :-
 %modeAction(+ValidOption,+GameState,+Size)
 /*
 Prints the board with the size chosen,
-the game starts: Computer VS Computer being both Random
+the game starts: Computer VS Computer being both Easy
 */
 modeAction(1, GameState, Size) :-
     printBoard(GameState),
-    play(GameState, Size, 1, 'Random', 'Random').
+    play(GameState, Size, 1, 'Easy', 'Easy').
 
 %modeAction(+ValidOption,+GameState,+Size)
 /*
 Prints the board with the size chosen,
-the game starts: Computer VS Computer, being the first Random and the second in Greedy
+the game starts: Computer VS Computer, being the first Easy and the second in Normal
 */
 modeAction(2, GameState, Size) :-
     printBoard(GameState),
-    play(GameState, Size, 1, 'Random', 'Greedy').
+    play(GameState, Size, 1, 'Easy', 'Normal').
 
 %modeAction(+ValidOption,+GameState,+Size)
 /*
 Prints the board with the size chosen,
-the game starts: Computer VS Computer, being the first Greedy and the second in Random
+the game starts: Computer VS Computer, being the first Normal and the second in Easy
 */
 modeAction(3, GameState, Size) :-
     printBoard(GameState),
-    play(GameState, Size, 1, 'Greedy', 'Random').
+    play(GameState, Size, 1, 'Normal', 'Easy').
 
 %modeAction(+ValidOption,+GameState,+Size)
 /*
 Prints the board with the size chosen,
-the game starts: Computer VS Computer, being both Greedy
+the game starts: Computer VS Computer, being both Normal
 */  
 modeAction(4, GameState, Size) :-
     printBoard(GameState),
-    play(GameState, Size, 1, 'Greedy', 'Greedy').
+    play(GameState, Size, 1, 'Normal', 'Normal').
 
 %modeAction(+ValidOption,+GameState,+Size)
 /*
