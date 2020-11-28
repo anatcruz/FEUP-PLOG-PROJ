@@ -8,7 +8,7 @@ initialize(GameState, Size):-
     initial(GameState, Size),
     printBoard(GameState).
 
-play(GameState, Size, Player, PlayerType, EnemyType):-
+play(GameState, Size, Player, _, _):-
     game_over(GameState, Size, Player, Winner), !, printWinner(Winner).
 
 play(GameState, Size, Player, PlayerType, EnemyType):-
@@ -34,7 +34,7 @@ choose_move(GameState, Size, Player, 'Player', Move):-
 /*Move when available moves,
 replacing on board selected position with empty space and moving position with player piece*/
 move(GameState, Player, Move, NewGameState):-
-    getPositionAndMove(Move, SelRow-SelColumn, FinalRow-FinalColumn),
+    getSelAndMovePosition(Move, SelRow-SelColumn, FinalRow-FinalColumn),
     replaceInMatrix(GameState, SelRow, SelColumn, 0, UpdatedGameState),
     replaceInMatrix(UpdatedGameState, FinalRow, FinalColumn, Player, NewGameState).
 
@@ -48,29 +48,29 @@ move(GameState, Player, Row-Column, NewGameState):-
 game_over(GameState, Size, Player, Player):-
     checkWinner(Player, GameState, Size, 0, 0).
 
-%Check victory from the enemy after
+%Check victory from the current enemy after
 game_over(GameState, Size, Player, Enemy):-
     Enemy is -Player,
     checkWinner(Enemy, GameState, Size, 0, 0).
 
 
 %Check if red player (O) won, using checkHorizontalPath to avaliate board after floodfill
-checkWinner(1, GameState, Size, Row, Col):-
+checkWinner(1, GameState, Size, Row, Column):-
     Row < Size,
-    tryFloodFill(GameState, Size, Row, Col, FinalGameState),
+    tryFloodFill(GameState, Size, Row, Column, FinalGameState),
     FinalCol is Size-1,
     checkHorizontalPath(FinalGameState, 0, FinalCol).
 
 %If FloodFill try or checkHorizontalPath failed check next row
-checkWinner(1, GameState, Size, Row, Col):-
+checkWinner(1, GameState, Size, Row, Column):-
     Row < Size,
     NextRow is Row + 1,
-    checkWinner(1, GameState, Size, NextRow, Col).
+    checkWinner(1, GameState, Size, NextRow, Column).
 
 %Check if blue player (X) won, transposing matrix and using checkWinner for red player to check for an horizontal path
-checkWinner(-1, GameState, Size, Row, Col):-
+checkWinner(-1, GameState, Size, Row, Column):-
     transpose(GameState, Transpose),
-    checkWinner(1, Transpose, Size, Row, Col).
+    checkWinner(1, Transpose, Size, Row, Column).
     
 %Auxiliar to check if there is a floodfill replaced char in the final column, meaning a path for the red player
 checkHorizontalPath(GameState, Row, FinalCol):-

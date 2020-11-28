@@ -71,7 +71,7 @@ movePiecePosition(Board, Size, Player, SelRow, SelColumn, FinalRow, FinalColumn)
     repeat,
     write('\nMove to:\n'),
     manageInputs(MovRow, MovColumn, Size),
-    verifyOrtMove(Board, Size, Player, SelRow, SelColumn, MovRow, MovColumn, FinalRow, FinalColumn).
+    verifyOrtMove(Board, Player, SelRow, SelColumn, MovRow, MovColumn, FinalRow, FinalColumn).
 
 removePiecePosition(Board, Size, Player, SelRow, SelColumn):-
     repeat,

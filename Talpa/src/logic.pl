@@ -2,11 +2,11 @@
 if not, then he is asked again to input the position of the piece he wants to move
 */
 
-verifyPlayer(Board, Size, InputRow, InputColumn, Player, SelRow, SelColumn):-
+verifyPlayer(Board, InputRow, InputColumn, Player, SelRow, SelColumn):-
     isPlayer(Board, InputRow, InputColumn, Player),
     SelRow is InputRow, SelColumn is InputColumn.
 
-verifyPlayer(_, _, _, _, _, _, _):-
+verifyPlayer(_, _, _, _, _, _):-
     write('\n! That is not your piece. Choose again !\n'), fail.
 
 verifyPossibleMove(GameState, Size, SelRow, SelColumn, Player, ListOfMoves):-
@@ -17,7 +17,7 @@ verifyPossibleMove(_, _, _, _, _, _):-
     write('\n! No available moves for that piece. Choose again !\n'), fail.
 
 validateContent(Board, Size, InputRow, InputColumn, Player, SelRow, SelColumn):-
-    verifyPlayer(Board, Size, InputRow, InputColumn, Player, PlayerRow, PlayerColumn), !,
+    verifyPlayer(Board, InputRow, InputColumn, Player, PlayerRow, PlayerColumn), !,
     verifyPossibleMove(Board, Size, PlayerRow, PlayerColumn, Player, _),
     SelRow is PlayerRow, SelColumn is PlayerColumn.
 
@@ -66,7 +66,7 @@ when the movement is within the same row, the player can only select the positio
 when the movement is within the same column, the player can only select the position immediately to the top or down
 when not given a valid position the player is asked again to write the position to move to
 */
-verifyOrtMove(SelBoard, Size, Player, SelRow, SelColumn, MovRow, MovColumn, FinalRow, FinalColumn) :-
+verifyOrtMove(SelBoard, Player, SelRow, SelColumn, MovRow, MovColumn, FinalRow, FinalColumn) :-
     isEnemy(SelBoard, MovRow, MovColumn, Player),
     (
         (MovRow=:=SelRow, (MovColumn=:=SelColumn+1 ; MovColumn=:=SelColumn-1));  /*Same row*/
@@ -74,7 +74,7 @@ verifyOrtMove(SelBoard, Size, Player, SelRow, SelColumn, MovRow, MovColumn, Fina
     ),
     FinalRow is MovRow, FinalColumn is MovColumn.
 
-verifyOrtMove(_, _, _, _, _, _, _, _, _):-
+verifyOrtMove(_, _, _, _, _, _, _, _):-
     write('\n! That is not a valid move. Choose again !\n'), fail.
 
 /* ListOfPossibleMoves: [[SelectedRow-SelectedColumn, MoveRow-MoveColumn], [SelRow2-SelCol2, MovRow2-MovCol2], ...]*/
