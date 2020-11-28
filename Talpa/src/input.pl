@@ -92,39 +92,39 @@ manageInputs(NewRow, NewColumn, Size) :-
     manageRow(NewRow, Size),
     manageColumn(NewColumn, Size), !.
 
-%selectPiecePosition(+Board,+Size,+Player,-SelRow,-SelColumn)
+%selectPiecePosition(+Board,+Size,+Player,-SelectedPosition)
 /*
 The player selects the piece he wants to move
 the inputs are checked if they are within the boundaries of the board,
 if the player is selecting his own piece,
 and if there are any move possible for that piece
 */
-selectPiecePosition(Board, Size, Player, SelRow, SelColumn):-
+selectPiecePosition(Board, Size, Player, SelectedRow-SelectedColumn):-
     repeat,
     write('\nSelect piece:\n'),
-    manageInputs(InputRow, InputColumn, Size),
-    validateContent(Board, Size, InputRow, InputColumn, Player, SelRow, SelColumn).
+    manageInputs(SelectedRow, SelectedColumn, Size),
+    validateContent(Board, Size, SelectedRow-SelectedColumn, Player).
 
-%movePiecePosition(+Board,+Size,+Player,+SelRow,+SelColumn,-FinalRow,-FinalColumn)
+%movePiecePosition(+Board,+Size,+Player,+SelectedPosition,-MovePosition)
 /*
 The player selects the position for the piece he wants to move
 the inputs are checked if they are within the boundaries of the board,
 and if the movement is valid
 */
-movePiecePosition(Board, Size, Player, SelRow, SelColumn, FinalRow, FinalColumn):-
+movePiecePosition(Board, Size, Player, SelectedRow-SelectedColumn, MoveRow-MoveColumn):-
     repeat,
     write('\nMove to:\n'),
-    manageInputs(MovRow, MovColumn, Size),
-    verifyOrtMove(Board, Player, SelRow, SelColumn, MovRow, MovColumn, FinalRow, FinalColumn).
+    manageInputs(MoveRow, MoveColumn, Size),
+    verifyOrtMove(Board, Player, SelectedRow-SelectedColumn, MoveRow-MoveColumn).
 
-%removePiecePosition(+Board,+Size,+Player,-SelRow,-SelColumn)
+%removePiecePosition(+Board,+Size,+Player,-SelectedPosition)
 /*
 The player selects the piece to be removed
 the inputs are checked if they are within the boundaries of the board,
 and if the players selects their own piece
 */
-removePiecePosition(Board, Size, Player, SelRow, SelColumn):-
+removePiecePosition(Board, Size, Player, SelectedRow-SelectedColumn):-
     repeat,
     write('\nRemove piece:\n'),
-    manageInputs(InputRow, InputColumn, Size),
-    verifyPlayer(Board, Size, InputRow, InputColumn, Player, SelRow, SelColumn).
+    manageInputs(SelectedRow, SelectedColumn, Size),
+    verifyPlayer(Board, SelectedRow-SelectedColumn, Player).

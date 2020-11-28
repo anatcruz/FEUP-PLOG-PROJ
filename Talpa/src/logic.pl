@@ -1,43 +1,41 @@
-%verifyPlayer(+Board, +InputRow, +InputColumn, +Player, -SelRow, -SelColumn)
+%verifyPlayer(+Board, +SelectedPosition, +Player)
 /*
 Verifies if the player is selecting his own piece
 */
-verifyPlayer(Board, InputRow, InputColumn, Player, SelRow, SelColumn):-
-    getValueFromMatrix(Board, InputRow, InputColumn, Player),
-    SelRow is InputRow, SelColumn is InputColumn.
+verifyPlayer(Board, SelectedRow-SelectedColumn, Player):-
+    getValueFromMatrix(Board, SelectedRow, SelectedColumn, Player).
 
 /*
 If not, write proper message error and fail predicate
 */
-verifyPlayer(_, _, _, _, _, _):-
+verifyPlayer(_, _, _):-
     write('\n! That is not your piece. Choose again !\n'), fail.
 
 
-%verifyPossibleMove(+GameState, +Size, +SelectedRow, +SelectedColumn, +Player, -ListOfMoves)
+%verifyPossibleMove(+GameState, +Size, +SelectedPosition, +Player, -ListOfMoves)
 /*
 Verifies if piece in the given position has any possible moves
 */
-verifyPossibleMove(GameState, Size, SelRow, SelColumn, Player, ListOfMoves):-
-    checkMove(GameState, Size, SelRow, SelColumn, Player, ListOfMoves),
+verifyPossibleMove(GameState, Size, SelectedRow-SelectedColumn, Player, ListOfMoves):-
+    checkMove(GameState, Size, SelectedRow, SelectedColumn, Player, ListOfMoves),
     \+isEmpty(ListOfMoves).
 
 /*
 If list is empty, write proper message error and fail predicate
 */
-verifyPossibleMove(_, _, _, _, _, _):-
+verifyPossibleMove(_, _, _, _, _):-
     write('\n! No available moves for that piece. Choose again !\n'), fail.
 
 
-%validateContent(+Board, +Size, +InputRow, +InputColumn, +Player, -SelectedRow, -SelectedColumn)
+%validateContent(+Board, +Size, +SelectedPosition, +Player)
 /*
 Checks if piece in the selected position is valid: 
 verifies if it is a piece from the given player
 and if the piece has any possible moves
 */
-validateContent(Board, Size, InputRow, InputColumn, Player, SelRow, SelColumn):-
-    verifyPlayer(Board, InputRow, InputColumn, Player, PlayerRow, PlayerColumn), !,
-    verifyPossibleMove(Board, Size, PlayerRow, PlayerColumn, Player, _),
-    SelRow is PlayerRow, SelColumn is PlayerColumn.
+validateContent(Board, Size, SelectedRow-SelectedColumn, Player):-
+    verifyPlayer(Board, SelectedRow-SelectedColumn, Player), !,
+    verifyPossibleMove(Board, Size, SelectedRow-SelectedColumn, Player, _).
 
 
 %checkMove(+GameState, +Size, +SelectedRow, +SelectedColumn, +Player, -ListOfMoves)
@@ -84,25 +82,24 @@ checkRightMove(GameState, Size, Row, Col, Player, RightMove):-
 
 checkRightMove(_, _, _, _, _, []).
 
-%verifyOrtMove(+SelBoard, +Player, +SelRow, +SelColumn, +MovRow, +MovColumn, -FinalRow, -FinalColumn)
+%verifyOrtMove(+SelBoard, +Player, +SelectedPosition, +MovePosition)
 /*
 check if the player is moving his piece correctly
 the movements must be orthogonal
 when the movement is within the same row, the player can only select the position immediately to the right or left
 when the movement is within the same column, the player can only select the position immediately to the top or down
 */
-verifyOrtMove(SelBoard, Player, SelRow, SelColumn, MovRow, MovColumn, FinalRow, FinalColumn) :-
-    isEnemy(SelBoard, MovRow, MovColumn, Player),
+verifyOrtMove(SelBoard, Player, SelRow-SelColumn, MoveRow-MoveColumn) :-
+    isEnemy(SelBoard, MoveRow, MoveColumn, Player),
     (
-        (MovRow=:=SelRow, (MovColumn=:=SelColumn+1 ; MovColumn=:=SelColumn-1));  /*Same row*/
-        (MovColumn=:=SelColumn, (MovRow=:=SelRow+1 ; MovRow=:=SelRow-1)) /*Same column */
-    ),
-    FinalRow is MovRow, FinalColumn is MovColumn.
+        (MoveRow=:=SelRow, (MoveColumn=:=SelColumn+1 ; MoveColumn=:=SelColumn-1));  /*Same row*/
+        (MoveColumn=:=SelColumn, (MoveRow=:=SelRow+1 ; MoveRow=:=SelRow-1)) /*Same column */
+    ).
 
 /*
 If not, write proper message error and fail predicate
 */
-verifyOrtMove(_, _, _, _, _, _, _, _):-
+verifyOrtMove(_, _, _, _):-
     write('\n! That is not a valid move. Choose again !\n'), fail.
 
 
