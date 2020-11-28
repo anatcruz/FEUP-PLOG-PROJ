@@ -2,8 +2,8 @@
 
 /*Selects random a piece and position to move if there are available moves for the player*/
 choose_move(GameState, Size, Player, Level, Move):-
-    valid_moves(GameState, Size, Player, ListOfValidMoves),
-    movePiecePositionBot(GameState, Size, Player, Level, ListOfValidMoves, Move),
+    valid_moves(GameState, Size, Player, ListOfPossibleMoves),
+    movePiecePositionBot(GameState, Size, Player, Level, ListOfPossibleMoves, Move),
     getSelAndMovePosition(Move, SelPosition, MovPosition),
     write('\nSelected: '), printPosition(SelPosition), nl,
     write('\nMoved to: '), printPosition(MovPosition), nl.
@@ -14,20 +14,20 @@ choose_move(GameState, Size, Player, Level, Move):-
     removePiecePositionBot(GameState, Size, Player, Level, ListOfPositions, Move),
     write('\nRemoved: '), printPosition(Move), nl.
 
-/*Select a random Move from the ListOfValidMoves, 
+/*Select a random Move from the ListOfPossibleMoves, 
 returning the Selected piece Position and the Move position*/
-movePiecePositionBot(_, _, _, 'Random', ListOfValidMoves, SelMove):-
-    random_member(SelMove, ListOfValidMoves).
+movePiecePositionBot(_, _, _, 'Random', ListOfPossibleMoves, SelMove):-
+    random_member(SelMove, ListOfPossibleMoves).
 
 /*Select a random position of the current player positions to remove the piece*/
 removePiecePositionBot(_, _, _, 'Random', ListOfPositions, SelPosition):-
     random_member(SelPosition, ListOfPositions).
 
-movePiecePositionBot(GameState, Size, Player, 'Greedy', ListOfValidMoves, [SelPos, MovPos]):-
+movePiecePositionBot(GameState, Size, Player, 'Greedy', ListOfPossibleMoves, [SelPos, MovPos]):-
     findall(
         Value1-SelPos1-MovPos1-Index,
         (
-            nth0(Index, ListOfValidMoves, Move),
+            nth0(Index, ListOfPossibleMoves, Move),
             move(GameState, Player, Move, NewGameState),
             value(NewGameState, Size, Player, Value1),
             getSelAndMovePosition(Move, SelPos1, MovPos1)
@@ -47,7 +47,7 @@ removePiecePositionBot(GameState, Size, Player, 'Greedy', ListOfPositions, SelPo
         ),
         ListResults
     ),
-    sort(ListResults, Sorted), 
+    sort(ListResults, Sorted),
     reverse(Sorted, [_-SelPos-_|_]).
 
 

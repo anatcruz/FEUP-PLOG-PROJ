@@ -195,7 +195,7 @@ menuAction(1) :-
     boardSizeMenu(GameState, Size),
     printBoard(GameState),
     play(GameState, Size, 1, 'Player', 'Player'),
-    sleep(1),
+    enterContinue,
     mainMenu.
     
 %menuAction(+ValidOption)
@@ -210,7 +210,7 @@ menuAction(2) :-
     botDificultyMenu(Difficulty),
     chooseFirstPlayerMenu(First),
     firstAction(First, GameState, Size, Difficulty),
-    sleep(1),
+    enterContinue,
     mainMenu.
 
 %menuAction(+ValidOption)
@@ -223,7 +223,7 @@ menuAction(3) :-
     boardSizeMenu(GameState, Size), !,
     botsDifficultyMenu(ValidOption),
     modeAction(ValidOption, GameState, Size),
-    sleep(1),
+    enterContinue,
     mainMenu.
 
 %boardSizeMenu(-GameState, -Size)
@@ -415,7 +415,7 @@ botsDifficultyMenu(ValidOption) :-
     write('|                0. Main Menu                 |\n'),
     write('|                                             |\n'),
     write('|_____________________________________________|\n\n'),
-    selectMenuOption(3, ValidOption).
+    selectMenuOption(4, ValidOption).
 
 %modeAction(+ValidOption,+GameState,+Size)
 /*
