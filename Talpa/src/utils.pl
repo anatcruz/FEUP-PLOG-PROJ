@@ -1,4 +1,3 @@
-%https://stackoverflow.com/questions/8519203/prolog-replace-an-element-in-a-list-at-a-specified-index
 %replaceInList(+Index, +List, +Element, -NewList)
 /*
 Replaces an element in a List at a specified Index with Element
@@ -39,14 +38,6 @@ Gets Number corresponding to the given Column index
 get_number(Column, Number) :-
 	NewColumn is Column + 49,
 	char_code(Number, NewColumn).
-
-%enterContinue/0
-/*
-Waits for an Enter press
-*/
-enterContinue:-
-	write('\nPress ENTER to continue.'),
-    skip_line.
 
 %isEmpty(+List)
 /*
@@ -147,11 +138,11 @@ Retuns on ListOfMoves the all the positions where exists a current player's piec
 getPlayerInMatrix(GameState, Size, Player, ListOfPositions) :-
 	getPlayerInMatrix(GameState, Size, 0, 0, Player, [], ListOfPositions), !.
 
-%When the position is Size-0, it stops (end of the board)
+%Base case, when the position is Row=8 Column=0, it stops (end of the board)
 getPlayerInMatrix(_, Size, Row, Column, _, ListOfPositions, ListOfPositions):-
 	checkEndPosition(Row, Column, Size).
 
-%If it is the player is that cell, then append that possition and pass to the next position
+%If it is the player is that cell, then append that position and pass to the next position
 getPlayerInMatrix(GameState, Size, Row, Column, Player, ListInterm, ListOfPositions):-
 	getValueFromMatrix(GameState, Row, Column, Player),
 	append(ListInterm, [Row-Column], NewList),
@@ -163,24 +154,21 @@ getPlayerInMatrix(GameState, Size, Row, Column, Player, ListInterm, ListOfPositi
 	nextPosition(Row, Column, Size, NextRow, NextColumn),
 	getPlayerInMatrix(GameState, Size, NextRow, NextColumn, Player, ListInterm, ListOfPositions).
 
-%nextPosition(+Row,+Column,+Length,-NextRowm-NextColumn)
+%nextPosition(+Row,+Column,+Size,-NextRow,-NextColumn)
 /*
 If the end of the column has not been reached, avance to the next collumn, remaining in the same row
 */
-nextPosition(Row, Column, Length, NextRow, NextColumn):-
-    Column1 is Column + 1,
-    Column1 \== Length,
-    NextColumn is Column1, 
-    NextRow is Row.
+nextPosition(Row, Column, Size, Row, NextColumn):-
+    NextColumn is Column + 1,
+    NextColumn \== Size.
 	
-%nextPosition(+Row,+Column,+Length,-NextRowm-NextColumn)
+%nextPosition(+Row,+Column,+Length,-NextRow,-NextColumn)
 /*
-If the end of the column has been reached, avance to the next row, starting by the first collumn(0)
+If the end of the column has been reached, avance to the next row, starting in the first column(0)
 */
-nextPosition(Row, Column, Length, NextRow, NextColumn):-
-    Column1 is Column + 1,
-    Column1 == Length, 
-    NextColumn is 0,
+nextPosition(Row, Column, Size, NextRow, 0):-
+    NextColumn is Column + 1,
+    NextColumn == Size,
     NextRow is Row + 1.
 
 %checkEndPosition(+Row,+Column,+Size)
@@ -281,15 +269,10 @@ tryFloodFill(Matrix, Size, Row, Column, FinalMatrix):-
     getValueFromMatrix(Matrix, Row, Column, 0),
     floodFill(Matrix, Size, Row, Column, 0, 2, FinalMatrix), !.
 
-%botWait(+PlayerType)
+%enterContinue/0
 /*
-In case it is a bot playing, the program sleeps for 1 second when this predicate is called
+Waits for an Enter press
 */
-botWait(PlayerType) :-
-	(
-		PlayerType == 'Easy'; PlayerType == 'Normal'
-	),
-	sleep(1).
-
-%In case it is not a bot playing is does nothing
-botWait(_).
+enterContinue:-
+	write('\nPress ENTER to continue.'),
+    skip_line.
