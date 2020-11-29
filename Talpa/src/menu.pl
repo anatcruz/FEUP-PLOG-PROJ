@@ -193,8 +193,7 @@ prints the board with the size chosen and the game starts: Player VS Player
 */
 menuAction(1) :-
     boardSizeMenu(Size),
-    write('\n\nHave fun!\n\n'),
-    sleep(1),
+    write('\n\n         Have fun!\n\n'),
     initialize(GameState, Size),
     play(GameState, Size, 1, 'Player', 'Player'),
     enterContinue,
@@ -364,8 +363,7 @@ Initializes and displays the board with the size chosen,
 the game starts with the bot's difficulty chosen: Player VS Computer, player first to play
 */
 firstAction(1, Size, Difficulty) :-
-    write('\n\nHave fun!\n\n'),
-    sleep(1),
+    write('\n\n         Have fun!\n\n'),
     initialize(GameState, Size),
     play(GameState, Size, 1, 'Player', Difficulty).
 
@@ -375,8 +373,7 @@ Initializes and displays the board with the size chosen,
 the game starts with the bot's difficulty chosen: Computer VS Player, computer first to play
 */
 firstAction(2, Size, Difficulty) :-
-    write('\n\nHave fun!\n\n'),
-    sleep(1),
+    write('\n\n         Have fun!\n\n'),
     initialize(GameState, Size),
     play(GameState, Size, 1, Difficulty, 'Player').
 
