@@ -136,21 +136,31 @@ nextPosition(Row, Column, Length, NextRow, NextColumn):-
 checkEndPosition(Row, Column, Size):-
 	Row is Size, Column is 0.
 
+%countElement(+Element, +List, -Count)
+%Counts ocurrences of an element in a list
+/*
+Base case, empty list, Count of anything is 0. 
+*/
 countElement(_, [], 0).
+
+/*
+The Element in the head of the list is the same as what we want to count,
+add 1 to the recursive Count.
+*/
+countElement(Element, [Element|T], Count):-
+	countElement(Element, T, Count1),
+	Count is Count1 + 1.
+
+/*
+The element in the head of the list is different, keep old Count
+*/
 countElement(Element, [H|T], Count):-
 	Element \== H,
 	countElement(Element, T, Count).
 
-countElement(Element, [H|T], Count):-
-	Element == H,
-	countElement(Element, T, Count1),
-	Count is Count1 + 1.
-
 
 %sequenceOfNon0(+List, -Result)
-/*
-Returns in Result the longest sequence from List not formed by 0
-*/
+%Returns in Result the longest sequence from List not formed by 0
 sequenceOfNon0(List, Result):-
     sequenceOfNon0(List, 0, 0, Result), !.
 
@@ -163,16 +173,18 @@ sequenceOfNon0([], Sequence, MaxSequence, Result):-
     Result is max(Sequence, MaxSequence).
 
 /*
-
+The number in the head of the list is 0, current MaxSequence will be 
+the greater number between current Sequence or previous MaxSequence achieved
 */
 sequenceOfNon0([0|Rest], Sequence, MaxSequence, Result):-
-    Sequence > MaxSequence, 
-    sequenceOfNon0(Rest, 0, Sequence, Result).
+	NewMaxSequence is max(Sequence, MaxSequence),
+    sequenceOfNon0(Rest, 0, NewMaxSequence, Result).
 
-sequenceOfNon0([0|Rest], _, MaxSequence, Result):- 
-    sequenceOfNon0(Rest, 0, MaxSequence, Result).
-
-sequenceOfNon0([_|Rest], Sequence, MaxSequence, Result):-
+/*
+The number in the head of the list is diferent from 0, increase current Sequence counter
+*/
+sequenceOfNon0([H|Rest], Sequence, MaxSequence, Result):-
+	H \== 0,
     Sequence1 is Sequence+1,
     sequenceOfNon0(Rest, Sequence1, MaxSequence, Result).
 
