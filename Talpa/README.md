@@ -10,7 +10,7 @@
 
 ## Installation and Execution
 
- Execute SICStus, click on `File`, then `Consult`, and select the file `talpa.pl`. On the SICStus console type `play.` and press enter.
+Execute SICStus, click on `File`, then `Consult`, and select the file `talpa.pl`. On the SICStus console type `play.` and press enter.
 
 ## Game Description 
 
@@ -143,25 +143,25 @@ To display **Blue** and **Red** player's **pieces** we used the characters `X` a
 ---
 ### Valid Moves
 
-The `valid_moves(+GameState,+Size,+Player,-ListOfPossibleMoves)` returns on ListOfPossibleMoves a list of moves in the format `[[SelectedRow-SelectedColumn, MoveRow-MoveColumn], [SelRow2-SelCol2, MovRow2-MovCol2], ...]`.
+The `valid_moves(+GameState,+Size,+Player,-ListOfPossibleMoves)` returns on ListOfPossibleMoves a list of moves in the format `[[SelectedRow-SelectedColumn, MoveRow-MoveColumn], ...]`.
 This predicate first calls `getPlayerInMatrix/4` that goes through the board and gets the position of all the player's pieces.
 
-Then it is called `getAllPossibleMoves/5` that using `checkMove/6` sees if there are any possible movements in all directions (up, down, right, and left). This verification consists of checking the existence of an enemy's piece in the surrounding orthogonal position.
+Then it is called `getAllPossibleMoves/5` that by using `checkMove/6` sees if there are any possible movements in all directions (up, down, right, and left). This verification consists of checking the existence of an adversary's piece in the surrounding orthogonal position.
 
-The predicate will fail if the ListOfPossible moves is empty, meaning there aren't any available moves, so the player now has to remove their own piece.
+The predicate will fail if ListOfPossibleMoves is empty, meaning there aren't any available moves, so the player now has to remove their own piece.
 
 ---
 ### Making Moves
 
 For the player to be able to execute a move, the `choose_move/5` predicate is executed first. This predicate calls, in case there are available movements, the `selectPiecePosition/4` and `movePiecePosition/5`, in the other case it only calls `removePiecePosition/4`.
 
-The `selectPiecePosition` asks the player for position inputs for the selected piece and checks both row and column inputs (`manageInputs/3`), if the player is selecting one of their pieces and if there is any possible movement for that position. If any of these verifications fail, the predicate asks again for the input.
+The `selectPiecePosition` asks the player for position inputs for the selected piece and checks both row and column inputs (`manageInputs/3`), if the player is selecting one of their pieces and if there is any possible movement for that position. If any of these verifications fails, the predicate asks again for the input.
 
 The `movePiecePosition` asks the player for position inputs for the piece they want to replace, checks both row and column inputs (`manageInputs/3`), and verifies if the moving position is orthogonal and adjacent. If any of these verifications fail, the predicate asks again for the input.
 
-The `removePiecePosition` is similar to `selectPiecePosition`, but only verifies the inputs and if the player is selecting one of their pieces. Since this predicate is called knowing that there aren't any available moves.
+The `removePiecePosition` is similar to `selectPiecePosition`, but only verifies the inputs and if the player is selecting one of his pieces. Since this predicate is called knowing that there aren't any available moves.
 
-Lastly, if all the verifications check out, then it is called `move(+GameState,+Player,+Move,-NewGameState)` that replaces the old player's position for an empty space and the piece at the moving position to the player's piece, obtaining the new GameState.
+Lastly, if all the verifications check out, it is called `move(+GameState,+Player,+Move,-NewGameState)` that replaces the old player's position for an empty space and the piece at the moving position to the player's piece, if there are available moves, or simply replaces the player position for an empty space. 
 
 ---
 ### Board Evaluation
@@ -174,7 +174,7 @@ As mentioned above Flood Fill is used. It is an algorithm that determines the ar
 
 In order to `getFFSpots/4` obtain the list of all Flood Fill spots it uses the `tryFloodFill(+Matrix, +Size, +Row, +Column, -FinalMatrix)` predicate to Flood Fill the board in an empty position, appending the position to the list and calls itself recursively with the board after the Flood Fill. In the end, we get all the independent Flood Fill spots starting positions.
 
-Afterward `getSpotsValues/4` evaluates each spot from the list: starts by Flood Filling the spot position, then `getValuesInAllRows(+GameState, +Size, -ListResult)` returns the number of Flood Fill characters found in each row, as a list in the format [Row1, Row2, ...], and `sequenceOfNon0(+List, -Result)` returns the longest sequence of non 0 numbers in that list (the longer the sequence the more vertical the path of empty spaces is). After checking all spots, the `ListOfValues` list contains the longest sequence (value) for each one of them.
+Afterward `getSpotsValues/4` evaluates each spot from the list: starts by Flood Filling the spot position, then `getValuesInAllRows(+GameState, +Size, -ListOfRowsValues)` returns the number of Flood Fill characters found in each row, as a list in the format [Row1, Row2, ...], and `sequenceOfNon0(+List, -Result)` returns the longest sequence of non 0 numbers in that list (the longer the sequence the more vertical the path of empty spaces is). After checking all spots, the `ListOfValues` list contains the longest sequence (value) for each one of them.
 
 To get the value for the red player we simply transpose the board matrix and use `value/4` for the red player. The longest vertical path in the transposed matrix will correspond to the longest horizontal path in the original matrix.
 
@@ -198,9 +198,9 @@ In the normal difficulty, the move will be greedy, choosing the best move in the
 ---
 ### Game Over
  
-To check if the game is over, according to the rules already presented, we use `game_over(+GameState, +Size, +Player, -Winner)`. This predicate uses `checkWinner(+Player, +GameState, +Size, +Row, +Column)`, first checking if the current Player won (since he was last round enemy and `play/5` calls `game_over/4` before the player turn) and then checking if the current Player´s adversary won.
+To check if the game is over, according to the rules already presented, we use `game_over(+GameState, +Size, +Player, -Winner)`. This predicate uses `checkWinner(+Player, +GameState, +Size, +Row, +Column)`, first checking if the current Player won (since he was last round adversary and `play/5` calls `game_over/4` before the player turn) and then checking if the current Player´s adversary won.
  
-To verify if the red player won `checkWinner/4` uses, row by row, `tryFloodFill(+Matrix, +Size, +Row, +Column, +FinalMatrix)` to Flood Fill from the current row and first column, and `checkHorizontalPath(+GameState, +Row, +FinalCol)` to check if there is a Flood Fill character in the final column, meaning there is a path from the left to the right side of the board. Reaching the final row and no path is found means the red player did not win yet.
+To verify if the red player won `checkWinner/4` uses, row by row, `tryFloodFill/5` to Flood Fill from the current row and first column, and `checkHorizontalPath(+GameState, +Row, +FinalCol)` to check if there is a Flood Fill character in the final column, meaning there is a path from the left to the right side of the board. Reaching the final row and no path is found means the red player did not win yet.
  
 To verify if the blue player won we simply use the transpose board matrix and use `checkWinner/4` for the red player. A path from the first column to the final column in the transposed matrix will correspond to a path from the first row to the final row in the original matrix.
 
@@ -210,15 +210,15 @@ To verify if the blue player won we simply use the transpose board matrix and us
 At first, we had some difficulties adapting to the prolog language and implementing the game due to recursion. 
 Initially, we made huge predicates for everything, but then we were able to make rules, making the code much cleaner and more readable.
 Through some research and with the help of the teacher, we managed to overcome these difficulties.
-Some possible improvements would be in the computer's move, that could be even more intelligent and fail-safe.
-We also thought that the project was much more work and took much longer than you would expect from a 4.5 credit chair.
+Some possible improvements would be in the computer's move, since he chooses a greedy move that can open a full path for him but also for the adversary, which means victory for the adversary.
+We also thought that the project was very laborious and took much longer than you would expect from a 4.5 credit course unit.
 In short, we were able to make a game we are proud of, through a lot of work and dedication, and to improve our knowledge of prolog.
 
 ---
 ## Bibliography
 
-- [Documentação SicStus 4.6.0](https://sicstus.sics.se/sicstus/docs/latest4/html/sicstus.html/)
+- [Documentação SicStus](https://sicstus.sics.se/sicstus/docs/latest4/html/sicstus.html/)
 - [GeeksForGeeks - Flood Fill](https://www.geeksforgeeks.org/flood-fill-algorithm-implement-fill-paint/)
 - [Wikipedia - Flood Fill](https://en.wikipedia.org/wiki/Flood_fill)
-- [Stack Overflow - Replace an element in matrix](https://stackoverflow.com/questions/8519203/prolog-replace-an-element-in-a-list-at-a-specified-index)
+- [Stack Overflow - Replace an element in list at a specified index](https://stackoverflow.com/questions/8519203/prolog-replace-an-element-in-a-list-at-a-specified-index)
 - Moodle slides
