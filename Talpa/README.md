@@ -45,7 +45,7 @@ The board is represented by a list of sublists, each sublist is a row of the boa
 - `1` - Red player's piece
 - `-1` - Blue player's piece
 - `0` - empty cell to create a path to victory!
-- `2` - auxiliar character for floodfill, filling empty spaces
+- `2` - auxiliar character for Flood Fill, filling empty spaces
 
 ##### **Possible GameStates**
 
@@ -155,7 +155,7 @@ Then it is called `getAllPossibleMoves/5` that using `checkMove/6` sees if there
 The predicate will fail if the ListOfPossible moves is empty, meaning there aren't any available moves, so the player now has to remove their own piece.
 
 ---
-### Making moves
+### Making Moves
 
 For the player to be able to execute a move, the `choose_move/5` predicate is executed first. This predicate calls, in case there are available movements, the `selectPiecePosition/4` and `movePiecePosition/5`, in the other case it only calls `removePiecePosition/4`.
 
@@ -167,13 +167,20 @@ The `removePiecePosition` is similar to `selectPiecePosition`, but only verifies
 
 Lastly, if all the verifications checks out, then it is called `move(+GameState,+Player,+Move,-NewGameState)` that replaces the old player's position for an empty space and the piece at the moving position to the player's piece, obtaining the new GameState.
 
-### Game Over
- 
-To check if the game is over, according to the rules already presented, we use `game_over(+GameState, +Size, +Player, -Winner)`. This predicate uses `checkWinner(+Player, +GameState, +Size, +Row, +Column)`, first checking if the current Player won (since he was last round enemy and `play/5` calls `game_over/4` before the player turn) and then checking if the current Player´s adversary won.
- 
-To verify if the red player won `checkWinner/4` uses, row by row, `tryFloodFill(+Matrix, +Size, +Row, +Column, +FinalMatrix)` to floodfill from the current row and first column, and `checkHorizontalPath(+GameState, +Row, +FinalCol)` to check if there is a floodfill character in the final column, meaning there is a path from the left to the right side of the board. Reaching the final row and no path is found means the red player did not win yet.
- 
-To verify if the blue player won we simply use the transpose board matrix and use the `checkWinner/4` for the red player.
+---
+### Board Evaluation
+
+The evaluation of the board is made using the `value(+GameState, +Size, +Player, -Value)` predicate returning the highest value in the current board for the player.
+
+To get the value for the blue player it uses `getFFSpots(+GameState, +Size, -ListOfFFSpots)` to get the list of Flood Fill spots, then `getSpotsValues(+GameState, +Size, +ListOfFFSpots, -ListOfValues)` to evaluate each spot returning a list of all obtained values, and finally `max_member(-Max, +List)` to get the highest value in the list. The higher the value the closer the player is to victory.
+
+As mentioned above Flood Fill is used. It is an algorithm that determines the areas connected to a given position in a multi-dimensional array, and it was chosen since it is easy to implement recursively and allows us to get the empty position in our board that are connected, forming a path. The `floodFill(+Matrix, +Size, +Row, +Column, +PreviousCharacter, +NewCharacter, -FinalMatrix)` predicate starts by applying the algorithm to the given position, if the given previous character is found there, replacing it by the new character, and calls itself recursively to apply the algorithm to the orthogonally adjacent positions. Then we can verify the path created from the starting position by checking all the positions in the board that have the new character.
+
+In order to `getFFSpots/4` obtain the list of all Flood Fill spots it uses the `tryFloodFill(+Matrix, +Size, +Row, +Column, -FinalMatrix)` predicate to Flood Fill the board in an empty position, appending the position to the list and calls itself recursively with the board after the Flood Fill. In the end we get all the independent Flood Fill spots starting positions.
+
+Afterwards `getSpotsValues/4` evaluates each spot from the list: starts by Flood Filling the spot position, then `getValuesInAllRows(+GameState, +Size, -ListResult)` returns the number of Flood Fill characters found in each row, as a list in the format [Row1, Row2, ...], and `sequenceOfNon0(+List, -Result)` returns the longest sequence of non 0 numbers in that list (the longer the sequence the more vertical the path of empty spaces is). After checking all spots, `ListOfValues` list contains the longest sequence (value) for each one of them.
+
+To get the value for the red player we simply transpose the board matrix and use `value/4` for the red player. The longest vertical path in the transposed matrix will correspond to the longest horizontal path in the original matrix.
 
 ---
 ### Computer Move
@@ -190,7 +197,16 @@ In the easy difficulty the move chosen will be random and `movePiecePositionBot/
  
 #### Normal
  
-In the normal difficulty, the move will be greedy, choosing the best move in the current turn. In this case both  `movePiecePositionBot/6` and `removePiecePositionBot/6` select a move using `findall(+Template, +Generator, -List)`. For `Generator` the `move/4` and `value/4` predicates are used to evaluate the board after a move. The `List` is `Value-SelectedPosition-MovePosition`, when there are available moves, and as `Value-SelectedPosition` otherwise. Then the list is sorted (using `sort(+List1, -List2)`), being in ascending order of Values and `last(+List, -Last)` is used so we can get the move with the highest value.
+In the normal difficulty, the move will be greedy, choosing the best move in the current turn. In this case both  `movePiecePositionBot/6` and `removePiecePositionBot/6` select a move using `findall(+Template, +Generator, -List)`. For `Generator` the `move/4` and `value/4` predicates are used to evaluate the board after a move. The `List` is `Value-SelectedPosition-MovePosition`, when there are available moves, and as `Value-SelectedPosition` otherwise. Finally the list is sorted (using `sort(+List1, -List2)`), being in ascending order of Values and `last(+List, -Last)` is used so we can get the move with the highest value.
+
+---
+### Game Over
+ 
+To check if the game is over, according to the rules already presented, we use `game_over(+GameState, +Size, +Player, -Winner)`. This predicate uses `checkWinner(+Player, +GameState, +Size, +Row, +Column)`, first checking if the current Player won (since he was last round enemy and `play/5` calls `game_over/4` before the player turn) and then checking if the current Player´s adversary won.
+ 
+To verify if the red player won `checkWinner/4` uses, row by row, `tryFloodFill(+Matrix, +Size, +Row, +Column, +FinalMatrix)` to Flood Fill from the current row and first column, and `checkHorizontalPath(+GameState, +Row, +FinalCol)` to check if there is a Flood Fill character in the final column, meaning there is a path from the left to the right side of the board. Reaching the final row and no path is found means the red player did not win yet.
+ 
+To verify if the blue player won we simply use the transpose board matrix and use `checkWinner/4` for the red player. A path from the first column to the final column in the transposed matrix will correspond to a path from the first row to the final row in the original matrix.
 
 ---
 ## Conclusions 
