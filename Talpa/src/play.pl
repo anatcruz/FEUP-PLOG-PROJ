@@ -33,7 +33,7 @@ and call the play predicate to make the enemy play
 */
 play(GameState, Size, Player, PlayerType, EnemyType):-
     printTurn(Player),
-    botWait(PlayerType, EnemyType),
+    botWait(PlayerType),
     choose_move(GameState, Size, Player, PlayerType, Move),
     move(GameState, Player, Move, NewGameState),
     display_game(NewGameState),

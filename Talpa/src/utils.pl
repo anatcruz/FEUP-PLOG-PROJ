@@ -281,16 +281,15 @@ tryFloodFill(Matrix, Size, Row, Column, FinalMatrix):-
     getValueFromMatrix(Matrix, Row, Column, 0),
     floodFill(Matrix, Size, Row, Column, 0, 2, FinalMatrix), !.
 
-%botWait(+PlayerType,+EnemyType)
+%botWait(+PlayerType)
 /*
 In case it is a bot playing, the program sleeps for 1 second when this predicate is called
 */
-botWait(PlayerType, EnemyType) :-
+botWait(PlayerType) :-
 	(
-		(PlayerType == 'Easy'; PlayerType == 'Normal'),
-		(EnemyType == 'Easy'; EnemyType == 'Normal')
+		PlayerType == 'Easy'; PlayerType == 'Normal'
 	),
 	sleep(1).
 
 %In case it is not a bot playing is does nothing
-botWait(_, _).
+botWait(_).
