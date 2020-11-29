@@ -102,7 +102,11 @@ If not, write proper message error and fail predicate
 verifyOrtMove(_, _, _, _):-
     write('\n! That is not a valid move. Choose again !\n'), fail.
 
-
+%getAllPossibleMoves(+GameState, +Size, +Player, +Positions, -ListOfPossibleMoves)
+/*
+For all the positions passed, it checks the available moves for each
+the listOfPossibleMoves stores the moves as as [[SelectedRow-SelectedColumn, MoveRow-MoveColumn], ...]
+*/
 
 getAllPossibleMoves(GameState, Size, Player, Positions, ListOfPossibleMoves):-
 	getAllPossibleMoves(GameState, Size, Player, Positions, [], ListOfPossibleMoves).
@@ -114,11 +118,10 @@ getAllPossibleMoves(GameState, Size, Player, [Row-Column|PosRest], ListInterm, L
 	appendNotEmpty(ListInterm, CurrentMoves, NewList),
 	getAllPossibleMoves(GameState, Size, Player, PosRest, NewList, ListOfPossibleMoves), !.
 
-
 %valid_moves(+GameState, +Size, +Player, -ListOfMoves)
 /*
 Gets all the possible moves for all the current pieces of the given player
-Returns a list with all the possible moves for the player (as [SelectedRow-SelectedColumn, MoveRow-MoveColumn], ...])
+Returns a list with all the possible moves for the player (as [[SelectedRow-SelectedColumn, MoveRow-MoveColumn], ...])
 */
 valid_moves(GameState, Size, Player, ListOfMoves):-
     getPlayerInMatrix(GameState, Size, Player, Positions),
