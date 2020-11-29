@@ -188,12 +188,14 @@ playersMenu :-
 
 %menuAction(+ValidOption)
 /*
-Displays the board size menu, checks if the input is valid, 
+Initializes and displays the board size menu, checks if the input is valid, 
 prints the board with the size chosen and the game starts: Player VS Player
 */
 menuAction(1) :-
-    boardSizeMenu(GameState, Size),
-    printBoard(GameState),
+    boardSizeMenu(Size),
+    write('\n\nHave fun!\n\n'),
+    sleep(1),
+    initialize(GameState, Size),
     play(GameState, Size, 1, 'Player', 'Player'),
     enterContinue,
     mainMenu.
@@ -206,10 +208,10 @@ displays the choose first player menu, checks again if the input is valid
 and acts accordingly to all the choices made by input
 */
 menuAction(2) :-
-    boardSizeMenu(GameState, Size), !,
+    boardSizeMenu(Size), !,
     botDificultyMenu(Difficulty),
     chooseFirstPlayerMenu(First),
-    firstAction(First, GameState, Size, Difficulty),
+    firstAction(First, Size, Difficulty),
     enterContinue,
     mainMenu.
 
@@ -220,18 +222,18 @@ displays the bots difficulty menu, checks again if the input is valid,
 and acts accordingly to all the choices made by input
 */
 menuAction(3) :-
-    boardSizeMenu(GameState, Size), !,
+    boardSizeMenu(Size), !,
     botsDifficultyMenu(ValidOption),
-    modeAction(ValidOption, GameState, Size),
+    modeAction(ValidOption, Size),
     enterContinue,
     mainMenu.
 
-%boardSizeMenu(-GameState, -Size)
+%boardSizeMenu(-Size)
 /*
 Displays the board size menu with the size options for the board,
 checks if the input is valid and acts accordingly
 */
-boardSizeMenu(GameState, Size):-
+boardSizeMenu(Size):-
     write('\33\[2J'),
     write('\n\n _____________________________________________\n'),
     write('|          _____       _                      |\n'),
@@ -255,29 +257,25 @@ boardSizeMenu(GameState, Size):-
     write('|                                             |\n'),
     write('|_____________________________________________|\n\n'),
     selectMenuOption(2, ValidOption),
-    sizeAction(ValidOption, GameState, Size).
+    sizeAction(ValidOption, Size).
 
-%sizeAction(+ValidOption,-GameSate,-Size)
+%sizeAction(+ValidOption,-Size)
 /*
-Iniciates the board with size 6 x 6
+Size chosen is 6
 */
-sizeAction(1, GameState, Size) :-
-    initial(GameState, 5),
-    Size is 5.
+sizeAction(1, 6).
 
-%sizeAction(+ValidOption,-GameSate,-Size)
+%sizeAction(+ValidOption,-Size)
 /*
-Iniciates the board with size 8 x 8
+Size chosen is 8
 */
-sizeAction(2, GameState, Size) :-
-    initial(GameState, 8),
-    Size is 8.
+sizeAction(2, 8).
 
-%sizeAction(+ValidOption,-GameSate,-Size)
+%sizeAction(+ValidOption,-Size)
 /*
 Upon failure, the Main menu is displayed again
 */ 
-sizeAction(0, _, _) :-
+sizeAction(0, _) :-
     fail.
 
 %botDificultyMenu(-Difficulty)
@@ -315,15 +313,13 @@ botDificultyMenu(Difficulty) :-
 /*
 The difficulty chosen for the bot is Easy
 */
-difficultyAction(1, Difficulty) :-
-    Difficulty = 'Easy'.
+difficultyAction(1, 'Easy').
 
 %difficultyAction(+ValidOption,+Difficulty)
 /*
 The difficulty chosen for the bot is Normal
 */
-difficultyAction(2, Difficulty) :-
-    Difficulty = 'Normal'.
+difficultyAction(2, 'Normal').
 
 %difficultyAction(+ValidOption,+Difficulty)
 /*
@@ -362,29 +358,33 @@ chooseFirstPlayerMenu(First) :-
     write('|_____________________________________________|\n\n'),
     selectMenuOption(2, First).
 
-%firstAction(+First,+GameState,+Size,+Difficulty)
+%firstAction(+First,+Size,+Difficulty)
 /*
-Prints the board with the size chosen,
+Initializes and displays the board with the size chosen,
 the game starts with the bot's difficulty chosen: Player VS Computer, player first to play
 */
-firstAction(1, GameState, Size, Difficulty) :-
-    printBoard(GameState),
+firstAction(1, Size, Difficulty) :-
+    write('\n\nHave fun!\n\n'),
+    sleep(1),
+    initialize(GameState, Size),
     play(GameState, Size, 1, 'Player', Difficulty).
 
-%firstAction(+First,+GameState,+Size,+Difficulty)
+%firstAction(+First,+Size,+Difficulty)
 /*
-Prints the board with the size chosen,
+Initializes and displays the board with the size chosen,
 the game starts with the bot's difficulty chosen: Computer VS Player, computer first to play
 */
-firstAction(2, GameState, Size, Difficulty) :-
-    printBoard(GameState),
+firstAction(2, Size, Difficulty) :-
+    write('\n\nHave fun!\n\n'),
+    sleep(1),
+    initialize(GameState, Size),
     play(GameState, Size, 1, Difficulty, 'Player').
 
-%firstAction(+First,+GameState,+Size,+Difficulty)
+%firstAction(+First,+Size,+Difficulty)
 /*
 Upon failure, the Main menu is displayed again
 */ 
-firstAction(0, _, _, _) :-
+firstAction(0, _, _) :-
     fail.
 
 %botsDifficultyMenu(-ValidOption)
@@ -417,45 +417,45 @@ botsDifficultyMenu(ValidOption) :-
     write('|_____________________________________________|\n\n'),
     selectMenuOption(4, ValidOption).
 
-%modeAction(+ValidOption,+GameState,+Size)
+%modeAction(+ValidOption,+Size)
 /*
-Prints the board with the size chosen,
+Initializes and displays the board with the size chosen,
 the game starts: Computer VS Computer being both Easy
 */
-modeAction(1, GameState, Size) :-
-    printBoard(GameState),
+modeAction(1, Size) :-
+    initialize(GameState, Size),
     play(GameState, Size, 1, 'Easy', 'Easy').
 
-%modeAction(+ValidOption,+GameState,+Size)
+%modeAction(+ValidOption,+Size)
 /*
-Prints the board with the size chosen,
+Initializes and displays the board with the size chosen,
 the game starts: Computer VS Computer, being the first Easy and the second in Normal
 */
-modeAction(2, GameState, Size) :-
-    printBoard(GameState),
+modeAction(2, Size) :-
+    initialize(GameState, Size),
     play(GameState, Size, 1, 'Easy', 'Normal').
 
-%modeAction(+ValidOption,+GameState,+Size)
+%modeAction(+ValidOption,+Size)
 /*
-Prints the board with the size chosen,
+Initializes and displays the board with the size chosen,
 the game starts: Computer VS Computer, being the first Normal and the second in Easy
 */
-modeAction(3, GameState, Size) :-
-    printBoard(GameState),
+modeAction(3, Size) :-
+    initialize(GameState, Size),
     play(GameState, Size, 1, 'Normal', 'Easy').
 
-%modeAction(+ValidOption,+GameState,+Size)
+%modeAction(+ValidOption,+Size)
 /*
-Prints the board with the size chosen,
+Initializes and displays the board with the size chosen,
 the game starts: Computer VS Computer, being both Normal
 */  
-modeAction(4, GameState, Size) :-
-    printBoard(GameState),
+modeAction(4, Size) :-
+    initialize(GameState, Size),
     play(GameState, Size, 1, 'Normal', 'Normal').
 
-%modeAction(+ValidOption,+GameState,+Size)
+%modeAction(+ValidOption,+Size)
 /*
 Upon failure, the Main menu is displayed again
 */ 
-modeAction(0, _, _) :-
+modeAction(0, _) :-
     fail.

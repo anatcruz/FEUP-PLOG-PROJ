@@ -82,11 +82,11 @@ character(-1,'X'). %character representing the blue player piece
 character(1,'O'). %character representing the red player piece
 character(2,'?'). %auxiliar character for floodfill, filling empty spaces
 
-%printBoard(+Board)
+%display_game(+Board)
 /*
 Prints the board header, matrix and bottom
 */
-printBoard(Board) :-
+display_game(Board) :-
     length(Board, Size),
     nl,
     printBoardHeader(Size),

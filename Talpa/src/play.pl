@@ -2,10 +2,10 @@
 /*
 Returns the initial GameState with the given Size
 */
-initial(GameState, Size) :- %generateBoard(GameState, Size).
+initial(GameState, Size) :- generateBoard(GameState, Size).
                             %initialGameState(GameState).
                             %midGameState(GameState).
-                            testState(GameState).
+                            %testState(GameState).
                             %finalGameState(GameState).
 
 %initialize(-GameState, +Size)
@@ -14,7 +14,7 @@ Returns created GameState and displays it
 */
 initialize(GameState, Size):-
     initial(GameState, Size),
-    printBoard(GameState).
+    display_game(GameState).
 
 %play(+GameState, +Size, +Player, +PlayerType, +EnemyType)
 /*
@@ -33,7 +33,7 @@ play(GameState, Size, Player, PlayerType, EnemyType):-
     printTurn(Player),
     choose_move(GameState, Size, Player, PlayerType, Move),
     move(GameState, Player, Move, NewGameState),
-    printBoard(NewGameState),
+    display_game(NewGameState),
     Enemy is -Player,
     !, play(NewGameState, Size, Enemy, EnemyType, PlayerType).
 
