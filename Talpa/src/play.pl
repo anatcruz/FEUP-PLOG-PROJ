@@ -3,10 +3,7 @@
 Returns the initial GameState with the given Size
 */
 initial(GameState, Size) :- generateBoard(GameState, Size).
-                            %initialGameState(GameState).
-                            %midGameState(GameState).
-                            %testState(GameState).
-                            %finalGameState(GameState).
+
 
 %initialize(-GameState, +Size)
 /*
@@ -72,7 +69,7 @@ Move when no available moves (and in this case Move is SelectedRow-SelectedColum
 replacing selected position on board with empty space,
 returning the board after the remove
 */
-move(GameState, Player, Row-Column, NewGameState):-
+move(GameState, _, Row-Column, NewGameState):-
     replaceInMatrix(GameState, Row, Column, 0, NewGameState).
 
 

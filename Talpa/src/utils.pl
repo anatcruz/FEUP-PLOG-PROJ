@@ -62,7 +62,7 @@ appendMoves(_, [], []).
 appendMoves(Pos, Moves, RetList):-
 	appendMoves(Pos, Moves, [], RetList).
 
-appendMoves(Pos, [], RetList, RetList).
+appendMoves(_, [], RetList, RetList).
 appendMoves(Pos, [Move | T], AuxList, RetList):-
 	CompleteMove = [Pos, Move],
 	append([CompleteMove], AuxList, NewAuxList),

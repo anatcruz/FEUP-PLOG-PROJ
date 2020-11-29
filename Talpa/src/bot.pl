@@ -39,7 +39,7 @@ movePiecePositionBot(GameState, Size, Player, 'Normal', ListOfPossibleMoves, [Se
     findall(
         Value-Move,
         (
-            nth0(Index, ListOfPossibleMoves, Move),
+            nth0(_, ListOfPossibleMoves, Move),
             move(GameState, Player, Move, NewGameState),
             value(NewGameState, Size, Player, Value)
         ),
@@ -66,7 +66,7 @@ removePiecePositionBot(GameState, Size, Player, 'Normal', ListOfPositions, Selec
     findall(
         Value-Pos,
         (
-            nth0(Index, ListOfPositions, Pos),
+            nth0(_, ListOfPositions, Pos),
             move(GameState, Player, Pos, NewGameState),
             value(NewGameState, Size, Player, Value)
         ),

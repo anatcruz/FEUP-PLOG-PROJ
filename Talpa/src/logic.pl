@@ -54,19 +54,19 @@ checkMove(GameState, Size, SelRow, SelColumn, Player, ListOfMoves) :-
     appendNotEmpty(L2, RightMove, ListOfMoves), !.
 
 
-checkDownMove(GameState, _, Row, Col, Player, DownMove):-
+checkUpMove(GameState, _, Row, Col, Player, UpMove):-
     Row>0, NewRow is Row-1,
-    isEnemy(GameState, NewRow, Col, Player),
-    DownMove = [NewRow-Col].
-
-checkDownMove(_, _, _, _, _, []).
-
-checkUpMove(GameState, Size, Row, Col, Player, UpMove):-
-    Row<Size, NewRow is Row+1,
     isEnemy(GameState, NewRow, Col, Player),
     UpMove = [NewRow-Col].
 
 checkUpMove(_, _, _, _, _, []).
+
+checkDownMove(GameState, Size, Row, Col, Player, DownMove):-
+    Row<Size, NewRow is Row+1,
+    isEnemy(GameState, NewRow, Col, Player),
+    DownMove = [NewRow-Col].
+
+checkDownMove(_, _, _, _, _, []).
 
 checkLeftMove(GameState, _, Row, Col, Player, LeftMove):-
     Col>0, NewCol is Col-1,
