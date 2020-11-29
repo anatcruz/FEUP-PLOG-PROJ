@@ -26,17 +26,19 @@ play(GameState, Size, Player, _, _):-
 
 /*
 If game is not over,
-print the current player turn, player chooses a move according to its type, makes the move and prints the board afterwards,
+print the current player turn, 
+if the current player is a bot, the program sleeps for 1 second,
+player chooses a move according to its type, makes the move and prints the board afterwards,
 and call the play predicate to make the enemy play
 */
 play(GameState, Size, Player, PlayerType, EnemyType):-
     printTurn(Player),
+    botWait(PlayerType, EnemyType),
     choose_move(GameState, Size, Player, PlayerType, Move),
     move(GameState, Player, Move, NewGameState),
     display_game(NewGameState),
     Enemy is -Player,
     !, play(NewGameState, Size, Enemy, EnemyType, PlayerType).
-
 
 %choose_move(+GameState, +Size, +Player, +PlayerType, -Move)
 /*
