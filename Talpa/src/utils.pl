@@ -131,6 +131,7 @@ getSelAndMovePosition(Move, SelPosition, MovPosition):-
 	nth0(0, Move, SelPosition),
 	nth0(1, Move, MovPosition).
 
+
 %getPlayerInMatrix(+GameState,+Size,+Player,-ListOfPositions)
 /*
 Retuns on ListOfMoves the all the positions where exists a current player's piece
@@ -154,6 +155,7 @@ getPlayerInMatrix(GameState, Size, Row, Column, Player, ListInterm, ListOfPositi
 	nextPosition(Row, Column, Size, NextRow, NextColumn),
 	getPlayerInMatrix(GameState, Size, NextRow, NextColumn, Player, ListInterm, ListOfPositions).
 
+
 %nextPosition(+Row,+Column,+Size,-NextRow,-NextColumn)
 /*
 If the end of the column has not been reached, avance to the next collumn, remaining in the same row
@@ -171,12 +173,14 @@ nextPosition(Row, Column, Size, NextRow, 0):-
     NextColumn == Size,
     NextRow is Row + 1.
 
+
 %checkEndPosition(+Row,+Column,+Size)
 /*
 If the row is equal to size, then the board's end was reached
 */
 checkEndPosition(Row, Column, Size):-
 	Row is Size, Column is 0.
+
 
 %countElement(+Element, +List, -Count)
 %Counts ocurrences of an element in a list
@@ -201,36 +205,13 @@ countElement(Element, [H|T], Count):-
 	countElement(Element, T, Count).
 
 
-%sequenceOfNon0(+List, -Result)
+%sequenceOfNon0(+List, -Sequence)
 /*
-Returns in Result the length of the longest sequence from List not formed by 0
+Returns in Sequence the length of the sequence of non 0 numbers in List
 */
-sequenceOfNon0(List, Result):-
-    sequenceOfNon0(List, 0, 0, Result), !.
-
-/*
-Base case,
-Result will be the greater number between the current 0 Sequence or
-the MaxSequence achieved
-*/
-sequenceOfNon0([], Sequence, MaxSequence, Result):-
-    Result is max(Sequence, MaxSequence).
-
-/*
-The number in the head of the list is 0, current MaxSequence will be 
-the greater number between current Sequence or previous MaxSequence achieved
-*/
-sequenceOfNon0([0|Rest], Sequence, MaxSequence, Result):-
-	NewMaxSequence is max(Sequence, MaxSequence),
-    sequenceOfNon0(Rest, 0, NewMaxSequence, Result).
-
-/*
-The number in the head of the list is diferent from 0, increase current Sequence counter
-*/
-sequenceOfNon0([H|Rest], Sequence, MaxSequence, Result):-
-	H \== 0,
-    Sequence1 is Sequence+1,
-    sequenceOfNon0(Rest, Sequence1, MaxSequence, Result).
+sequenceOfNon0(List, Sequence):-
+	delete(List, 0, SequenceList),
+	length(SequenceList, Sequence).
 
 
 %floodFill(+Matrix, +Size, +Row, +Column, +PreviousCharacter, +NewCharacter, -FinalMatrix)
@@ -268,6 +249,7 @@ Returns in FinalMatrix the floodfilled matrix
 tryFloodFill(Matrix, Size, Row, Column, FinalMatrix):-
     getValueFromMatrix(Matrix, Row, Column, 0),
     floodFill(Matrix, Size, Row, Column, 0, 2, FinalMatrix), !.
+
 
 %enterContinue/0
 /*
