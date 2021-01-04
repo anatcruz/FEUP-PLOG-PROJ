@@ -31,31 +31,22 @@ cp_solver(L_digits_list, R_digits_list, Res_digits_list, L_number, R_number, Res
 
     labeling(LabelingOps, [L_number, R_number, Res_number]).
 
+
 cp_generator(L_digits_list, R_digits_list, Res_digits_list, L_num_digits, R_num_digits):-
     cp_generator(L_digits_list, R_digits_list, Res_digits_list, L_num_digits, R_num_digits, [min,bisect,up]).
 
 cp_generator(L_digits_list, R_digits_list, Res_digits_list, L_num_digits, R_num_digits, LabelingOps):-
-    Res_max_digits is L_num_digits+R_num_digits,
-    (
-        (
-            Res_num_digits is Res_max_digits-1,
-            cp_generator(L_digits_list, R_digits_list, Res_digits_list, L_num_digits, R_num_digits, Res_num_digits, LabelingOps)
-        );
-        (
-            Res_num_digits is Res_max_digits,
-            cp_generator(L_digits_list, R_digits_list, Res_digits_list, L_num_digits, R_num_digits, Res_num_digits, LabelingOps)
-        )
-    ).
-
-cp_generator(L_digits_list, R_digits_list, Res_digits_list, L_num_digits, R_num_digits, Res_num_digits, LabelingOps):-
     length(L_digits_list, L_num_digits),
     length(R_digits_list, R_num_digits),
-    length(Res_digits_list, Res_num_digits),
 
+    Res_max_digits is L_num_digits+R_num_digits,
+    Res_min_digits is Res_max_digits-1,
+    (length(Res_digits_list, Res_min_digits); length(Res_digits_list, Res_max_digits)),
+    
     append(L_digits_list, R_digits_list, Op), append(Op, Res_digits_list, DigitsDup),
     remove_dups(DigitsDup, Digits),
     domain(Digits, 0, 9),
-    DiffDigitsRange in 2..Res_num_digits,
+    DiffDigitsRange in 2..Res_max_digits,
     nvalue(DiffDigitsRange, Digits),
 
     element(1, L_digits_list, L1),
@@ -77,7 +68,7 @@ cp_generator(L_digits_list, R_digits_list, Res_digits_list, L_num_digits, R_num_
         (L_number#>L_lowerbound, R_number#>R_lowerbound)
     ),
 
-    L_number * R_number #= Res_number, !,
+    L_number * R_number #= Res_number,
 
     labeling(LabelingOps, [L_number, R_number, Res_number]).
 
