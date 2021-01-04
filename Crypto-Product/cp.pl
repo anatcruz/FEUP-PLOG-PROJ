@@ -125,3 +125,41 @@ restrictPuzzles([H|T], MaxPrevious):-
     H#=<MaxPrevious+1,
     maximum(NewMax, [MaxPrevious, H]),
     restrictPuzzles(T, NewMax).
+
+%Build an auxiliary list like [1-'R',2-'B',...]
+buildAuxList([],_).
+buildAuxList(DigitsList, ListColors) :-
+    Dic = ['R', 'G', 'B', 'W', 'B', 'Y', 'O', 'P', 'C', 'F'],
+    remove_dups(DigitsList, NoDupsList),
+    buildAuxList(Dic, NoDupsList, [], ListColors, 0 ),!.
+
+buildAuxList(_,[], ListColors, ListColors, _).
+buildAuxList(Dic, [H|T], AuxList, ListColors, Index) :-
+    nth0(Index, Dic, Element),
+    append(AuxList, [H-Element], NewAuxList),
+    NewIndex is Index + 1,
+    buildAuxList(Dic, T, NewAuxList, ListColors, NewIndex). 
+
+%Get the color for a giver digit from the auxiliary list
+getColor(_, [], _).
+getColor(Digit, AuxList, Color) :- 
+    getColor(Digit, AuxList, '', Color),! .
+
+getColor(_, [], Color, Color).
+getColor(Digit, [H-Key|T], AccColor, Color) :-
+    (
+        Digit == H, atom_concat(Key, AccColor, NewAccColor),
+        getColor(Digit, T, NewAccColor, Color)
+    );
+    getColor(Digit, T, AccColor, Color).
+
+%Converts a list of digits to a string of colors, like [1,2,3] to 'RGB'
+convertListDigitsToStringColor([], _, _).
+convertListDigitsToStringColor(ListDigits, AuxList, StringColor) :-
+    convertListDigitsToStringColor(ListDigits, AuxList, '', StringColor), !.
+
+convertListDigitsToStringColor([], _, StringColor, StringColor).
+convertListDigitsToStringColor([H|T], AuxList, AccColor, StringColor) :-
+    getColor(H, AuxList, Color),
+    atom_concat(AccColor, Color, NewAccColor),
+    convertListDigitsToStringColor(T, AuxList, NewAccColor, StringColor).
