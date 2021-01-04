@@ -3,6 +3,9 @@
 :-use_module(library(random)).
 :-compile('tests.pl').
 
+cp_solver(L_digits_list, R_digits_list, Res_digits_list, L_number, R_number, Res_number):-
+    cp_solver(L_digits_list, R_digits_list, Res_digits_list, L_number, R_number, Res_number, [min,bisect,up]).
+
 cp_solver(L_digits_list, R_digits_list, Res_digits_list, L_number, R_number, Res_number, LabelingOps):-
     length(L_digits_list, L_num_digits),
     length(R_digits_list, R_num_digits),
@@ -24,23 +27,35 @@ cp_solver(L_digits_list, R_digits_list, Res_digits_list, L_number, R_number, Res
     convertDigitListToNumber(R_digits_list, R_number),
     convertDigitListToNumber(Res_digits_list, Res_number),
 
-    L_number * R_number #= Res_number,
+    L_number * R_number #= Res_number, !,
 
     labeling(LabelingOps, [L_number, R_number, Res_number]).
 
+cp_generator(L_digits_list, R_digits_list, Res_digits_list, L_num_digits, R_num_digits):-
+    cp_generator(L_digits_list, R_digits_list, Res_digits_list, L_num_digits, R_num_digits, [min,bisect,up]).
 
 cp_generator(L_digits_list, R_digits_list, Res_digits_list, L_num_digits, R_num_digits, LabelingOps):-
+    Res_max_digits is L_num_digits+R_num_digits,
+    (
+        (
+            Res_num_digits is Res_max_digits-1,
+            cp_generator(L_digits_list, R_digits_list, Res_digits_list, L_num_digits, R_num_digits, Res_num_digits, LabelingOps)
+        );
+        (
+            Res_num_digits is Res_max_digits,
+            cp_generator(L_digits_list, R_digits_list, Res_digits_list, L_num_digits, R_num_digits, Res_num_digits, LabelingOps)
+        )
+    ).
+
+cp_generator(L_digits_list, R_digits_list, Res_digits_list, L_num_digits, R_num_digits, Res_num_digits, LabelingOps):-
     length(L_digits_list, L_num_digits),
     length(R_digits_list, R_num_digits),
+    length(Res_digits_list, Res_num_digits),
 
-    Res_max_digits is L_num_digits+R_num_digits,
-    Res_min_digits is Res_max_digits-1,
-    (length(Res_digits_list, Res_min_digits); length(Res_digits_list, Res_max_digits)),
-    
     append(L_digits_list, R_digits_list, Op), append(Op, Res_digits_list, DigitsDup),
     remove_dups(DigitsDup, Digits),
     domain(Digits, 0, 9),
-    DiffDigitsRange in 2..Res_max_digits,
+    DiffDigitsRange in 2..Res_num_digits,
     nvalue(DiffDigitsRange, Digits),
 
     element(1, L_digits_list, L1),
@@ -62,23 +77,18 @@ cp_generator(L_digits_list, R_digits_list, Res_digits_list, L_num_digits, R_num_
         (L_number#>L_lowerbound, R_number#>R_lowerbound)
     ),
 
-    L_number * R_number #= Res_number,
+    L_number * R_number #= Res_number, !,
 
     labeling(LabelingOps, [L_number, R_number, Res_number]).
 
-/*cp_ShowAllPuzzlesAndAllSolutions(L_digits_num, R_digits_num, L_number, R_number, Res_number):-
+
+cp_showAllPuzzlesAndAllSolutions(L_digits_num, R_digits_num, L_number, R_number, Res_number):-
     cp_generator(L_digits_list, R_digits_list, Res_digits_list, L_digits_num, R_digits_num),
     printPuzzle(L_digits_list, R_digits_list, Res_digits_list),
     convertAllDigitsListToVarList(L_digits_list, R_digits_list, Res_digits_list, L_vars, R_vars, Res_vars),
     cp_solver(L_vars, R_vars, Res_vars, L_number, R_number, Res_number),
     printSolution(L_number, R_number, Res_number).
 
-save_cp:-
-    open('cp1x2.txt', write, S1),
-    set_output(S1),
-    cp_tester(1,2),
-    flush_output(S1),
-    close(S1).*/
 
 pow(_,0,1).
 pow(N,P,R) :- P > 0,!, P1 is P-1, pow(N,P1,R1), R is N*R1.
