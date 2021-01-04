@@ -80,13 +80,6 @@ cp_generator(L_digits_list, R_digits_list, Res_digits_list, L_num_digits, R_num_
     labeling(LabelingOps, [L_number, R_number, Res_number]).
 
 
-showAllPuzzlesAndAllSolutions(L_digits_num, R_digits_num, L_number, R_number, Res_number):-
-    cp_generator(L_digits_list, R_digits_list, Res_digits_list, L_digits_num, R_digits_num),
-    printPuzzle(L_digits_list, R_digits_list, Res_digits_list),
-    convertAllDigitsListToVarList(L_digits_list, R_digits_list, Res_digits_list, L_vars, R_vars, Res_vars),
-    cp_solver(L_vars, R_vars, Res_vars, L_number, R_number, Res_number),
-    printSolution(L_number, R_number, Res_number).
-
 
 % Power function
 pow(_,0,1).
@@ -125,7 +118,7 @@ convertDigitListToNumber([D|T], N0, N) :-
 % Called to restrict a DigitList of a number when the other number is a power of 10, avoiding generating repeated puzzles
 restrictPower10([H|T]):-
     H#>0, H #=<2,
-    restrictPower10(T, 2).
+    restrictPower10(T, H).
 
 restrictPower10([], _).
 restrictPower10([H|T], MaxPrevious):-
@@ -149,6 +142,7 @@ convertDigitsListToVarList([H | T], DicList, AuxList, VarList):-
     nth0(H, DicList, Var),
     append(AuxList, [Var], NewAux),
     convertDigitsListToVarList(T, DicList, NewAux, VarList).
+
 
 /* DISPLAY */
 
@@ -202,3 +196,34 @@ convertListDigitsToStringColor([H|T], ColorAuxList, AccColor, StringColor) :-
     getColor(H, ColorAuxList, Color),
     atom_concat(AccColor, Color, NewAccColor),
     convertListDigitsToStringColor(T, ColorAuxList, NewAccColor, StringColor).
+
+
+/* USER */
+
+/*
+Show Solutions to a given puzzle configuration
+Input examples:
+1x2 - showPuzzleSolutions([R], [B,G], [G,B,R]).
+1x3 - showPuzzleSolutions([B], [G,W,R], [W,B,R]).
+2x2 - showPuzzleSolutions([W,G], [B,G], [G,W,R,B]).
+3x3 - showPuzzleSolutions([R,W,R], [B,B,G] = [W,N,Y,R,G]).
+*/
+showPuzzleSolutions(L_vars, R_vars, Res_vars):-
+    cp_solver(L_vars, R_vars, Res_vars, L_number, R_number, Res_number),
+    printSolution(L_number, R_number, Res_number).
+
+
+/*
+Show Puzzles and respective Solutions to given digits
+Input examples:
+1x2 - showPuzzlesAndSolutions(1, 2, LeftNumber, RightNumber, Result).
+1x3 - showPuzzlesAndSolutions(1, 3, LeftNumber, RightNumber, Result).
+2x2 - showPuzzlesAndSolutions(2, 2, LeftNumber, RightNumber, Result).
+3x3 - showPuzzlesAndSolutions(3, 3, LeftNumber, RightNumber, Result).
+*/
+showPuzzlesAndSolutions(L_num_digits, R_num_digits, L_number, R_number, Res_number):-
+    cp_generator(L_digits_list, R_digits_list, Res_digits_list, L_num_digits, R_num_digits),
+    printPuzzle(L_digits_list, R_digits_list, Res_digits_list),
+    convertAllDigitsListToVarList(L_digits_list, R_digits_list, Res_digits_list, L_vars, R_vars, Res_vars),
+    cp_solver(L_vars, R_vars, Res_vars, L_number, R_number, Res_number),
+    printSolution(L_number, R_number, Res_number).

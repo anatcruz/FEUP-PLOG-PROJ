@@ -28,15 +28,15 @@ cp_tester(L_digits_num, R_digits_num, LabelingOps):-
 cp_tester(_, _, _, _, _).
 
 % Save all heuristics combinations to files
-save_heuristics(L_digits_num, R_digits_num):-
+save_all_heuristics(L_digits_num, R_digits_num):-
     lb_opt(Opt),
     lb_opt2(Opt2),
     lb_opt3(Opt3),
     save(L_digits_num, R_digits_num, Opt, Opt2, Opt3),
     fail.
-save_heuristics(_,_).
+save_all_heuristics(_,_).
 
-% Calls the cp_tester predicate and saves the outputs to the corresponding filename
+% Calls the cp_tester predicate with heuristics and saves the outputs to the corresponding filename
 save(L_num_digits, R_num_digits, Opt, Opt2, Opt3):-
     Predicate =.. [cp_tester, L_num_digits, R_num_digits, [Opt, Opt2, Opt3]],
     file_name(L_num_digits, R_num_digits, Opt, Opt2, Opt3, FileName),
@@ -52,6 +52,10 @@ save(L_num_digits, R_num_digits, Opt, Opt2, Opt3):-
     close(S1),
     set_output(Console),
     format('~w took ~3d sec.~n', [Predicate, T]), !.
+
+% Calls the cp_tester with best labeling options and saves the outputs to the corresponding filename
+save(L_num_digits, R_num_digits):-
+    save(L_num_digits, R_num_digits, min,bisect,up).
 
 % Creates corresponding file name given the number of digits and labeling options
 file_name(L_num_digits, R_num_digits, Opt, Opt2, Opt3, FileName):-
