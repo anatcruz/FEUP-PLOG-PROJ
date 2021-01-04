@@ -1,8 +1,9 @@
-:- use_module(library(clpfd)).
-:- use_module(library(lists)).
-:- use_module(library(random)).
+:-use_module(library(clpfd)).
+:-use_module(library(lists)).
+:-use_module(library(random)).
+:-compile('tests.pl').
 
-cp_solver(L_digits_list, R_digits_list, Res_digits_list, L_number, R_number, Res_number):-
+cp_solver(L_digits_list, R_digits_list, Res_digits_list, L_number, R_number, Res_number, LabelingOps):-
     length(L_digits_list, L_num_digits),
     length(R_digits_list, R_num_digits),
     length(Res_digits_list, Res_num_digits),
@@ -10,12 +11,11 @@ cp_solver(L_digits_list, R_digits_list, Res_digits_list, L_number, R_number, Res
     append(L_digits_list, R_digits_list, Op), append(Op, Res_digits_list, DigitsDup),
     remove_dups(DigitsDup, Digits),
     domain(Digits, 0, 9),
-    DiffDigitsRange in 2..Res_num_digits,
-    nvalue(DiffDigitsRange, Digits),
+    all_distinct(Digits),
 
-    nth1(1, L_digits_list, L1),
-    nth1(1, R_digits_list, R1),
-    nth1(1, Res_digits_list, Res1),
+    element(1, L_digits_list, L1),
+    element(1, R_digits_list, R1),
+    element(1, Res_digits_list, Res1),
     Not0Dups = [L1, R1, Res1],
     remove_dups(Not0Dups, Not0),
     applyNon0(Not0),
@@ -26,10 +26,10 @@ cp_solver(L_digits_list, R_digits_list, Res_digits_list, L_number, R_number, Res
 
     L_number * R_number #= Res_number,
 
-    labeling([], [L_number, R_number, Res_number]).
+    labeling(LabelingOps, [L_number, R_number, Res_number]).
 
 
-cp_generator(L_digits_list, R_digits_list, Res_digits_list, L_num_digits, R_num_digits):-
+cp_generator(L_digits_list, R_digits_list, Res_digits_list, L_num_digits, R_num_digits, LabelingOps):-
     length(L_digits_list, L_num_digits),
     length(R_digits_list, R_num_digits),
 
@@ -43,9 +43,9 @@ cp_generator(L_digits_list, R_digits_list, Res_digits_list, L_num_digits, R_num_
     DiffDigitsRange in 2..Res_max_digits,
     nvalue(DiffDigitsRange, Digits),
 
-    nth1(1, L_digits_list, L1),
-    nth1(1, R_digits_list, R1),
-    nth1(1, Res_digits_list, Res1),
+    element(1, L_digits_list, L1),
+    element(1, R_digits_list, R1),
+    element(1, Res_digits_list, Res1),
     Not0Dups = [L1, R1, Res1],
     remove_dups(Not0Dups, Not0),
     applyNon0(Not0),
@@ -64,27 +64,21 @@ cp_generator(L_digits_list, R_digits_list, Res_digits_list, L_num_digits, R_num_
 
     L_number * R_number #= Res_number,
 
-    labeling([], [L_number, R_number, Res_number]),
-    format('\nSolution: ~w x ~w = ~w\n', [L_number, R_number, Res_number]).
+    labeling(LabelingOps, [L_number, R_number, Res_number]).
 
-cp_tester(L_digits_num, R_digits_num):-
-    DicList = [A, B, C, D, E, F, G, H, I, J],
+/*cp_ShowAllPuzzlesAndAllSolutions(L_digits_num, R_digits_num, L_number, R_number, Res_number):-
     cp_generator(L_digits_list, R_digits_list, Res_digits_list, L_digits_num, R_digits_num),
-    convertDigitListToVarList(L_digits_list, DicList, L_vars),
-    convertDigitListToVarList(R_digits_list, DicList, R_vars),
-    convertDigitListToVarList(Res_digits_list, DicList, Res_vars),
-    write(L_vars), write(R_vars), write(Res_vars),
+    printPuzzle(L_digits_list, R_digits_list, Res_digits_list),
+    convertAllDigitsListToVarList(L_digits_list, R_digits_list, Res_digits_list, L_vars, R_vars, Res_vars),
     cp_solver(L_vars, R_vars, Res_vars, L_number, R_number, Res_number),
-    format('\nSolution: ~w x ~w = ~w\n', [L_number, R_number, Res_number]),
-    fail.
-cp_tester(_, _).
+    printSolution(L_number, R_number, Res_number).
 
 save_cp:-
     open('cp1x2.txt', write, S1),
     set_output(S1),
     cp_tester(1,2),
     flush_output(S1),
-    close(S1).
+    close(S1).*/
 
 pow(_,0,1).
 pow(N,P,R) :- P > 0,!, P1 is P-1, pow(N,P1,R1), R is N*R1.
@@ -105,15 +99,6 @@ convertDigitListToNumber([D|Ds], N0,N) :-
     N1 #= D+N0*10,
     convertDigitListToNumber(Ds, N1, N).
 
-convertDigitListToVarList(DigitList, DicList, VarList):-
-    convertDigitListToVarList(DigitList, DicList, [], VarList).
-
-convertDigitListToVarList([], _, VarList, VarList).
-convertDigitListToVarList([H | T], DicList, AuxList, VarList):-
-    nth0(H, DicList, Var),
-    append(AuxList, [Var], NewAux),
-    convertDigitListToVarList(T, DicList, NewAux, VarList).
-
 
 %+DigitsList
 restrictPuzzles([H|T]):-
@@ -126,21 +111,49 @@ restrictPuzzles([H|T], MaxPrevious):-
     maximum(NewMax, [MaxPrevious, H]),
     restrictPuzzles(T, NewMax).
 
-%Build an auxiliary list like [1-'R',2-'B',...]
-buildAuxList([],_).
-buildAuxList(DigitsList, ListColors) :-
-    Dic = ['R', 'G', 'B', 'W', 'B', 'Y', 'O', 'P', 'C', 'F'],
-    remove_dups(DigitsList, NoDupsList),
-    buildAuxList(Dic, NoDupsList, [], ListColors, 0 ),!.
 
-buildAuxList(_,[], ListColors, ListColors, _).
-buildAuxList(Dic, [H|T], AuxList, ListColors, Index) :-
+convertAllDigitsListToVarList(L_digits_list, R_digits_list, Res_digits_list, L_vars, R_vars, Res_vars):-
+    DicList = [A, B, C, D, E, F, G, H, I, J],
+    convertDigitsListToVarList(L_digits_list, DicList, L_vars),
+    convertDigitsListToVarList(R_digits_list, DicList, R_vars),
+    convertDigitsListToVarList(Res_digits_list, DicList, Res_vars).
+
+convertDigitsListToVarList(DigitList, DicList, VarList):-
+    convertDigitsListToVarList(DigitList, DicList, [], VarList).
+
+convertDigitsListToVarList([], _, VarList, VarList).
+convertDigitsListToVarList([H | T], DicList, AuxList, VarList):-
+    nth0(H, DicList, Var),
+    append(AuxList, [Var], NewAux),
+    convertDigitsListToVarList(T, DicList, NewAux, VarList).
+
+
+printSolution(L_number, R_number, Res_number):-
+    format('~w x ~w = ~w\n', [L_number, R_number, Res_number]).
+
+printPuzzle(L_digits_list, R_digits_list, Res_digits_list):-
+    append(L_digits_list, R_digits_list, Op), append(Op, Res_digits_list, DigitsList),
+    buildColorAuxList(DigitsList, ListColors),
+    convertListDigitsToStringColor(L_digits_list, ListColors, L_string),
+    convertListDigitsToStringColor(R_digits_list, ListColors, R_string),
+    convertListDigitsToStringColor(Res_digits_list, ListColors, Res_string),
+    format('\n~w x ~w = ~w\n', [L_string, R_string, Res_string]),
+
+%Build an auxiliar list like [1-'R',2-'B',...]
+buildColorAuxList([],_).
+buildColorAuxList(DigitsList, ListColors) :-
+    Dic = ['R', 'G', 'B', 'W', 'N', 'Y', 'O', 'P', 'C', 'F'],
+    remove_dups(DigitsList, NoDupsList),
+    buildColorAuxList(Dic, NoDupsList, [], ListColors, 0 ),!.
+
+buildColorAuxList(_,[], ListColors, ListColors, _).
+buildColorAuxList(Dic, [H|T], AuxList, ListColors, Index) :-
     nth0(Index, Dic, Element),
     append(AuxList, [H-Element], NewAuxList),
     NewIndex is Index + 1,
-    buildAuxList(Dic, T, NewAuxList, ListColors, NewIndex). 
+    buildColorAuxList(Dic, T, NewAuxList, ListColors, NewIndex). 
 
-%Get the color for a giver digit from the auxiliary list
+%Get the color for a giver digit from the auxiliar list
 getColor(_, [], _).
 getColor(Digit, AuxList, Color) :- 
     getColor(Digit, AuxList, '', Color),! .
@@ -155,11 +168,11 @@ getColor(Digit, [H-Key|T], AccColor, Color) :-
 
 %Converts a list of digits to a string of colors, like [1,2,3] to 'RGB'
 convertListDigitsToStringColor([], _, _).
-convertListDigitsToStringColor(ListDigits, AuxList, StringColor) :-
-    convertListDigitsToStringColor(ListDigits, AuxList, '', StringColor), !.
+convertListDigitsToStringColor(ListDigits, ColorAuxList, StringColor) :-
+    convertListDigitsToStringColor(ListDigits, ColorAuxList, '', StringColor), !.
 
 convertListDigitsToStringColor([], _, StringColor, StringColor).
-convertListDigitsToStringColor([H|T], AuxList, AccColor, StringColor) :-
-    getColor(H, AuxList, Color),
+convertListDigitsToStringColor([H|T], ColorAuxList, AccColor, StringColor) :-
+    getColor(H, ColorAuxList, Color),
     atom_concat(AccColor, Color, NewAccColor),
-    convertListDigitsToStringColor(T, AuxList, NewAccColor, StringColor).
+    convertListDigitsToStringColor(T, ColorAuxList, NewAccColor, StringColor).
