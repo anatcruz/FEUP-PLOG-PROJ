@@ -2,72 +2,98 @@
 :- use_module(library(lists)).
 :- use_module(library(random)).
 
-cp_solver(L_vars, R_vars, Res_vars):-
-    append(L_vars, R_vars, Op), append(Op, Res_vars, VarsDup),
-    remove_dups(VarsDup, Vars),
-    domain(Vars, 0, 9),
-    all_distinct(Vars),
+cp_solver(L_digits_list, R_digits_list, Res_digits_list, L_number, R_number, Res_number):-
+    length(L_digits_list, L_num_digits),
+    length(R_digits_list, R_num_digits),
+    length(Res_digits_list, Res_num_digits),
 
-    nth1(1, L_vars, L1),
-    nth1(1, R_vars, R1),
-    nth1(1, Res_vars, Res1),
+    append(L_digits_list, R_digits_list, Op), append(Op, Res_digits_list, DigitsDup),
+    remove_dups(DigitsDup, Digits),
+    domain(Digits, 0, 9),
+    DiffDigitsRange in 2..Res_num_digits,
+    nvalue(DiffDigitsRange, Digits),
+
+    nth1(1, L_digits_list, L1),
+    nth1(1, R_digits_list, R1),
+    nth1(1, Res_digits_list, Res1),
     Not0Dups = [L1, R1, Res1],
     remove_dups(Not0Dups, Not0),
     applyNon0(Not0),
-    
 
-    convertDigitListToNumber(L_vars, L_number),
-    convertDigitListToNumber(R_vars, R_number),
-    convertDigitListToNumber(Res_vars, Res_number),
+    convertDigitListToNumber(L_digits_list, L_number),
+    convertDigitListToNumber(R_digits_list, R_number),
+    convertDigitListToNumber(Res_digits_list, Res_number),
+
+    L_number * R_number #= Res_number,
+
+    labeling([], [L_number, R_number, Res_number]).
+
+
+cp_generator(L_digits_list, R_digits_list, Res_digits_list, L_num_digits, R_num_digits):-
+    length(L_digits_list, L_num_digits),
+    length(R_digits_list, R_num_digits),
+
+    Res_max_digits is L_num_digits+R_num_digits,
+    Res_min_digits is Res_max_digits-1,
+    (length(Res_digits_list, Res_min_digits); length(Res_digits_list, Res_max_digits)),
+    
+    append(L_digits_list, R_digits_list, Op), append(Op, Res_digits_list, DigitsDup),
+    remove_dups(DigitsDup, Digits),
+    domain(Digits, 0, 9),
+    DiffDigitsRange in 2..Res_max_digits,
+    nvalue(DiffDigitsRange, Digits),
+
+    nth1(1, L_digits_list, L1),
+    nth1(1, R_digits_list, R1),
+    nth1(1, Res_digits_list, Res1),
+    Not0Dups = [L1, R1, Res1],
+    remove_dups(Not0Dups, Not0),
+    applyNon0(Not0),
+
+    convertDigitListToNumber(L_digits_list, L_number),
+    convertDigitListToNumber(R_digits_list, R_number),
+    convertDigitListToNumber(Res_digits_list, Res_number),
+
+    L_pow is L_num_digits-1, R_pow is R_num_digits-1,
+    pow(10, L_pow, L_lowerbound), pow(10, R_pow, R_lowerbound),
+    (
+        (L_number#=L_lowerbound, restrictPuzzles(R_digits_list)) ;
+        (L_number#>L_lowerbound, R_number#=R_lowerbound, restrictPuzzles(L_digits_list)) ;
+        (L_number#>L_lowerbound, R_number#>R_lowerbound)
+    ),
+
     L_number * R_number #= Res_number,
 
     labeling([], [L_number, R_number, Res_number]),
     format('\nSolution: ~w x ~w = ~w\n', [L_number, R_number, Res_number]).
 
-
-cp_generator(L_digits, R_digits, Res_digits, [L_vars, R_vars, Res_vars]):-
-    L_lowerpow is L_digits-1,
-    R_lowerpow is R_digits-1,
-    Res_lowerpow is Res_digits-1,
-
-    pow(10,L_lowerpow, L_lowerbound),
-    pow(10,L_digits, L_upperbound_1),
-    pow(10,R_lowerpow, R_lowerbound),
-    pow(10,R_digits, R_upperbound_1),
-    pow(10,Res_lowerpow, Res_lowerbound),
-    pow(10,Res_digits, Res_upperbound_1),
-
-    L_upperbound is L_upperbound_1-1,
-    R_upperbound is R_upperbound_1-1,
-    Res_upperbound is Res_upperbound_1-1,
-
-    L_number in L_lowerbound..L_upperbound,
-    R_number in R_lowerbound..R_upperbound,
-    Res_number in Res_lowerbound..Res_upperbound,
-
-    L_number #> 0, R_number #> 0, Res_number #> 0,
-
-    L_number * R_number #= Res_number,
-
-    convertDigitListToNumber(L_number_list, L_number),
-    convertDigitListToNumber(R_number_list, R_number),
-    convertDigitListToNumber(Res_number_list, Res_number),
-
+cp_tester(L_digits_num, R_digits_num):-
     DicList = [A, B, C, D, E, F, G, H, I, J],
-    convertDigitListToVarList(L_number_list, DicList, L_vars),
-    convertDigitListToVarList(R_number_list, DicList, R_vars),
-    convertDigitListToVarList(Res_number_list, DicList, Res_vars),
+    cp_generator(L_digits_list, R_digits_list, Res_digits_list, L_digits_num, R_digits_num),
+    convertDigitListToVarList(L_digits_list, DicList, L_vars),
+    convertDigitListToVarList(R_digits_list, DicList, R_vars),
+    convertDigitListToVarList(Res_digits_list, DicList, Res_vars),
+    write(L_vars), write(R_vars), write(Res_vars),
+    cp_solver(L_vars, R_vars, Res_vars, L_number, R_number, Res_number),
+    format('\nSolution: ~w x ~w = ~w\n', [L_number, R_number, Res_number]),
+    fail.
+cp_tester(_, _).
 
-    labeling([], [L_number, R_number, Res_number]),
+save_cp:-
+    open('cp1x2.txt', write, S1),
+    set_output(S1),
+    cp_tester(1,2),
+    flush_output(S1),
+    close(S1).
 
-    format('\nPuzzle: ~w x ~w = ~w\n', [L_vars, R_vars, Res_vars]),
-    format('Solution: ~w x ~w = ~w\n', [L_number, R_number, Res_number]).
-
+pow(_,0,1).
+pow(N,P,R) :- P > 0,!, P1 is P-1, pow(N,P1,R1), R is N*R1.
 
 applyNon0([]).
 applyNon0([H | T]):-
     H #> 0,
     applyNon0(T).
+
 
 convertDigitListToNumber(Ds, N) :-
     convertDigitListToNumber(Ds, 0, N), !.
@@ -79,10 +105,6 @@ convertDigitListToNumber([D|Ds], N0,N) :-
     N1 #= D+N0*10,
     convertDigitListToNumber(Ds, N1, N).
 
-pow(_,0,1).
-pow(N,P,R) :- P > 0,!, P1 is P-1, pow(N,P1,R1), R is N*R1.
-
-
 convertDigitListToVarList(DigitList, DicList, VarList):-
     convertDigitListToVarList(DigitList, DicList, [], VarList).
 
@@ -91,3 +113,15 @@ convertDigitListToVarList([H | T], DicList, AuxList, VarList):-
     nth0(H, DicList, Var),
     append(AuxList, [Var], NewAux),
     convertDigitListToVarList(T, DicList, NewAux, VarList).
+
+
+%+DigitsList
+restrictPuzzles([H|T]):-
+    H#>0, H #=<2,
+    restrictPuzzles(T, H).
+
+restrictPuzzles([], _).
+restrictPuzzles([H|T], MaxPrevious):-
+    H#=<MaxPrevious+1,
+    maximum(NewMax, [MaxPrevious, H]),
+    restrictPuzzles(T, NewMax).
