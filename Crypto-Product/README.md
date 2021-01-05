@@ -10,7 +10,7 @@
 
 ## Instruções de execução
 
-Executar SICStus, clicar em _File_, depois _Compile_, e finalmente selecionar o ficheiro `cp.pl` localizado na pasta do projeto.
+Executar SICStus, clicar em _File_, depois _Compile_, e finalmente selecionar o ficheiro `cp.pl` localizado na pasta _src_ do projeto.
 
 O utilizador pode:
 
